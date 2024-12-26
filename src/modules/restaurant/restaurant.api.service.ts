@@ -1,8 +1,9 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { RestaurantDaoService } from "src/modules/restaurant/persistence/Restaurant.dao.service";
 import { UserDaoService } from "../user/persistance/User.dao.service";
 import { RestaurantCreateDto } from "../auth/dto/RestaurantCreate.dto";
 import { BASE_URL } from "src/constants";
+import { UserMapper } from "../user/domain/user.mapper";
 
 @Injectable()
 export class RestaurantService{
@@ -15,7 +16,6 @@ export class RestaurantService{
         const user = this.userDao.create(data)
         const restaurant = this.restaurantDao.create(user, {
             userId: user.id,
-            restaurantName: data.restaurantName,
             restaurantAddress: data.address,
             restaurantPhotoUrl: `${BASE_URL}/files/${image.filename}`
         })
@@ -23,6 +23,14 @@ export class RestaurantService{
     }
 
     async getProfile(user_id: string){
-        return await this.restaurantDao.getProfile(user_id)
+        const user = await this.restaurantDao.getProfile(user_id)
+        if(!user){
+            return new BadRequestException("User tidak ditemukan")
+        }
+        const userMapped = UserMapper.fromRestaurantToDomain(user)
+        userMapped.password = undefined
+        return {
+            user: userMapped
+        }
     }
 }

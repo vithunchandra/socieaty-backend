@@ -14,14 +14,14 @@ export class RestaurantDaoService{
 
     create(user: UserEntity, data: CreateRestaurantDto): RestaurantEntity{
         const restaurant = new RestaurantEntity(
-            user, data.restaurantName,
+            user,
             data.restaurantPhotoUrl, data.restaurantAddress
-        )
+        )        
         this.restaurantRepository.getEntityManager().persist(restaurant)
         return restaurant
     }
 
-    async getProfile(user_id: string): Promise<RestaurantEntity>{
+    async getProfile(user_id: string): Promise<RestaurantEntity | null>{
         const restaurant = await this.restaurantRepository.findOne({
             userData: {id: user_id}
         }, {populate: ['userData']})

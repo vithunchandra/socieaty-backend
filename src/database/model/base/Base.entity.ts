@@ -1,7 +1,8 @@
 import { HiddenProps, OptionalProps, PrimaryKey, Property } from '@mikro-orm/core';
-import { v4 } from 'uuid';
+import { v7 } from 'uuid';
 
-export abstract class BaseEntity {
+export abstract class BaseEntity<Optional = never> {
+    [OptionalProps]?: 'createdAt' | 'updatedAt' | 'deletedAt' | Optional;
 
     @PrimaryKey({type: 'uuid'})
     id!: string;
@@ -12,7 +13,10 @@ export abstract class BaseEntity {
     @Property({ hidden: true, onUpdate: () => new Date() })
     updatedAt: Date = new Date();
 
+    @Property({ nullable: true, hidden: true})
+    deletedAt?: Date
+
     constructor(){
-        this.id = v4()
+        this.id = v7()
     }
 }

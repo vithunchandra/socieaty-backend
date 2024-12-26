@@ -1,10 +1,10 @@
 import { MikroOrmModule } from "@mikro-orm/nestjs";
 import { Module } from "@nestjs/common";
-import { Customer } from "./Customer.entity";
+import { CustomerEntity } from "./Customer.entity";
 import { CustomerDaoService } from "./Customer.dao.service";
 
 @Module({
-    imports: [MikroOrmModule.forFeature([Customer])],
+    imports: [MikroOrmModule.forFeature([CustomerEntity])],
     controllers: [],
     providers: [CustomerDaoService],
     exports: [CustomerDaoService]

@@ -1,13 +1,13 @@
 import { Body, Controller, Get, Post, Request, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
-import { UserSigninDto } from "./dto/UserSignin.dto";
-import { AuthGuard } from "src/module/AuthGuard/AuthGuard";
+import { UserSigninDto } from "./dto/user-signin.dto";
 import { RestaurantCreateDto } from "./dto/RestaurantCreate.dto";
 import { CustomerCreateDto } from "./dto/CustomerCreate.dto";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import { FILE_UPLOADS_DIR } from "src/constants";
-import { imageFileFilter, imageFileNameEditor } from "src/utils/image.utils";
+import { fileNameEditor, imageFileFilter } from "src/utils/image.utils";
 import { AuthService } from "./auth.api.service";
+import { AuthGuard } from "src/module/AuthGuard/AuthGuard.service";
 
 @Controller('auth')
 export class AuthController{
@@ -23,7 +23,7 @@ export class AuthController{
         FileInterceptor('image', {
             storage: diskStorage({
                 destination: FILE_UPLOADS_DIR,
-                filename: imageFileNameEditor
+                filename: fileNameEditor
             }),
             fileFilter: imageFileFilter,
             limits: {
@@ -32,20 +32,17 @@ export class AuthController{
         })
     )
     async restaurantSignup(@Body() data: RestaurantCreateDto, @UploadedFile() image: Express.Multer.File){
-        console.log(image);
         return await this.authService.restaurantSignup(data, image)
     }
 
     @Post('signin')
     async signin(@Body() data: UserSigninDto){
-        return {
-            access_token: await this.authService.signin(data)
-        }
+        return await this.authService.signin(data)
     }
     
     @UseGuards(AuthGuard)
-    @Get('profile')
-    async getProfile(@Request() req){
-        return req.user
+    @Get('session/data')
+    async getData(@Request() req){
+        return this.authService.getData(req.user.id)
     }
 }

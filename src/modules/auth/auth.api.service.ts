@@ -1,26 +1,26 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { UserDaoService } from "src/modules/user/persistance/User.dao.service";
-import { UserSigninDto } from "./dto/UserSignin.dto";
+import { UserSigninDto } from "./dto/user-signin.dto";
 import { JwtService } from "@nestjs/jwt";
 import { CustomerCreateDto } from "./dto/CustomerCreate.dto";
-import { Customer } from "src/modules/customer/persistence/Customer.entity";
 import { RestaurantCreateDto } from "./dto/RestaurantCreate.dto";
 import { EntityManager } from "@mikro-orm/postgresql";
 import { RestaurantService } from "../restaurant/restaurant.api.service";
-import { RestaurantMapper } from "../restaurant/domain/restaurant.mapper";
-import { CustomerDaoService } from "../customer/persistence/Customer.dao.service";
 import { RestaurantSignupResponseDto } from "./dto/restaurant-signup-response.dto";
+import { CustomerSignupResponseDto } from "./dto/customer-signup-responser.dto";
+import { UserMapper } from "../user/domain/user.mapper";
+import { CustomerService } from "../customer/customer.api.service";
 
 @Injectable()
 export class AuthService{
     constructor(
         private readonly restaurantService: RestaurantService,
         private readonly userDao: UserDaoService,
-        private readonly customerDao: CustomerDaoService,
+        private readonly customerService: CustomerService,
         private readonly em: EntityManager,
         private readonly jwtService: JwtService
     ){}
-    async customerSignup(data: CustomerCreateDto): Promise<Customer>{
+    async customerSignup(data: CustomerCreateDto): Promise<CustomerSignupResponseDto>{
         if(data.password !== data.confirmPassword){
             throw new BadRequestException("Password and confirm password is not matched")
         }
@@ -30,13 +30,15 @@ export class AuthService{
             throw new BadRequestException("Email is already been taken")
         }
 
-        const user = this.userDao.create(data)
-        const customer = this.customerDao.create(user, {
-            name: data.name
-        })
-        await this.em.flush()
+        const customer = await this.customerService.createCustomer(data)
 
-        return customer
+        const userMapped = UserMapper.fromCustomerToDomain(customer)
+        userMapped.password = undefined
+        this.em.flush()
+        return {
+            token: await this.jwtService.signAsync({...userMapped}),
+            user: userMapped
+        }
     }
 
     async restaurantSignup(data: RestaurantCreateDto, image: Express.Multer.File): Promise<RestaurantSignupResponseDto>{
@@ -50,14 +52,16 @@ export class AuthService{
         }
         
         const restaurant = await this.restaurantService.createRestaurant(data, image)
-        const restaurantMapped = RestaurantMapper.toDomain(restaurant)
+        const userMapped = UserMapper.fromRestaurantToDomain(restaurant)
+        userMapped.password = undefined;
+        this.em.flush()
         return {
-            token: await this.jwtService.signAsync({...restaurantMapped}),
-            restaurant: restaurantMapped
+            token: await this.jwtService.signAsync({...userMapped}),
+            user: userMapped
         };
     }
 
-    async signin(data: UserSigninDto): Promise<string>{
+    async signin(data: UserSigninDto){
         const user = await this.userDao.findOneByEmail(data.email)
         if(!user){
             throw new BadRequestException("User not found")
@@ -66,10 +70,24 @@ export class AuthService{
             throw new BadRequestException("Wrong password")
         }
 
+        const userMapped = UserMapper.toDomain(user);
+        userMapped.password = undefined;
         const payload = {
-            ...user,
-            password: undefined,
+            ...userMapped
         }
-        return await this.jwtService.signAsync(payload)
+        this.em.flush()
+        return {
+            token: await this.jwtService.signAsync(payload),
+            user: userMapped
+        }
+    }
+    
+    async getData(user_id: string){
+        const user = await this.userDao.findOneById(user_id)
+        if(!user){
+            return new BadRequestException("User not found")
+        }
+        
+        return UserMapper.toDomain(user)
     }
 }

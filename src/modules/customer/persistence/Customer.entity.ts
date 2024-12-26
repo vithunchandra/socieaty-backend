@@ -2,14 +2,8 @@ import { Entity, OneToOne, Property } from "@mikro-orm/core";
 import { BaseEntity } from "../../../database/model/base/Base.entity";
 import { UserEntity } from "../../user/persistance/User.entity";
 
-@Entity()
-export class Customer extends BaseEntity{
-    // @Property({fieldName: 'user_customer_id', type: 'uuid', nullable: false})
-    // userId: string
-
-    @Property()
-    name!: string
-
+@Entity({tableName: "customer"})
+export class CustomerEntity extends BaseEntity{
     @Property({default: "", nullable: true})
     photoProfileUrl: string
 
@@ -23,12 +17,13 @@ export class Customer extends BaseEntity{
         entity: () => UserEntity,
         fieldName: 'user_id',
     })
-    userData: UserEntity | null = null
+    userData: UserEntity
 
-    constructor(user: UserEntity, name: string){
+    constructor(user: UserEntity){
         super()
         this.userData = user
-        this.name = name
         this.wallet = 0
+        this.bio = ""
+        this.photoProfileUrl = ""
     }
 }

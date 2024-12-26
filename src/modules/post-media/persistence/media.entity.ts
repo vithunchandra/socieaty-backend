@@ -1,0 +1,27 @@
+import { Entity, ManyToOne, Property } from "@mikro-orm/core";
+import { BaseEntity } from "../../../database/model/base/Base.entity";
+import { PostEntity } from "../../post/persistence/post.entity";
+
+@Entity({tableName: "post-media"})
+export class PostMediaEntity extends BaseEntity{
+    @Property({nullable: false})
+    url: string
+
+    @Property({nullable: false})
+    type: string
+    
+    @ManyToOne({
+        entity: () => PostEntity,
+        fieldName: "post_id",
+        inversedBy: 'medias',
+        index: true
+    })
+    post: PostEntity
+
+    constructor(post: PostEntity, url: string, type: string){
+        super()
+        this.post = post
+        this.url = url
+        this.type = type
+    }
+}

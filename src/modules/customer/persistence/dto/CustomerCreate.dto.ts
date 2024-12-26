@@ -1,3 +1,1 @@
-export class CustomerCreateDto{
-    name: string
-}
+export class CustomerCreateDto{}

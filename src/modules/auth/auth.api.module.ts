@@ -1,21 +1,20 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.api.controller';
-import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
-import { AuthGuard } from 'src/module/AuthGuard/AuthGuard';
-import { CustomerDaoModule } from 'src/modules/customer/persistence/Customer.dao.module';
 import { RestaurantModule } from '../restaurant/restaurant.api.module';
 import { UserDaoModule } from '../user/persistance/User.dao.module';
 import { AuthService } from './auth.api.service';
+import { CustomerModule } from '../customer/customer.api.module';
+import { AuthGuardModule } from 'src/module/AuthGuard/AuthGuard.module';
 
 @Module({
     imports: [
-        CustomerDaoModule,
+        CustomerModule,
         RestaurantModule,
         UserDaoModule,
-        ConfigModule.forRoot()
+        ConfigModule.forRoot(),
     ],
     controllers: [AuthController],
-    providers: [AuthService, AuthGuard]
+    providers: [AuthService]
 })
 export class AuthModule {}

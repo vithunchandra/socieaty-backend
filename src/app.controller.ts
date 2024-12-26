@@ -2,7 +2,7 @@ import { Body, Controller, Get, Post, UploadedFile, UseInterceptors } from '@nes
 import { AppService } from './app.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { imageFileFilter, imageFileNameEditor } from './utils/image.utils';
+import { fileNameEditor, imageFileFilter } from './utils/image.utils';
 import { CreateFileDto } from './dto/create-file.dto';
 import { join } from 'path';
 import { FILE_UPLOADS_DIR } from './constants';
@@ -21,7 +21,7 @@ export class AppController {
     FileInterceptor('image', {
       storage: diskStorage({
         destination: FILE_UPLOADS_DIR,
-        filename: imageFileNameEditor
+        filename: fileNameEditor
       }),
       fileFilter: imageFileFilter,
       limits: {
@@ -33,8 +33,6 @@ export class AppController {
     @UploadedFile() file: Express.Multer.File,
     @Body() dto: CreateFileDto
   ){
-    console.log(join(process.cwd(), 'src', 'files'));
-    console.log(file);
     return{
       filename: file.filename,
       size: file.buffer,

@@ -6,14 +6,16 @@ import { OrmModule } from './database/orm.module';
 import { ConfigModule } from '@nestjs/config';
 import config from './database/config/config';
 import { RestaurantModule } from './modules/restaurant/restaurant.api.module';
-import { MulterModule } from '@nestjs/platform-express';
-import { FILE_UPLOADS_DIR } from './constants';
-import { diskStorage } from 'multer';
 import { JwtModule } from '@nestjs/jwt';
+import { MikroOrmModule } from '@mikro-orm/nestjs';
+import { UserEntity } from './modules/user/persistance/User.entity';
+import { PostModule } from './modules/post/post.module';
+import { AuthGuardModule } from './module/AuthGuard/AuthGuard.module';
 
 @Module({
   imports: [
     OrmModule,
+    MikroOrmModule.forFeature([UserEntity]),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [config]
@@ -21,9 +23,10 @@ import { JwtModule } from '@nestjs/jwt';
     JwtModule.register({
       global: true,
       secret: process.env.AUTH_SECRET_KEY,
-      signOptions: { expiresIn: '300s' },
+      signOptions: { expiresIn: '7d' },
     }),
-    AuthModule, RestaurantModule
+    AuthModule, RestaurantModule, PostModule,
+    AuthGuardModule
   ],
   controllers: [AppController],
   providers: [AppService],

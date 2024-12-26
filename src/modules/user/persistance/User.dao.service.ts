@@ -13,21 +13,28 @@ export class UserDaoService{
 
     create(data: UserCreateDto): UserEntity{
         const user = new UserEntity(
+            data.name,
             data.email,
             data.password,
             data.phoneNumber,
             data.role
         )
-
         this.userRepository.getEntityManager().persist(user)
         return user
     }
 
-    async findOneByEmail(email: string): Promise<UserEntity>{
+    async findOneByEmail(email: string): Promise<UserEntity | null>{
         const user = await this.userRepository.findOne({
             email: email
         }, {populate: ['restaurantData', 'customerData']})
 
         return user;
+    }
+
+    async findOneById(user_id: string): Promise<UserEntity | null>{
+        return await this.userRepository.findOne(
+            {id: user_id}, 
+            {populate: ['restaurantData', 'customerData']},
+        );
     }
 }

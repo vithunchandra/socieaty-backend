@@ -24,7 +24,6 @@ export class PointType extends Type<Point | undefined, string | undefined> {
     }
   
     convertToJSValue(value: string | undefined): Point | undefined {
-        console.log(value)
         if(!value){
             return undefined;
         }
