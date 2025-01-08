@@ -13,14 +13,15 @@ export class RestaurantEntity extends BaseEntity{
 
     @OneToOne({
         entity: () => UserEntity,
+        inversedBy: 'restaurantData',
         fieldName: 'user_id',
         index: true
     })
     userData: UserEntity
     
-    constructor(user: UserEntity, restaurantPhotoUrl: string, restaurantAddress: Point){
+    constructor(userData: UserEntity, restaurantPhotoUrl: string, restaurantAddress: Point){
         super()
-        this.userData = user
+        this.userData = userData
         this.photoUrl = restaurantPhotoUrl
         this.location = restaurantAddress
     }

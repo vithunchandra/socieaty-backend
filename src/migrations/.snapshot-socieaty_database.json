@@ -45,6 +45,86 @@
           "length": 6,
           "mappedType": "datetime"
         },
+        "tag": {
+          "name": "tag",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        }
+      },
+      "name": "post_hashtag",
+      "schema": "public",
+      "indexes": [
+        {
+          "columnNames": [
+            "tag"
+          ],
+          "composite": false,
+          "keyName": "post_hashtag_tag_unique",
+          "constraint": true,
+          "primary": false,
+          "unique": true
+        },
+        {
+          "keyName": "post_hashtag_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {},
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "mappedType": "datetime"
+        },
         "name": {
           "name": "name",
           "type": "varchar(255)",
@@ -364,6 +444,73 @@
     },
     {
       "columns": {
+        "user_entity_id": {
+          "name": "user_entity_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        },
+        "post_entity_id": {
+          "name": "post_entity_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        }
+      },
+      "name": "user_liked_posts",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "user_liked_posts_pkey",
+          "columnNames": [
+            "user_entity_id",
+            "post_entity_id"
+          ],
+          "composite": true,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "user_liked_posts_user_entity_id_foreign": {
+          "constraintName": "user_liked_posts_user_entity_id_foreign",
+          "columnNames": [
+            "user_entity_id"
+          ],
+          "localTableName": "public.user_liked_posts",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.user",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        },
+        "user_liked_posts_post_entity_id_foreign": {
+          "constraintName": "user_liked_posts_post_entity_id_foreign",
+          "columnNames": [
+            "post_entity_id"
+          ],
+          "localTableName": "public.user_liked_posts",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.post",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
         "id": {
           "name": "id",
           "type": "uuid",
@@ -476,8 +623,8 @@
     },
     {
       "columns": {
-        "id": {
-          "name": "id",
+        "post_hashtag_entity_id": {
+          "name": "post_hashtag_entity_id",
           "type": "uuid",
           "unsigned": false,
           "autoincrement": false,
@@ -485,47 +632,8 @@
           "nullable": false,
           "mappedType": "uuid"
         },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamptz",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamptz",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamptz",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "post_id": {
-          "name": "post_id",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "uuid"
-        },
-        "user_id": {
-          "name": "user_id",
+        "post_entity_id": {
+          "name": "post_entity_id",
           "type": "uuid",
           "unsigned": false,
           "autoincrement": false,
@@ -534,15 +642,16 @@
           "mappedType": "uuid"
         }
       },
-      "name": "post-like",
+      "name": "post_hashtag_post",
       "schema": "public",
       "indexes": [
         {
-          "keyName": "post-like_pkey",
+          "keyName": "post_hashtag_post_pkey",
           "columnNames": [
-            "id"
+            "post_hashtag_entity_id",
+            "post_entity_id"
           ],
-          "composite": false,
+          "composite": true,
           "constraint": true,
           "primary": true,
           "unique": true
@@ -550,28 +659,30 @@
       ],
       "checks": [],
       "foreignKeys": {
-        "post-like_post_id_foreign": {
-          "constraintName": "post-like_post_id_foreign",
+        "post_hashtag_post_post_hashtag_entity_id_foreign": {
+          "constraintName": "post_hashtag_post_post_hashtag_entity_id_foreign",
           "columnNames": [
-            "post_id"
+            "post_hashtag_entity_id"
           ],
-          "localTableName": "public.post-like",
+          "localTableName": "public.post_hashtag_post",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.post_hashtag",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        },
+        "post_hashtag_post_post_entity_id_foreign": {
+          "constraintName": "post_hashtag_post_post_entity_id_foreign",
+          "columnNames": [
+            "post_entity_id"
+          ],
+          "localTableName": "public.post_hashtag_post",
           "referencedColumnNames": [
             "id"
           ],
           "referencedTableName": "public.post",
-          "updateRule": "cascade"
-        },
-        "post-like_user_id_foreign": {
-          "constraintName": "post-like_user_id_foreign",
-          "columnNames": [
-            "user_id"
-          ],
-          "localTableName": "public.post-like",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.user",
+          "deleteRule": "cascade",
           "updateRule": "cascade"
         }
       },
@@ -627,16 +738,6 @@
           "nullable": false,
           "length": 255,
           "mappedType": "string"
-        },
-        "likes": {
-          "name": "likes",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "default": "0",
-          "mappedType": "integer"
         },
         "post_id": {
           "name": "post_id",
@@ -695,6 +796,73 @@
             "id"
           ],
           "referencedTableName": "public.user",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "user_entity_id": {
+          "name": "user_entity_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        },
+        "post_comment_entity_id": {
+          "name": "post_comment_entity_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        }
+      },
+      "name": "user_liked_comments",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "user_liked_comments_pkey",
+          "columnNames": [
+            "user_entity_id",
+            "post_comment_entity_id"
+          ],
+          "composite": true,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "user_liked_comments_user_entity_id_foreign": {
+          "constraintName": "user_liked_comments_user_entity_id_foreign",
+          "columnNames": [
+            "user_entity_id"
+          ],
+          "localTableName": "public.user_liked_comments",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.user",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        },
+        "user_liked_comments_post_comment_entity_id_foreign": {
+          "constraintName": "user_liked_comments_post_comment_entity_id_foreign",
+          "columnNames": [
+            "post_comment_entity_id"
+          ],
+          "localTableName": "public.user_liked_comments",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.post_comment",
+          "deleteRule": "cascade",
           "updateRule": "cascade"
         }
       },

@@ -1,4 +1,4 @@
-import { Entity, ManyToOne, Property } from "@mikro-orm/core";
+import { Collection, Entity, ManyToMany, ManyToOne, Property } from "@mikro-orm/core";
 import { BaseEntity } from "../../../database/model/base/Base.entity";
 import { PostEntity } from "../../post/persistence/post.entity";
 import { UserEntity } from "../../user/persistance/User.entity";
@@ -7,9 +7,6 @@ import { UserEntity } from "../../user/persistance/User.entity";
 export class PostCommentEntity extends BaseEntity{
     @Property()
     text: string
-    
-    @Property({default: 0})
-    likes?: number
 
     @ManyToOne({
         entity: () => PostEntity,
@@ -24,6 +21,12 @@ export class PostCommentEntity extends BaseEntity{
         fieldName: 'user_id',
     })
     user: UserEntity
+
+    @ManyToMany({
+        entity: () => UserEntity,
+        mappedBy: 'likedComments'
+    })
+    commentLikes = new Collection<UserEntity>(this)
 
     constructor(post: PostEntity, user: UserEntity, text: string){
         super()

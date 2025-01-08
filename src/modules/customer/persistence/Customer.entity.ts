@@ -15,13 +15,14 @@ export class CustomerEntity extends BaseEntity{
 
     @OneToOne({
         entity: () => UserEntity,
+        inversedBy: 'customerData',
         fieldName: 'user_id',
     })
     userData: UserEntity
 
-    constructor(user: UserEntity){
+    constructor(userData: UserEntity){
         super()
-        this.userData = user
+        this.userData = userData
         this.wallet = 0
         this.bio = ""
         this.photoProfileUrl = ""

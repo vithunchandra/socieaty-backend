@@ -1,4 +1,4 @@
-import { PostMediaEntity } from "../persistence/media.entity";
+import { PostMediaEntity } from "../persistence/post-media.entity";
 import { PostMedia } from "./post-media";
 
 export class PostMediaMapper{
@@ -6,7 +6,7 @@ export class PostMediaMapper{
         const postMedia = new PostMedia()
         postMedia.url = raw.url
         postMedia.type = raw.type
-        postMedia.post_id = raw.post.id
+        postMedia.postId = raw.post.id
         return postMedia
     }
 }

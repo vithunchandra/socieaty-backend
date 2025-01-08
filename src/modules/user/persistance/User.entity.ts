@@ -1,10 +1,9 @@
-import { Collection, Entity, Enum, HiddenProps, OneToMany, OneToOne, PrimaryKey, Property, UuidType } from '@mikro-orm/core';
+import { Collection, Entity, Enum, HiddenProps, ManyToMany, OneToMany, OneToOne, PrimaryKey, Property, UuidType } from '@mikro-orm/core';
 import { BaseEntity } from '../../../database/model/base/Base.entity';
 import { RestaurantEntity } from '../../restaurant/persistence/Restaurant.entity';
 import { CustomerEntity } from '../../customer/persistence/Customer.entity';
 import { PostEntity } from '../../post/persistence/post.entity';
 import { PostCommentEntity } from '../../post-comment/persistence/post-comment.entity';
-import { PostLikeEntity } from '../../post-likes/persistence/post-like.entity';
 
 @Entity({tableName: "user"})
 export class UserEntity extends BaseEntity{
@@ -51,13 +50,18 @@ export class UserEntity extends BaseEntity{
    })
    comments = new Collection<PostCommentEntity>(this)
 
-   @OneToMany({
-      entity: () => PostLikeEntity,
-      mappedBy: 'user',
-      orphanRemoval: true,
+   @ManyToMany({
+      entity: () => PostEntity,
+      inversedBy: 'postLikes',
    })
-   likes = new Collection<PostLikeEntity>(this)
+   likedPosts = new Collection<PostEntity>(this)
 
+   @ManyToMany({
+      entity: () => PostCommentEntity,
+      inversedBy: 'commentLikes',
+   })
+   likedComments = new Collection<PostCommentEntity>(this)
+   
    constructor(name: string, email: string, password: string, phoneNumber: string, role: UserRole){
       super();
       this.name = name
