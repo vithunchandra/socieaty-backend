@@ -24,7 +24,8 @@ export class PostMapper{
         post.title = raw.title
         post.caption = raw.caption
         post.comments = comments.length
-        post.likes = likes.length
+        post.location = raw.location?.latitude === 0 && raw.location?.longitude === 0 ? undefined : raw.location
+        post.likes = likes
         post.medias = medias.length > 0 ? medias : []
         post.hashtags = hashtags.length > 0 ? hashtags : []
         return post

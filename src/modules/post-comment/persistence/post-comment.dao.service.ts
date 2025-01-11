@@ -36,6 +36,12 @@ export class PostCommentDaoService{
         return isLiked
     }
 
+    async isLiked(userId: string, commentId: string){
+        const comment = await this.findOneById(commentId)
+        const isExist = comment!.commentLikes.exists((like) => like.id === userId)
+        return isExist
+    }
+
     async getPostCommentByPostId(postId: string){
         return await this.postCommentRepository.find({post: postId}, {populate: ['commentLikes']})
     }

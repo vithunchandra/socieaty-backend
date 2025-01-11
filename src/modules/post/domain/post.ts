@@ -2,6 +2,7 @@ import { PostComment } from "../../post-comment/domain/post-comment"
 import { PostHashtag } from "../../post-hashtag/domain/post-hashtag"
 import { PostMedia } from "../../post-media/domain/post-media"
 import { Point } from "../../restaurant/persistence/custom-type/PointType"
+import { User } from "../../user/domain/User"
 import { UserEntity } from "../../user/persistance/User.entity"
 
 export class Post{
@@ -10,9 +11,9 @@ export class Post{
     authorName: string
     title: string
     caption: string
-    location?: Point
+    location?: Point | null
     medias: PostMedia[]
     comments: number
-    likes: number
+    likes: User[]
     hashtags: PostHashtag[]
 }

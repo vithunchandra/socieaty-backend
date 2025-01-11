@@ -6,6 +6,7 @@ import { diskStorage } from "multer";
 import { FILE_UPLOADS_DIR, POST_MEDIA_UPLOADS_DIR } from "src/constants";
 import { fileNameEditor, mediaFileFilter } from "src/utils/image.utils";
 import { AuthGuard } from "src/module/AuthGuard/AuthGuard.service";
+import { LikePostRequestDto } from "./dto/like-post-request.dto";
 
 @Controller('post')
 export class PostController{
@@ -29,15 +30,21 @@ export class PostController{
         return await this.postService.createPost(req.user, data, medias)
     }
 
-    @Put('{postId}/like')
+    @Put(':postId/like')
     @UseGuards(AuthGuard)
-    async likePost(@Param() postId: string, @Request() req){
-        return await this.postService.likePost(postId, req.user.id)
+    async likePost(@Request() req, @Param('postId') postId: string, @Body() data: LikePostRequestDto){
+        return await this.postService.likePost(postId, req.user.id, data.isLiked)
     }
 
     @Get('/')
     @UseGuards(AuthGuard)
     async getAllPosts(){
         return await this.postService.getAllPosts()
+    }
+
+    @Get('/:postId')
+    @UseGuards(AuthGuard)
+    async getPostById(@Param('postId') postId: string){
+        return await this.postService.getPostById(postId)
     }
 }

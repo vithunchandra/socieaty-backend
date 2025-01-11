@@ -9,11 +9,10 @@ export const fileNameEditor = (
     const extension = file.originalname.substring(file.originalname.lastIndexOf('.') + 1);
     const fileName = file.originalname.substring(0, file.originalname.lastIndexOf('.'));
     let newFileName = "";
-    console.log(fileName)
     if(extension.match(/\.(mp4|webm|ogg|mp3|wav|flac|aac)$/)){
-        newFileName = `video_${fileName}_${Date.now()}.${extension}`;
+        newFileName = `videos/${fileName}_${Date.now()}.${extension}`;
     }else{
-        newFileName = `image_${fileName}_${Date.now()}.${extension}`;
+        newFileName = `images/${fileName}_${Date.now()}.${extension}`;
     }
     callback(null, newFileName);
 }

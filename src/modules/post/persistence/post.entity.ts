@@ -15,7 +15,7 @@ export class PostEntity extends BaseEntity<'location'>{
     caption: string
 
     @Property({type: PointType, nullable: true})
-    location?: Point
+    location?: Point | null
 
     @OneToMany({
         entity: () => PostMediaEntity,

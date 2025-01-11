@@ -14,18 +14,18 @@ export class PostCommentService{
     ){}
 
     async createPostComment(postId: string, userId: string, data: CreatePostCommentRequestDto){
-        const postComments = await this.postCommentDaoService.createPostComment({
+        const postComment = await this.postCommentDaoService.createPostComment({
             text: data.text,
             postId,
             userId
         })
         await this.em.flush();
         return {
-            comments: PostCommentMapper.toDomain(postComments)
+            comment: PostCommentMapper.toDomain(postComment)
         };
     }
 
-    async likePostComment(commentId: string, userId: string){
+    async likePostComment(commentId: string, userId: string, isLiked: boolean){
         const comment = await this.postCommentDaoService.findOneById(commentId)
         const user = await this.userDaoService.findOneById(userId)
         if(!comment){
@@ -34,12 +34,27 @@ export class PostCommentService{
         if(!user){
             throw new NotFoundException('User not found')
         }
-        const result = this.postCommentDaoService.likePostComment({comment, user})
+        const alreadyLiked = await this.postCommentDaoService.isLiked(userId, commentId)
+        let result = isLiked;
+        if(alreadyLiked !== isLiked){
+            result = this.postCommentDaoService.likePostComment({comment, user})
+        }
         await this.em.flush()
         const refreshedComment = await this.em.refresh(comment, {populate: ['commentLikes']})
         return {
             isLiked: result,
             likes: refreshedComment!.commentLikes.length
+        }
+    }
+
+    async isLiked(userId: string, commentId: string){
+        const comment = await this.postCommentDaoService.findOneById(commentId)
+        if(!comment){
+            throw new NotFoundException('Comment not found')
+        }
+        const result = await this.postCommentDaoService.isLiked(userId, commentId)
+        return {
+            isLiked: result
         }
     }
 

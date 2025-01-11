@@ -1,4 +1,5 @@
 import { Type } from "@mikro-orm/core";
+import { json } from "stream/consumers";
 
 export class Point{
     latitude: number;
@@ -10,6 +11,16 @@ export class Point{
     ){
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+}
+
+class DatabasePoint{
+    x: number;
+    y: number;
+
+    constructor(x: number, y: number){
+        this.x = x;
+        this.y = y;
     }
 }
 
@@ -27,8 +38,10 @@ export class PointType extends Type<Point | undefined, string | undefined> {
         if(!value){
             return undefined;
         }
+        
+        const databasePoint = JSON.parse(JSON.stringify(value)) as DatabasePoint
 
-        const [x, y] = value.toString().slice(1, -1).split(',').map(Number);
+        const {x, y} = databasePoint;
         return new Point(x, y);
     }
   

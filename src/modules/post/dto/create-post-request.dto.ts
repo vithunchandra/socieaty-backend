@@ -10,12 +10,11 @@ export class CreatePostRequestDto{
     @IsNotEmpty()
     @IsString()
     caption: string
-
-    @IsOptional()
+    
     @IsObject()
     @Type(() => Point)
     @ValidateNested()
-    location?: Point
+    location: Point
 
     @IsArray()
     @IsString({each: true})

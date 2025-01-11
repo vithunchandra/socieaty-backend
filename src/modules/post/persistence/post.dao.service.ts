@@ -26,26 +26,35 @@ export class PostDaoService{
     likePost(data: LikePostDto){
         const {post, user} = data;
         const isExist = post.postLikes.find((like) => like.id === user.id)
-        let value = false;
+        let isLiked = false;
         if(isExist){
             post.postLikes.remove(user)
-            value = false;
+            isLiked = false;
         }else{
             post.postLikes.add(user)
-            value = true;
+            isLiked = true;
         }
-        return value;
+        return isLiked;
+    }
+
+    async isLiked(userId: string, postId: string){
+        const post = await this.findOneById(postId)
+        const isExist = post!.postLikes.exists((like) => like.id === userId)
+        return isExist
     }
 
     async findOneById(post_id: string): Promise<PostEntity | null>{
         const post = await this.postRepository.findOne({
             id: post_id
-        }, {populate: ['medias', 'comments', 'postLikes', 'user', 'hashtags']})
+        }, {populate: ['medias', 'comments.*', 'postLikes', 'user', 'hashtags.*']})
         return post
     }
 
     async findAll(){
-        const posts = await this.postRepository.findAll({populate: ['medias', 'comments', 'postLikes', 'hashtags', 'hashtags.post']})
+        const posts = await this.postRepository.findAll({
+            populate: ['medias', 'comments', 'comments.*', 'postLikes', 'hashtags', 'hashtags.post'], 
+            orderBy: {createdAt: "DESC"}
+        })
         return posts
     }
 }

@@ -11,6 +11,7 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { UserEntity } from './modules/user/persistance/User.entity';
 import { PostModule } from './modules/post/post.module';
 import { AuthGuardModule } from './module/AuthGuard/AuthGuard.module';
+import { PostCommentModule } from './modules/post-comment/post-comment.module';
 
 @Module({
   imports: [
@@ -26,7 +27,7 @@ import { AuthGuardModule } from './module/AuthGuard/AuthGuard.module';
       signOptions: { expiresIn: '7d' },
     }),
     AuthModule, RestaurantModule, PostModule,
-    AuthGuardModule
+    PostCommentModule, AuthGuardModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -28,7 +28,6 @@ export class DatabaseSeeder extends Seeder {
         password: faker.internet.password(),
         role: role,
       })
-      console.log(user)
       if(role === UserRole.RESTAURANT){
         const restaurant = em.create(RestaurantEntity, {
           location: new Point(faker.location.latitude(), faker.location.longitude()),
