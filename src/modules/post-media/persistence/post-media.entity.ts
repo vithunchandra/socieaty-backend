@@ -9,6 +9,9 @@ export class PostMediaEntity extends BaseEntity{
 
     @Property({nullable: false})
     type: string
+
+    @Property({nullable: false})
+    extension: string
     
     @ManyToOne({
         entity: () => PostEntity,
@@ -18,10 +21,11 @@ export class PostMediaEntity extends BaseEntity{
     })
     post: PostEntity
 
-    constructor(post: PostEntity, url: string, type: string){
+    constructor(post: PostEntity, url: string, type: string, extension: string){
         super()
         this.post = post
         this.url = url
         this.type = type
+        this.extension = extension
     }
 }

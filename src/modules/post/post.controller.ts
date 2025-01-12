@@ -4,7 +4,7 @@ import { PostService } from "./post.service";
 import { FilesInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import { FILE_UPLOADS_DIR, POST_MEDIA_UPLOADS_DIR } from "src/constants";
-import { fileNameEditor, mediaFileFilter } from "src/utils/image.utils";
+import { fileDestination, fileNameEditor, mediaFileFilter } from "src/utils/image.utils";
 import { AuthGuard } from "src/module/AuthGuard/AuthGuard.service";
 import { LikePostRequestDto } from "./dto/like-post-request.dto";
 
@@ -17,7 +17,7 @@ export class PostController{
     @UseInterceptors(
         FilesInterceptor('medias', 5, {
             storage: diskStorage({
-                destination: POST_MEDIA_UPLOADS_DIR,
+                destination: fileDestination,
                 filename: fileNameEditor
             }),
             fileFilter: mediaFileFilter,

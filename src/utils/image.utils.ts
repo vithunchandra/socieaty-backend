@@ -1,7 +1,8 @@
 import { BadRequestException } from "@nestjs/common";
 import { Request } from "express"
+import { POST_MEDIA_UPLOADS_DIR } from "../constants";
 
-export const fileNameEditor = (
+const fileNameEditor = (
     req: Request, 
     file: Express.Multer.File, 
     callback: (error: Error | null, name: string) => void
@@ -9,15 +10,11 @@ export const fileNameEditor = (
     const extension = file.originalname.substring(file.originalname.lastIndexOf('.') + 1);
     const fileName = file.originalname.substring(0, file.originalname.lastIndexOf('.'));
     let newFileName = "";
-    if(extension.match(/\.(mp4|webm|ogg|mp3|wav|flac|aac)$/)){
-        newFileName = `videos/${fileName}_${Date.now()}.${extension}`;
-    }else{
-        newFileName = `images/${fileName}_${Date.now()}.${extension}`;
-    }
+    newFileName = `${fileName}_${Date.now()}.${extension}`;
     callback(null, newFileName);
 }
 
-export const imageFileFilter = (
+const imageFileFilter = (
     req: Request, 
     file: Express.Multer.File, 
     callback: (error: Error | null, valid: boolean) => void
@@ -35,7 +32,7 @@ export const imageFileFilter = (
     return callback(null, true);
 }
 
-export const mediaFileFilter = (
+const mediaFileFilter = (
     req: Request,
     file: Express.Multer.File,
     callback: (error: Error | null, valid: boolean) => void
@@ -54,3 +51,18 @@ export const mediaFileFilter = (
     }
     return callback(null, true);
 }
+
+const fileDestination = (
+    req: Express.Request, 
+    file: Express.Multer.File, 
+    callback: (error: Error | null, destination: string) => void
+) => {
+    const extension = file.originalname.substring(file.originalname.lastIndexOf('.') + 1);
+    if(extension.match(/\.(mp4|webm|ogg|mp3|wav|flac|aac)$/i)){
+        callback(null, `${POST_MEDIA_UPLOADS_DIR}/videos`)
+    }else{
+        callback(null, `${POST_MEDIA_UPLOADS_DIR}/images`)
+    }
+}
+
+export {fileNameEditor, imageFileFilter, mediaFileFilter, fileDestination}

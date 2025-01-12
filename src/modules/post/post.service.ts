@@ -34,14 +34,16 @@ export class PostService{
         })
         const postMedias = this.mediaDaoService.createMedia(medias.map(media => {
             const extension = media.originalname.substring(media.originalname.lastIndexOf('.') + 1);
+            console.log(extension)
             let type = "image";
-            if(extension.match(/\.(mp4|webm|ogg|mp3|wav|flac|aac)$/)){
+            if(extension.match(/(mp4|webm|ogg|mp3|wav|flac|aac)$/i)){
                 type = "video"
             }
             return {
-                url: media.path,
+                url: `file/post/${type}/${media.filename}`,
                 type: type,
-                post: post.id
+                post: post.id,
+                extension: extension
             }
         }))
         const postHashTags = await this.postHashtagDaoService.createPostHastag({tags: data.hashtags})

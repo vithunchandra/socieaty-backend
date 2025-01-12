@@ -12,6 +12,7 @@ import { UserEntity } from './modules/user/persistance/User.entity';
 import { PostModule } from './modules/post/post.module';
 import { AuthGuardModule } from './module/AuthGuard/AuthGuard.module';
 import { PostCommentModule } from './modules/post-comment/post-comment.module';
+import { PostMediaModule } from './modules/post-media/post-media.module';
 
 @Module({
   imports: [
@@ -27,7 +28,7 @@ import { PostCommentModule } from './modules/post-comment/post-comment.module';
       signOptions: { expiresIn: '7d' },
     }),
     AuthModule, RestaurantModule, PostModule,
-    PostCommentModule, AuthGuardModule
+    PostCommentModule, PostMediaModule, AuthGuardModule
   ],
   controllers: [AppController],
   providers: [AppService],

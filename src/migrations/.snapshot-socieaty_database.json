@@ -570,6 +570,16 @@
           "length": 255,
           "mappedType": "string"
         },
+        "extension": {
+          "name": "extension",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
         "post_id": {
           "name": "post_id",
           "type": "uuid",
