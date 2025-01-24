@@ -53,7 +53,7 @@ export class PostDaoService{
     async findAll(){
         const posts = await this.postRepository.findAll({
             populate: ['medias', 'comments', 'comments.*', 'postLikes', 'hashtags', 'hashtags.post'], 
-            orderBy: {createdAt: "DESC"}
+            orderBy: {createdAt: "ASC"}
         })
         return posts
     }

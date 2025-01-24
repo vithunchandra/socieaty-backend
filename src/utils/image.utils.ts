@@ -57,7 +57,7 @@ const fileDestination = (
     file: Express.Multer.File, 
     callback: (error: Error | null, destination: string) => void
 ) => {
-    const extension = file.originalname.substring(file.originalname.lastIndexOf('.') + 1);
+    const extension = file.originalname.substring(file.originalname.lastIndexOf('.'));
     if(extension.match(/\.(mp4|webm|ogg|mp3|wav|flac|aac)$/i)){
         callback(null, `${POST_MEDIA_UPLOADS_DIR}/videos`)
     }else{

@@ -13,6 +13,7 @@ import { PostModule } from './modules/post/post.module';
 import { AuthGuardModule } from './module/AuthGuard/AuthGuard.module';
 import { PostCommentModule } from './modules/post-comment/post-comment.module';
 import { PostMediaModule } from './modules/post-media/post-media.module';
+import { LiveStreamModule } from './modules/livestream/livestream.module';
 
 @Module({
   imports: [
@@ -25,10 +26,11 @@ import { PostMediaModule } from './modules/post-media/post-media.module';
     JwtModule.register({
       global: true,
       secret: process.env.AUTH_SECRET_KEY,
-      signOptions: { expiresIn: '7d' },
+      signOptions: { expiresIn: '1d' },
     }),
     AuthModule, RestaurantModule, PostModule,
-    PostCommentModule, PostMediaModule, AuthGuardModule
+    PostCommentModule, PostMediaModule, AuthGuardModule,
+    LiveStreamModule
   ],
   controllers: [AppController],
   providers: [AppService],
