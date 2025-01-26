@@ -24,7 +24,6 @@ export class LivestreamRepository {
 			process.env.LIVEKIT_API_KEY!,
 			process.env.LIVEKIT_API_SECRET!
 		)
-		
 	}
 
 	async createRoom(data: CreateRoomDto) {
@@ -57,10 +56,10 @@ export class LivestreamRepository {
 	async deleteRoom(roomName: string): Promise<boolean> {
 		await this.roomService.deleteRoom(roomName)
 		const rooms = await this.roomService.listRooms()
-		let isDeleted = false
+		let isDeleted = true
 		for (const room of rooms) {
 			if (room.name === roomName) {
-				isDeleted = true
+				isDeleted = false
 				break
 			}
 		}
@@ -111,14 +110,15 @@ export class LivestreamRepository {
 		return await accessToken.toJwt()
 	}
 
-	sendComment(comment: LivestreamRoomComment) {
+	async sendComment(comment: LivestreamRoomComment) {
 		const encoder = new TextEncoder()
 		const stringCommentData = JSON.stringify(comment)
 		const uint8CommentData = encoder.encode(stringCommentData)
-		this.roomService.sendData(
+		console.log(comment)
+		await this.roomService.sendData(
 			comment.roomName,
 			uint8CommentData,
-			DataPacket_Kind.RELIABLE,
+			DataPacket_Kind.LOSSY,
 			{ topic: LivestreamDataType.COMMENT }
 		)
 	}

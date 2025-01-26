@@ -5,10 +5,10 @@ import { LivestreamRoomComment } from './livestream-room-comment'
 export class LivestreamRoomCommentMapper {
 	static toDomain(raw: LivestreamRoomCommentEntity) {
 		const livestreaRoomComment = new LivestreamRoomComment()
+		livestreaRoomComment.id = raw.id
 		livestreaRoomComment.roomName = raw.roomName
 		livestreaRoomComment.user = UserMapper.toDomain(raw.user)
 		livestreaRoomComment.text = raw.text
-
 		return livestreaRoomComment
 	}
 }

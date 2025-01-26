@@ -34,13 +34,14 @@ export class LivestreamDaoService {
 		return domainComment
 	}
 
-	async getAllComment() {
+	async getAllCommentByRoomName(roomName: string) {
 		return await this.livestreamRoomCommentRepository.findAll({
+			where: { roomName },
 			populate: ['user.*']
 		})
 	}
 
-	async deleteAllCommentByRoomName(roomName: string){
+	async deleteAllCommentByRoomName(roomName: string) {
 		return await this.livestreamRoomCommentRepository.nativeDelete({
 			roomName
 		})
@@ -66,8 +67,10 @@ export class LivestreamDaoService {
 		return isLiked
 	}
 
-	async getAllLikes() {
-		return await this.livestreamRoomLikeRepository.findAll()
+	async getAllLikesByRoomName(roomName: string) {
+		return await this.livestreamRoomLikeRepository.findAll({
+			where: {roomName}
+		})
 	}
 
 	async isLiked(user: UserEntity, roomName: string) {
@@ -78,7 +81,7 @@ export class LivestreamDaoService {
 		return value ? true : false
 	}
 
-	async deleteAllLikesByRoomName(roomName: string){
+	async deleteAllLikesByRoomName(roomName: string) {
 		return await this.livestreamRoomLikeRepository.nativeDelete({
 			roomName
 		})

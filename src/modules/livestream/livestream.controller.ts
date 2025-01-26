@@ -2,6 +2,7 @@ import {
 	BadRequestException,
 	Body,
 	Controller,
+	Delete,
 	Get,
 	Headers,
 	Param,
@@ -62,23 +63,46 @@ export class LiveStreamController {
 
 	@Post(':roomname/comment')
 	@UseGuards(AuthGuard)
-	async comment(
+	async sendComment(
 		@Request() req: GuardedRequestDto,
 		@Param('roomname') roomName: string,
 		@Body() data: CommentLivestreamRequestDto
 	) {
+		console.log(data.text)
 		return this.liveStreamService.sendComment(req.user, roomName, data.text)
+	}
+
+	@Get(':roomname/comment')
+	@UseGuards(AuthGuard)
+	async getAllLivestreamComments(@Param('roomname') roomName: string) {
+		return this.liveStreamService.getLivestreamComments(roomName)
 	}
 
 	@Post(':roomname/like')
 	@UseGuards(AuthGuard)
-	async like(
+	async sendLike(
 		@Request() req: GuardedRequestDto,
 		@Param('roomname') roomName: string,
 		@Body() data: LikeLivestreamRequestDto
 	) {
 		return this.liveStreamService.sendLike(req.user, roomName, data.isLiked)
 	}
+
+	@Get(':roomname/like')
+	@UseGuards(AuthGuard)
+	async getAllLivestreamLikes(@Param('roomname') roomName: string) {
+		return this.liveStreamService.getLivestreamLikes(roomName)
+	}
+
+	@Delete(':roomname')
+	@UseGuards(AuthGuard)
+	async deleteRoom(
+		@Request() req: GuardedRequestDto,
+		@Param('roomname') roomName: string
+	) {
+		return this.liveStreamService.deleteRoom(roomName)
+	}
+
 	@Post('/webhook-endpoint')
 	async receiveWebhook(
 		@Request() req: Request,
@@ -92,7 +116,7 @@ export class LiveStreamController {
 				req['rawBody'],
 				authHeader
 			)
-			
+
 			console.log('Received webhook event:', event)
 			this.liveStreamService.handleWebhook(event)
 		} catch (error) {

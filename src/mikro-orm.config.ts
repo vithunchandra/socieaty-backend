@@ -9,16 +9,20 @@ import { PostCommentEntity } from './modules/post-comment/persistence/post-comme
 import { PostEntity } from './modules/post/persistence/post.entity';
 import { PostMediaEntity } from './modules/post-media/persistence/post-media.entity';
 import { PostHashtagEntity } from './modules/post-hashtag/persistence/post-hashtag.entity';
+import { LivestreamRoomCommentEntity } from './modules/livestream/persistence/livestream-room-comment.entity';
+import { LivestreamRoomLikeEntity } from './modules/livestream/persistence/livestream-room-like.entity';
 const logger = new Logger('MikroORM');
 
 export default defineConfig({
     entities: [
       UserEntity, RestaurantEntity, CustomerEntity, PostEntity,
-      PostCommentEntity, PostMediaEntity, PostHashtagEntity
+      PostCommentEntity, PostMediaEntity, PostHashtagEntity, 
+      LivestreamRoomCommentEntity, LivestreamRoomLikeEntity
     ],
     entitiesTs: [
       UserEntity, RestaurantEntity, CustomerEntity, PostEntity,
-      PostCommentEntity, PostMediaEntity, PostHashtagEntity
+      PostCommentEntity, PostMediaEntity, PostHashtagEntity,
+      LivestreamRoomCommentEntity, LivestreamRoomLikeEntity
     ],
     dbName: config().dbName ?? "socieaty_database",
     driver: PostgreSqlDriver,
