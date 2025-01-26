@@ -52,7 +52,7 @@ export class LivestreamDaoService {
 		const isExist = await this.isLiked(user, roomName)
 		let isLiked: boolean
 		if (isExist) {
-			this.livestreamRoomLikeRepository.nativeDelete({
+			await this.livestreamRoomLikeRepository.nativeDelete({
 				roomName,
 				user
 			})

@@ -51,8 +51,8 @@ export class LiveStreamController {
 
 	@Get('')
 	@UseGuards(AuthGuard)
-	async getAllLivestreams() {
-		return this.liveStreamService.getAllLivestreams()
+	async getAllLivestreams(@Request() req: GuardedRequestDto) {
+		return this.liveStreamService.getAllLivestreams(req.user)
 	}
 
 	@Get('create-token')
@@ -118,7 +118,7 @@ export class LiveStreamController {
 			)
 
 			console.log('Received webhook event:', event)
-			this.liveStreamService.handleWebhook(event)
+			await this.liveStreamService.handleWebhook(event)
 		} catch (error) {
 			console.error('Error processing webhook:', error)
 			throw new BadRequestException('Bad request')

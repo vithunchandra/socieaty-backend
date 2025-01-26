@@ -31,7 +31,8 @@ export class LiveStreamService {
 			canPublish: true,
 			canSubscribe: true,
 			canPublishData: true,
-			roomAdmin: true
+			roomAdmin: true,
+			roomCreate: true
 		})
 		return {
 			accessToken: accessToken
@@ -39,29 +40,43 @@ export class LiveStreamService {
 	}
 
 	async joinLivestream(user: UserEntity, roomName: string) {
+		const rooms = await this.livestreamRepository.getRoomByName(roomName)
+		if(!rooms){
+			throw new NotFoundException("Livestream not found")
+		}
 		const accessToken = await this.livestreamRepository.createAccessToken({
 			roomName,
 			user,
 			canPublish: false,
 			canSubscribe: true,
 			canPublishData: true,
-			roomAdmin: false
+			roomAdmin: false,
+			roomCreate: false
 		})
 		return {
 			accessToken: accessToken
 		}
 	}
 
-	async getAllLivestreams() {
+	async getAllLivestreams(user: UserEntity) {
 		const rooms = await this.livestreamRepository.getAllRoom()
-		const mapped = await Promise.all(rooms.map(async (room) => {
-			const metadata = JSON.parse(room.metadata) as LiveRoomMetadata
-			const owner = await this.UserDaoService.findOneById(metadata.ownerId)
-			return LiveRoomMapper.toDomain(room, owner!)
-		}))
-		console.log(mapped)
+		const mapped = await Promise.all(
+			rooms.map(async (room) => {
+				if (room.metadata != '') {
+					const metadata = JSON.parse(room.metadata) as LiveRoomMetadata
+					const owner = await this.UserDaoService.findOneById(
+						metadata.ownerId
+					)
+					return LiveRoomMapper.toDomain(room, owner!)
+				}
+				return null
+			})
+		)
+		const filteredMapped = mapped.filter((room) => {
+			return room !== null && room.metadata.ownerId != user.id
+		})
 		return {
-			rooms: mapped
+			rooms: filteredMapped
 		}
 	}
 
@@ -72,15 +87,15 @@ export class LiveStreamService {
 	async sendComment(user: UserEntity, roomName: string, text: string) {
 		console.log(roomName)
 		const room = await this.livestreamRepository.getRoomByName(roomName)
-		if(!room){
-			throw new NotFoundException("Livestream room not found")
+		if (!room) {
+			throw new NotFoundException('Livestream room not found')
 		}
 		const domainComment = this.livestreamDaoService.createComment({
 			roomName: room.name,
 			text,
 			user
 		})
-		console.log("test")
+		console.log('test')
 		await this.livestreamRepository.sendComment(domainComment)
 		await this.entityManager.flush()
 		return {
@@ -88,29 +103,37 @@ export class LiveStreamService {
 		}
 	}
 
-	async getLivestreamComments(roomName: string){
-		const comments = await this.livestreamDaoService.getAllCommentByRoomName(roomName)
+	async getLivestreamComments(roomName: string) {
+		const comments =
+			await this.livestreamDaoService.getAllCommentByRoomName(roomName)
 		return {
-			comments: comments.map((comment) => LivestreamRoomCommentMapper.toDomain(comment))
+			comments: comments.map((comment) =>
+				LivestreamRoomCommentMapper.toDomain(comment)
+			)
 		}
 	}
 
-	async sendLike(user: UserEntity, roomName: string, isLiked: boolean){
+	async sendLike(user: UserEntity, roomName: string, isLiked: boolean) {
+		console.log(isLiked)
 		const room = await this.livestreamRepository.getRoomByName(roomName)
-		if(!room){
-			throw new NotFoundException("Livestream room not found")
+		if (!room) {
+			throw new NotFoundException('Livestream room not found')
 		}
-		const isAlreadyLiked = await this.livestreamDaoService.isLiked(user, roomName)
+		const isAlreadyLiked = await this.livestreamDaoService.isLiked(
+			user,
+			roomName
+		)
 		let result = isLiked
-		if(isAlreadyLiked){
+		if (isAlreadyLiked !== isLiked) {
 			result = await this.livestreamDaoService.likeLivestream({
 				user,
 				roomName
 			})
 		}
 		await this.entityManager.flush()
-		const likes = await this.livestreamDaoService.getAllLikesByRoomName(roomName)
-		this.livestreamRepository.sendLike({
+		const likes =
+			await this.livestreamDaoService.getAllLikesByRoomName(roomName)
+		await this.livestreamRepository.sendLike({
 			roomName,
 			likes: likes.length
 		})
@@ -120,31 +143,37 @@ export class LiveStreamService {
 		}
 	}
 
-	async getLivestreamLikes(roomName: string){
-		const likes = await this.livestreamDaoService.getAllLikesByRoomName(roomName)
+	async getLivestreamLikes(roomName: string) {
+		const likes =
+			await this.livestreamDaoService.getAllLikesByRoomName(roomName)
 		return {
 			likes: likes.length
 		}
 	}
 
-	async deleteRoom(roomName: string){
+	async deleteRoom(roomName: string) {
 		const result = await this.livestreamRepository.deleteRoom(roomName)
 		return {
 			isDeleted: result
 		}
 	}
 
-	async handleWebhook(webhookEvent: WebhookEvent){
-		let {room, participant, event} = webhookEvent
-		if(event = "room_finished"){
-			if(room){
-				this.livestreamDaoService.deleteAllCommentByRoomName(room.name)
-				this.livestreamDaoService.deleteAllLikesByRoomName(room.name)
+	async handleWebhook(webhookEvent: WebhookEvent) {
+		let { room, participant, event } = webhookEvent
+		if (event == 'room_finished') {
+			if (room) {
+				await this.livestreamDaoService.deleteAllCommentByRoomName(
+					room.name
+				)
+				await this.livestreamDaoService.deleteAllLikesByRoomName(
+					room.name
+				)
 			}
-		}else if(event = "participant_left"){
+		} else if (event == 'participant_left') {
 			const roomMetadata = JSON.parse(room!.metadata) as LiveRoomMetadata
-			if(participant!.identity == roomMetadata.ownerId){
-				this.livestreamRepository.deleteRoom(room!.name)
+			console.log(participant, roomMetadata)
+			if (participant!.identity == roomMetadata.ownerId) {
+				await this.livestreamRepository.deleteRoom(room!.name)
 			}
 		}
 	}

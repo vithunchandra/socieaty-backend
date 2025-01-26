@@ -86,7 +86,8 @@ export class LivestreamRepository {
 			canPublishData: data.canPublishData,
 			roomAdmin: data.roomAdmin,
 			roomJoin: true,
-			room: data.roomName
+			room: data.roomName,
+			roomCreate: data.roomCreate
 		})
 		return accessToken.toJwt()
 	}
@@ -123,14 +124,15 @@ export class LivestreamRepository {
 		)
 	}
 
-	sendLike(likes: LivestreamRoomLike) {
+	async sendLike(likes: LivestreamRoomLike) {
+		console.log(likes)
 		const encoder = new TextEncoder()
 		const stringLikeData = JSON.stringify(likes)
 		const uint8LikesData = encoder.encode(stringLikeData)
-		this.roomService.sendData(
+		await this.roomService.sendData(
 			likes.roomName,
 			uint8LikesData,
-			DataPacket_Kind.RELIABLE,
+			DataPacket_Kind.LOSSY,
 			{ topic: LivestreamDataType.LIKE }
 		)
 	}

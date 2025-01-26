@@ -6,5 +6,6 @@ export class CreateAccessTokenDto {
 	canSubscribe: boolean;
 	canPublishData: boolean;
 	roomAdmin: boolean;
+	roomCreate: boolean;
 	user: UserEntity;
 }
