@@ -43,10 +43,10 @@ export class PostCommentDaoService{
     }
 
     async getPostCommentByPostId(postId: string){
-        return await this.postCommentRepository.find({post: postId}, {populate: ['commentLikes']})
+        return await this.postCommentRepository.find({post: postId}, {populate: ['commentLikes', 'user']})
     }
 
     async findOneById(commentId: string){
-        return await this.postCommentRepository.findOne({id: commentId}, {populate: ['commentLikes']})
+        return await this.postCommentRepository.findOne({id: commentId}, {populate: ['commentLikes', 'user']})
     }
 }
