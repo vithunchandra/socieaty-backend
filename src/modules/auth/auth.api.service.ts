@@ -19,7 +19,7 @@ export class AuthService{
         private readonly customerService: CustomerService,
         private readonly em: EntityManager,
         private readonly jwtService: JwtService
-    ){}
+    ) {}
     async customerSignup(data: CustomerCreateDto): Promise<CustomerSignupResponseDto>{
         if(data.password !== data.confirmPassword){
             throw new BadRequestException("Password and confirm password is not matched")
@@ -41,7 +41,7 @@ export class AuthService{
         }
     }
 
-    async restaurantSignup(data: RestaurantCreateDto, image: Express.Multer.File): Promise<RestaurantSignupResponseDto>{
+    async restaurantSignup(data: RestaurantCreateDto, profilePicture: Express.Multer.File, restaurantBanner: Express.Multer.File): Promise<RestaurantSignupResponseDto>{
         if(data.password !== data.confirmPassword){
             throw new BadRequestException("Password and confirm password is not matched")
         }
@@ -51,7 +51,7 @@ export class AuthService{
             throw new BadRequestException("Email is already been taken")
         }
         
-        const restaurant = await this.restaurantService.createRestaurant(data, image)
+        const restaurant = await this.restaurantService.createRestaurant(data, profilePicture, restaurantBanner)
         const userMapped = UserMapper.fromRestaurantToDomain(restaurant)
         userMapped.password = undefined;
         this.em.flush()

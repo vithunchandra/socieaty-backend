@@ -10,6 +10,7 @@ export class User{
     @Exclude({toPlainOnly: true})
     password?: string
     phoneNumber: string
+    profilePictureUrl: string | null
     role: UserRole
     restaurantData: Restaurant | null
     customerData: Customer | null

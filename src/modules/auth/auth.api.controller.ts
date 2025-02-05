@@ -1,4 +1,5 @@
 import {
+	BadRequestException,
 	Body,
 	Controller,
 	Get,
@@ -6,15 +7,23 @@ import {
 	Post,
 	Request,
 	UploadedFile,
+	UploadedFiles,
 	UseGuards,
 	UseInterceptors
 } from '@nestjs/common'
 import { UserSigninDto } from './dto/user-signin.dto'
 import { RestaurantCreateDto } from './dto/RestaurantCreate.dto'
 import { CustomerCreateDto } from './dto/CustomerCreate.dto'
-import { FileInterceptor } from '@nestjs/platform-express'
+import {
+	FileFieldsInterceptor,
+	FileInterceptor
+} from '@nestjs/platform-express'
 import { diskStorage } from 'multer'
-import { FILE_UPLOADS_DIR } from 'src/constants'
+import {
+	FILE_UPLOADS_DIR,
+	PROFILE_PICTURE_UPLOADS_DIR,
+	RESTAURANT_BANNER_UPLOADS_DIR
+} from 'src/constants'
 import { fileNameEditor, imageFileFilter } from 'src/utils/image.utils'
 import { AuthService } from './auth.api.service'
 import { AuthGuard } from 'src/module/AuthGuard/AuthGuard.service'
@@ -29,23 +38,65 @@ export class AuthController {
 	}
 
 	@Post('signup/restaurant')
+	// @UseInterceptors(
+	// 	FileInterceptor('profilePicture', {
+	// 		storage: diskStorage({
+	// 			destination: PROFILE_PICTURE_UPLOADS_DIR,
+	// 			filename: fileNameEditor
+	// 		}),
+	// 		fileFilter: imageFileFilter,
+	// 		limits: {
+	// 			fieldSize: 1000 * 1000 * 10
+	// 		}
+	// 	}),
+	// 	FileInterceptor('restaurantBanner', {
+	// 		storage: diskStorage({
+	// 			destination: RESTAURANT_BANNER_UPLOADS_DIR,
+	// 			filename: fileNameEditor
+	// 		}),
+	// 		fileFilter: imageFileFilter,
+	// 		limits: {
+	// 			fieldSize: 1000 * 1000 * 10
+	// 		}
+	// 	})
+	// )
 	@UseInterceptors(
-		FileInterceptor('image', {
-			storage: diskStorage({
-				destination: FILE_UPLOADS_DIR,
-				filename: fileNameEditor
-			}),
-			fileFilter: imageFileFilter,
-			limits: {
-				fieldSize: 1000 * 1000 * 10
+		FileFieldsInterceptor(
+			[
+				{ name: 'profilePicture', maxCount: 1 },
+				{ name: 'restaurantBanner', maxCount: 1 }
+			],
+			{
+				storage: diskStorage({
+					destination: (req, file, cb) => {
+						if (file.fieldname === 'profilePicture') {
+							cb(null, PROFILE_PICTURE_UPLOADS_DIR)
+						} else {
+							cb(null, RESTAURANT_BANNER_UPLOADS_DIR)
+						}
+					},
+					filename: fileNameEditor
+				}),
+				fileFilter: imageFileFilter,
+				limits: {
+					fieldSize: 1000 * 1000 * 10
+				}
 			}
-		})
+		)
 	)
 	async restaurantSignup(
 		@Body() data: RestaurantCreateDto,
-		@UploadedFile() image: Express.Multer.File
+		@UploadedFiles()
+		files: {
+			profilePicture?: Express.Multer.File[]
+			restaurantBanner?: Express.Multer.File[]
+		}
 	) {
-		return await this.authService.restaurantSignup(data, image)
+		return await this.authService.restaurantSignup(
+			data,
+			files.profilePicture![0],
+			files.restaurantBanner![0]
+		)
 	}
 
 	@Post('signin')

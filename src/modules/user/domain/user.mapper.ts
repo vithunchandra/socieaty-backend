@@ -14,6 +14,7 @@ export class UserMapper{
         user.email = raw.email
         user.password = raw.password
         user.phoneNumber = raw.phoneNumber
+        user.profilePictureUrl = raw.profilePictureUrl ?? null
         user.role = raw.role
         user.customerData = CustomerMapper.toDomain(raw.customerData);
         user.restaurantData = RestaurantMapper.toDomain(raw.restaurantData);

@@ -45,6 +45,76 @@
           "length": 6,
           "mappedType": "datetime"
         },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        }
+      },
+      "name": "menu_type",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "menu_type_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {},
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "mappedType": "datetime"
+        },
         "tag": {
           "name": "tag",
           "type": "varchar(255)",
@@ -71,6 +141,46 @@
         },
         {
           "keyName": "post_hashtag_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {},
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": false,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        }
+      },
+      "name": "restaurant_theme",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "restaurant_theme_pkey",
           "columnNames": [
             "id"
           ],
@@ -165,6 +275,16 @@
           "length": 255,
           "mappedType": "string"
         },
+        "profile_picture_url": {
+          "name": "profile_picture_url",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 255,
+          "mappedType": "string"
+        },
         "role": {
           "name": "role",
           "type": "text",
@@ -249,8 +369,8 @@
           "length": 6,
           "mappedType": "datetime"
         },
-        "photo_url": {
-          "name": "photo_url",
+        "restaurant_banner_url": {
+          "name": "restaurant_banner_url",
           "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
@@ -268,6 +388,31 @@
           "primary": false,
           "nullable": false,
           "mappedType": "unknown"
+        },
+        "payout_bank": {
+          "name": "payout_bank",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "enumItems": [
+            "bni",
+            "bri",
+            "bca",
+            "mandiri"
+          ],
+          "mappedType": "enum"
+        },
+        "account_number": {
+          "name": "account_number",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
         },
         "user_id": {
           "name": "user_id",
@@ -325,6 +470,261 @@
             "id"
           ],
           "referencedTableName": "public.user",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "price": {
+          "name": "price",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "menu_picture_url": {
+          "name": "menu_picture_url",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "restaurant_id": {
+          "name": "restaurant_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        }
+      },
+      "name": "restaurant_menu",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "restaurant_menu_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "restaurant_menu_restaurant_id_foreign": {
+          "constraintName": "restaurant_menu_restaurant_id_foreign",
+          "columnNames": [
+            "restaurant_id"
+          ],
+          "localTableName": "public.restaurant_menu",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.restaurant",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "menu_type_entity_id": {
+          "name": "menu_type_entity_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        },
+        "restaurant_menu_entity_id": {
+          "name": "restaurant_menu_entity_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        }
+      },
+      "name": "menu_type_menus",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "menu_type_menus_pkey",
+          "columnNames": [
+            "menu_type_entity_id",
+            "restaurant_menu_entity_id"
+          ],
+          "composite": true,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "menu_type_menus_menu_type_entity_id_foreign": {
+          "constraintName": "menu_type_menus_menu_type_entity_id_foreign",
+          "columnNames": [
+            "menu_type_entity_id"
+          ],
+          "localTableName": "public.menu_type_menus",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.menu_type",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        },
+        "menu_type_menus_restaurant_menu_entity_id_foreign": {
+          "constraintName": "menu_type_menus_restaurant_menu_entity_id_foreign",
+          "columnNames": [
+            "restaurant_menu_entity_id"
+          ],
+          "localTableName": "public.menu_type_menus",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.restaurant_menu",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "restaurant_theme_entity_id": {
+          "name": "restaurant_theme_entity_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "restaurant_entity_id": {
+          "name": "restaurant_entity_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        }
+      },
+      "name": "restaurant_theme_restaurants",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "restaurant_theme_restaurants_pkey",
+          "columnNames": [
+            "restaurant_theme_entity_id",
+            "restaurant_entity_id"
+          ],
+          "composite": true,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "restaurant_theme_restaurants_restaurant_theme_entity_id_foreign": {
+          "constraintName": "restaurant_theme_restaurants_restaurant_theme_entity_id_foreign",
+          "columnNames": [
+            "restaurant_theme_entity_id"
+          ],
+          "localTableName": "public.restaurant_theme_restaurants",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.restaurant_theme",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        },
+        "restaurant_theme_restaurants_restaurant_entity_id_foreign": {
+          "constraintName": "restaurant_theme_restaurants_restaurant_entity_id_foreign",
+          "columnNames": [
+            "restaurant_entity_id"
+          ],
+          "localTableName": "public.restaurant_theme_restaurants",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.restaurant",
+          "deleteRule": "cascade",
           "updateRule": "cascade"
         }
       },
@@ -1112,17 +1512,6 @@
           "nullable": true,
           "length": 6,
           "mappedType": "datetime"
-        },
-        "photo_profile_url": {
-          "name": "photo_profile_url",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 255,
-          "default": "''",
-          "mappedType": "string"
         },
         "bio": {
           "name": "bio",

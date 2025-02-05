@@ -4,9 +4,6 @@ import { UserEntity } from "../../user/persistance/User.entity";
 
 @Entity({tableName: "customer"})
 export class CustomerEntity extends BaseEntity{
-    @Property({default: "", nullable: true})
-    photoProfileUrl: string
-
     @Property({default: "", nullable: true, type: 'text' })
     bio: string
 
@@ -25,6 +22,5 @@ export class CustomerEntity extends BaseEntity{
         this.userData = userData
         this.wallet = 0
         this.bio = ""
-        this.photoProfileUrl = ""
     }
 }

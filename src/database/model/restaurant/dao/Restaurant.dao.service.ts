@@ -15,7 +15,7 @@ export class RestaurantDaoService{
     create(user: UserEntity, data: CreateRestaurantDto): RestaurantEntity{
         const restaurant = new RestaurantEntity(
             user,
-            data.restaurantPhotoUrl, data.restaurantAddress
+            data.restaurantBannerUrl, data.restaurantAddress
         )
         this.restaurantRepository.getEntityManager().persist(restaurant)
         return restaurant

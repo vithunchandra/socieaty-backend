@@ -12,7 +12,13 @@ export class CustomerService{
     ){}
 
     async createCustomer(data: CustomerCreateDto){
-        const user = this.userDao.create(data)
+        const user = this.userDao.create({
+            name: data.name,
+            email: data.email,
+            password: data.password,
+            phoneNumber: data.phoneNumber,
+            role: data.role
+        })
         const customer = this.customerDao.create(user, {});
         return customer;
     }

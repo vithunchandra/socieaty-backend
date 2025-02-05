@@ -95,6 +95,7 @@ export class LiveStreamService {
 			text,
 			user
 		})
+		
 		console.log('test')
 		await this.livestreamRepository.sendComment(domainComment)
 		await this.entityManager.flush()

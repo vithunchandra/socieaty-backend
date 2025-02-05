@@ -5,5 +5,6 @@ export interface UserCreateDto{
     email: string
     password: string
     phoneNumber: string
+    profilePictureUrl?: string
     role: UserRole
 }

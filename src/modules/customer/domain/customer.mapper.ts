@@ -6,7 +6,6 @@ export class CustomerMapper{
         if(!raw) return null;
         
         const customer = new Customer()
-        customer.photoProfileUrl = raw.photoProfileUrl
         customer.wallet = raw.wallet;
         customer.bio = raw.bio;
 

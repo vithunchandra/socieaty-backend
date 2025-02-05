@@ -2,77 +2,76 @@ import {
 	Collection,
 	Entity,
 	Enum,
-	HiddenProps,
 	ManyToMany,
 	OneToMany,
 	OneToOne,
-	PrimaryKey,
-	Property,
-	UuidType
-} from '@mikro-orm/core';
-import { BaseEntity } from '../../../database/model/base/Base.entity';
-import { RestaurantEntity } from '../../restaurant/persistence/Restaurant.entity';
-import { CustomerEntity } from '../../customer/persistence/Customer.entity';
-import { PostEntity } from '../../post/persistence/post.entity';
-import { PostCommentEntity } from '../../post-comment/persistence/post-comment.entity';
-import { LivestreamRoomCommentEntity } from '../../livestream/persistence/livestream-room-comment.entity';
+	Property
+} from '@mikro-orm/core'
+import { BaseEntity } from '../../../database/model/base/Base.entity'
+import { RestaurantEntity } from '../../restaurant/persistence/Restaurant.entity'
+import { CustomerEntity } from '../../customer/persistence/Customer.entity'
+import { PostEntity } from '../../post/persistence/post.entity'
+import { PostCommentEntity } from '../../post-comment/persistence/post-comment.entity'
 
 @Entity({ tableName: 'user' })
 export class UserEntity extends BaseEntity {
 	@Property({ nullable: false, type: 'varchar(128)' })
-	name!: string;
+	name!: string
 
 	@Property({ nullable: false, unique: true, type: 'varchar(128)' })
-	email!: string;
+	email!: string
 
 	@Property({ nullable: false, type: 'varchar(128)' })
-	password!: string;
+	password!: string
 
 	@Property({ nullable: false })
-	phoneNumber: string;
+	phoneNumber: string
+
+	@Property({ nullable: true })
+	profilePictureUrl?: string | null
 
 	@Enum(() => UserRole)
-	role: UserRole;
+	role: UserRole
 
 	@OneToOne({
 		entity: () => RestaurantEntity,
 		mappedBy: (restaurant) => restaurant.userData,
 		nullable: true
 	})
-	restaurantData: RestaurantEntity | null = null;
+	restaurantData: RestaurantEntity | null = null
 
 	@OneToOne({
 		entity: () => CustomerEntity,
 		mappedBy: (customer) => customer.userData,
 		nullable: true
 	})
-	customerData: CustomerEntity | null = null;
+	customerData: CustomerEntity | null = null
 
 	@OneToMany({
 		entity: () => PostEntity,
 		mappedBy: 'user',
 		orphanRemoval: true
 	})
-	posts = new Collection<PostEntity>(this);
+	posts = new Collection<PostEntity>(this)
 
 	@OneToMany({
 		entity: () => PostCommentEntity,
 		mappedBy: 'user',
 		orphanRemoval: true
 	})
-	comments = new Collection<PostCommentEntity>(this);
+	comments = new Collection<PostCommentEntity>(this)
 
 	@ManyToMany({
 		entity: () => PostEntity,
 		inversedBy: 'postLikes'
 	})
-	likedPosts = new Collection<PostEntity>(this);
+	likedPosts = new Collection<PostEntity>(this)
 
 	@ManyToMany({
 		entity: () => PostCommentEntity,
 		inversedBy: 'commentLikes'
 	})
-	likedComments = new Collection<PostCommentEntity>(this);
+	likedComments = new Collection<PostCommentEntity>(this)
 
 	// @OneToMany({
 	//    entity: () => LivestreamRoomCommentEntity,
@@ -86,14 +85,16 @@ export class UserEntity extends BaseEntity {
 		email: string,
 		password: string,
 		phoneNumber: string,
-		role: UserRole
+		role: UserRole,
+		profilePictureUrl?: string
 	) {
-		super();
-		this.name = name;
-		this.email = email;
-		this.password = password;
-		this.phoneNumber = phoneNumber;
-		this.role = role;
+		super()
+		this.name = name
+		this.email = email
+		this.password = password
+		this.phoneNumber = phoneNumber
+		this.profilePictureUrl = profilePictureUrl
+		this.role = role
 	}
 }
 

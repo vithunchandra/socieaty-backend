@@ -13,8 +13,11 @@ export class CustomerDaoService{
     ){}
 
     create(user: UserEntity, data: CustomerCreateDto): CustomerEntity{
-        const customer = new CustomerEntity(user)
-        this.customerRepository.getEntityManager().persist(customer)
+        const customer = this.customerRepository.create({
+            userData: user,
+            wallet: 0,
+            bio: ""
+        })
         return customer
     }
 

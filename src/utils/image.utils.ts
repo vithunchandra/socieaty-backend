@@ -15,20 +15,22 @@ const fileNameEditor = (
 }
 
 const imageFileFilter = (
-    req: Request, 
-    file: Express.Multer.File, 
+    req: Request,
+    file: Express.Multer.File,
     callback: (error: Error | null, valid: boolean) => void
 ) => {
-    if(
-        !file.originalname ||
-        !file.originalname.match(/\.(jpg|jpeg|png|gif|svg|webp)$/)
-    ){
+    if(!file.originalname){
         return callback(
-            new BadRequestException('File must be of type jpg|jpeg|png|gif|svg|webp'),
+            new BadRequestException('Media must exist'),
             false
         )
     }
-
+    if(!file.originalname.match(/\.(jpg|jpeg|png)$/)){
+        return callback(
+            new BadRequestException('File must be of type jpg|jpeg|png'),
+            false
+        )
+    }
     return callback(null, true);
 }
 

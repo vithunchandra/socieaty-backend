@@ -4,20 +4,27 @@ import { InjectRepository } from "@mikro-orm/nestjs";
 import { UserEntity } from "../../user/persistance/User.entity";
 import { RestaurantEntity } from "./Restaurant.entity";
 import { CreateRestaurantDto } from "./dto/RestaurantCreate.dto";
+import { RestaurantThemeEntity } from "./restaurant-theme.entity";
 
 @Injectable()
 export class RestaurantDaoService{
     constructor(
         @InjectRepository(RestaurantEntity)
-        private readonly restaurantRepository: EntityRepository<RestaurantEntity>
+        private readonly restaurantRepository: EntityRepository<RestaurantEntity>,
+        @InjectRepository(RestaurantThemeEntity)
+        private readonly restaurantThemeRepository: EntityRepository<RestaurantThemeEntity>
     ){}
 
-    create(user: UserEntity, data: CreateRestaurantDto): RestaurantEntity{
-        const restaurant = new RestaurantEntity(
-            user,
-            data.restaurantPhotoUrl, data.restaurantAddress
-        )        
-        this.restaurantRepository.getEntityManager().persist(restaurant)
+    async create(user: UserEntity, data: CreateRestaurantDto): Promise<RestaurantEntity>{
+        const restaurant = this.restaurantRepository.create({
+            userData: user,
+            location: data.restaurantAddress,
+            restaurantBannerUrl: data.restaurantBannerUrl,
+            payoutBank: data.payoutBank,
+            accountNumber: data.accountNumber
+        })
+        const themes = await this.getRestaurantThemes(data.restaurantThemes)
+        restaurant.themes.add(themes)
         return restaurant
     }
 
@@ -26,5 +33,18 @@ export class RestaurantDaoService{
             userData: {id: user_id}
         }, {populate: ['userData']})
         return restaurant
+    }
+
+    async getRestaurantThemes(themeIds: number[]): Promise<RestaurantThemeEntity[]>{
+        const themes = await this.restaurantThemeRepository.find({
+            id: {$in: themeIds}
+        })
+        return themes
+    }
+    
+    async getRestaurantTheme(themeId: number): Promise<RestaurantThemeEntity | null>{
+        return await this.restaurantThemeRepository.findOne({
+            id: themeId
+        })
     }
 }

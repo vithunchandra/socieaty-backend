@@ -1,7 +1,11 @@
 import { Point } from "src/modules/restaurant/persistence/custom-type/PointType"
+import { BankEnum } from "../../../../enums/bank.enum"
 
 export interface CreateRestaurantDto{
     userId: string
     restaurantAddress: Point
-    restaurantPhotoUrl: string
+    restaurantBannerUrl: string
+    restaurantThemes: number[]
+    payoutBank: BankEnum
+    accountNumber: string
 }
