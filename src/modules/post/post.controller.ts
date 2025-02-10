@@ -22,8 +22,9 @@ export class PostController{
             }),
             fileFilter: mediaFileFilter,
             limits: {
-                fieldSize: 1000 * 1000 * 10
+                fieldSize: 1024 * 1024 * 10
             }
+
         })
     )
     async createPost(@Body() data: CreatePostRequestDto, @UploadedFiles() medias: Express.Multer.File[], @Request() req){

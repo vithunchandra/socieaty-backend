@@ -49,6 +49,16 @@ export class RestaurantCreateDto {
 	themes: number[]
 
 	@IsNotEmpty()
+	@Type(() => Number)
+	@IsNumber()
+	openTime: number
+
+	@IsNotEmpty()
+	@Type(() => Number)
+	@IsNumber()
+	closeTime: number
+
+	@IsNotEmpty()
 	@IsEnum(BankEnum)
 	payoutBank: BankEnum
 

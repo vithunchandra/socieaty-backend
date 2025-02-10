@@ -57,7 +57,6 @@ export class LiveStreamController {
 
 	@Get('create-token')
 	async createToken(@Body() data: any) {
-		console.log(data)
 		return this.liveStreamService.createAuthToken(data.identity)
 	}
 
@@ -68,7 +67,6 @@ export class LiveStreamController {
 		@Param('roomname') roomName: string,
 		@Body() data: CommentLivestreamRequestDto
 	) {
-		console.log(data.text)
 		return this.liveStreamService.sendComment(req.user, roomName, data.text)
 	}
 

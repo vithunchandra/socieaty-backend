@@ -1,9 +1,9 @@
 import { Migration } from '@mikro-orm/migrations';
 
-export class Migration20250203115933 extends Migration {
+export class Migration20250209052931 extends Migration {
 
   override async up(): Promise<void> {
-    this.addSql(`create table "menu_type" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "name" varchar(255) not null, constraint "menu_type_pkey" primary key ("id"));`);
+    this.addSql(`create table "menu_category" ("id" serial primary key, "name" varchar(255) not null);`);
 
     this.addSql(`create table "post_hashtag" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "tag" varchar(255) not null, constraint "post_hashtag_pkey" primary key ("id"));`);
     this.addSql(`alter table "post_hashtag" add constraint "post_hashtag_tag_unique" unique ("tag");`);
@@ -17,9 +17,9 @@ export class Migration20250203115933 extends Migration {
     this.addSql(`create index "restaurant_user_id_index" on "restaurant" ("user_id");`);
     this.addSql(`alter table "restaurant" add constraint "restaurant_user_id_unique" unique ("user_id");`);
 
-    this.addSql(`create table "restaurant_menu" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "name" varchar(255) not null, "price" int not null, "description" varchar(255) not null, "menu_picture_url" varchar(255) not null, "restaurant_id" uuid not null, constraint "restaurant_menu_pkey" primary key ("id"));`);
+    this.addSql(`create table "restaurant_menu" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "name" varchar(255) not null, "price" int not null, "description" varchar(255) not null, "picture_url" varchar(255) not null, "estimated_time" int not null, "restaurant_id" uuid not null, constraint "restaurant_menu_pkey" primary key ("id"));`);
 
-    this.addSql(`create table "menu_type_menus" ("menu_type_entity_id" uuid not null, "restaurant_menu_entity_id" uuid not null, constraint "menu_type_menus_pkey" primary key ("menu_type_entity_id", "restaurant_menu_entity_id"));`);
+    this.addSql(`create table "menu_category_menus" ("menu_category_entity_id" int not null, "restaurant_menu_entity_id" uuid not null, constraint "menu_category_menus_pkey" primary key ("menu_category_entity_id", "restaurant_menu_entity_id"));`);
 
     this.addSql(`create table "restaurant_theme_restaurants" ("restaurant_theme_entity_id" int not null, "restaurant_entity_id" uuid not null, constraint "restaurant_theme_restaurants_pkey" primary key ("restaurant_theme_entity_id", "restaurant_entity_id"));`);
 
@@ -47,8 +47,8 @@ export class Migration20250203115933 extends Migration {
 
     this.addSql(`alter table "restaurant_menu" add constraint "restaurant_menu_restaurant_id_foreign" foreign key ("restaurant_id") references "restaurant" ("id") on update cascade;`);
 
-    this.addSql(`alter table "menu_type_menus" add constraint "menu_type_menus_menu_type_entity_id_foreign" foreign key ("menu_type_entity_id") references "menu_type" ("id") on update cascade on delete cascade;`);
-    this.addSql(`alter table "menu_type_menus" add constraint "menu_type_menus_restaurant_menu_entity_id_foreign" foreign key ("restaurant_menu_entity_id") references "restaurant_menu" ("id") on update cascade on delete cascade;`);
+    this.addSql(`alter table "menu_category_menus" add constraint "menu_category_menus_menu_category_entity_id_foreign" foreign key ("menu_category_entity_id") references "menu_category" ("id") on update cascade on delete cascade;`);
+    this.addSql(`alter table "menu_category_menus" add constraint "menu_category_menus_restaurant_menu_entity_id_foreign" foreign key ("restaurant_menu_entity_id") references "restaurant_menu" ("id") on update cascade on delete cascade;`);
 
     this.addSql(`alter table "restaurant_theme_restaurants" add constraint "restaurant_theme_restaurants_restaurant_theme_entity_id_foreign" foreign key ("restaurant_theme_entity_id") references "restaurant_theme" ("id") on update cascade on delete cascade;`);
     this.addSql(`alter table "restaurant_theme_restaurants" add constraint "restaurant_theme_restaurants_restaurant_entity_id_foreign" foreign key ("restaurant_entity_id") references "restaurant" ("id") on update cascade on delete cascade;`);
@@ -77,7 +77,7 @@ export class Migration20250203115933 extends Migration {
   }
 
   override async down(): Promise<void> {
-    this.addSql(`alter table "menu_type_menus" drop constraint "menu_type_menus_menu_type_entity_id_foreign";`);
+    this.addSql(`alter table "menu_category_menus" drop constraint "menu_category_menus_menu_category_entity_id_foreign";`);
 
     this.addSql(`alter table "post_hashtag_post" drop constraint "post_hashtag_post_post_hashtag_entity_id_foreign";`);
 
@@ -103,7 +103,7 @@ export class Migration20250203115933 extends Migration {
 
     this.addSql(`alter table "restaurant_theme_restaurants" drop constraint "restaurant_theme_restaurants_restaurant_entity_id_foreign";`);
 
-    this.addSql(`alter table "menu_type_menus" drop constraint "menu_type_menus_restaurant_menu_entity_id_foreign";`);
+    this.addSql(`alter table "menu_category_menus" drop constraint "menu_category_menus_restaurant_menu_entity_id_foreign";`);
 
     this.addSql(`alter table "user_liked_posts" drop constraint "user_liked_posts_post_entity_id_foreign";`);
 
@@ -115,7 +115,7 @@ export class Migration20250203115933 extends Migration {
 
     this.addSql(`alter table "user_liked_comments" drop constraint "user_liked_comments_post_comment_entity_id_foreign";`);
 
-    this.addSql(`drop table if exists "menu_type" cascade;`);
+    this.addSql(`drop table if exists "menu_category" cascade;`);
 
     this.addSql(`drop table if exists "post_hashtag" cascade;`);
 
@@ -127,7 +127,7 @@ export class Migration20250203115933 extends Migration {
 
     this.addSql(`drop table if exists "restaurant_menu" cascade;`);
 
-    this.addSql(`drop table if exists "menu_type_menus" cascade;`);
+    this.addSql(`drop table if exists "menu_category_menus" cascade;`);
 
     this.addSql(`drop table if exists "restaurant_theme_restaurants" cascade;`);
 

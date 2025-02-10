@@ -8,6 +8,7 @@ export class PostCommentMapper {
 		postComment.id = raw.id
 		postComment.postId = raw.post.id
 		postComment.userName = raw.user.name ?? ''
+		postComment.userId = raw.user.id
 		postComment.text = raw.text
 		postComment.likes = raw.commentLikes.map((user) =>
 			UserMapper.toDomain(user)

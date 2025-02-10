@@ -21,8 +21,10 @@ export class RestaurantService {
 			email: data.email,
 			password: data.password,
 			phoneNumber: data.phoneNumber,
+			
 			profilePictureUrl: `/files/user/profile_picture/${profilePicture.filename}`,
 			role: data.role
+
 		})
 		const restaurant = this.restaurantDao.create(user, {
 			userId: user.id,
@@ -30,7 +32,9 @@ export class RestaurantService {
 			restaurantBannerUrl: `/files/user/restaurant_banner/${restaurantBanner.filename}`,
 			restaurantThemes: data.themes,
 			payoutBank: data.payoutBank,
-			accountNumber: data.accountNumber
+			accountNumber: data.accountNumber,
+			openTime: `${Math.trunc(data.openTime / 60)}:${data.openTime % 60}`,
+			closeTime: `${Math.trunc(data.closeTime / 60)}:${data.closeTime % 60}`
 		})
 		return restaurant
 	}
@@ -44,6 +48,18 @@ export class RestaurantService {
 		userMapped.password = undefined
 		return {
 			user: userMapped
+		}
+	}
+
+	async getRestaurantById(restaurantId: string) {
+		const restaurant = await this.restaurantDao.getRestaurantById(restaurantId)
+		if (!restaurant) {
+			return new BadRequestException('Restaurant tidak ditemukan')
+		}
+		const restaurantMapped = UserMapper.fromRestaurantToDomain(restaurant)
+		restaurantMapped.password = undefined
+		return {
+			restaurant: restaurantMapped
 		}
 	}
 }

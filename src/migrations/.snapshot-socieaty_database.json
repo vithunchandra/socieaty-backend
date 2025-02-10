@@ -8,42 +8,12 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "uuid",
+          "type": "serial",
           "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
+          "autoincrement": true,
+          "primary": true,
           "nullable": false,
-          "mappedType": "uuid"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamptz",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamptz",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamptz",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 6,
-          "mappedType": "datetime"
+          "mappedType": "integer"
         },
         "name": {
           "name": "name",
@@ -56,11 +26,11 @@
           "mappedType": "string"
         }
       },
-      "name": "menu_type",
+      "name": "menu_category",
       "schema": "public",
       "indexes": [
         {
-          "keyName": "menu_type_pkey",
+          "keyName": "menu_category_pkey",
           "columnNames": [
             "id"
           ],
@@ -389,6 +359,26 @@
           "nullable": false,
           "mappedType": "unknown"
         },
+        "open_time": {
+          "name": "open_time",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "close_time": {
+          "name": "close_time",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
         "payout_bank": {
           "name": "payout_bank",
           "type": "text",
@@ -545,8 +535,8 @@
           "length": 255,
           "mappedType": "string"
         },
-        "menu_picture_url": {
-          "name": "menu_picture_url",
+        "picture_url": {
+          "name": "picture_url",
           "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
@@ -554,6 +544,25 @@
           "nullable": false,
           "length": 255,
           "mappedType": "string"
+        },
+        "estimated_time": {
+          "name": "estimated_time",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "is_stock_available": {
+          "name": "is_stock_available",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "true",
+          "mappedType": "boolean"
         },
         "restaurant_id": {
           "name": "restaurant_id",
@@ -598,14 +607,14 @@
     },
     {
       "columns": {
-        "menu_type_entity_id": {
-          "name": "menu_type_entity_id",
-          "type": "uuid",
+        "menu_category_entity_id": {
+          "name": "menu_category_entity_id",
+          "type": "int",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "mappedType": "uuid"
+          "mappedType": "integer"
         },
         "restaurant_menu_entity_id": {
           "name": "restaurant_menu_entity_id",
@@ -617,13 +626,13 @@
           "mappedType": "uuid"
         }
       },
-      "name": "menu_type_menus",
+      "name": "menu_category_menus",
       "schema": "public",
       "indexes": [
         {
-          "keyName": "menu_type_menus_pkey",
+          "keyName": "menu_category_menus_pkey",
           "columnNames": [
-            "menu_type_entity_id",
+            "menu_category_entity_id",
             "restaurant_menu_entity_id"
           ],
           "composite": true,
@@ -634,25 +643,25 @@
       ],
       "checks": [],
       "foreignKeys": {
-        "menu_type_menus_menu_type_entity_id_foreign": {
-          "constraintName": "menu_type_menus_menu_type_entity_id_foreign",
+        "menu_category_menus_menu_category_entity_id_foreign": {
+          "constraintName": "menu_category_menus_menu_category_entity_id_foreign",
           "columnNames": [
-            "menu_type_entity_id"
+            "menu_category_entity_id"
           ],
-          "localTableName": "public.menu_type_menus",
+          "localTableName": "public.menu_category_menus",
           "referencedColumnNames": [
             "id"
           ],
-          "referencedTableName": "public.menu_type",
+          "referencedTableName": "public.menu_category",
           "deleteRule": "cascade",
           "updateRule": "cascade"
         },
-        "menu_type_menus_restaurant_menu_entity_id_foreign": {
-          "constraintName": "menu_type_menus_restaurant_menu_entity_id_foreign",
+        "menu_category_menus_restaurant_menu_entity_id_foreign": {
+          "constraintName": "menu_category_menus_restaurant_menu_entity_id_foreign",
           "columnNames": [
             "restaurant_menu_entity_id"
           ],
-          "localTableName": "public.menu_type_menus",
+          "localTableName": "public.menu_category_menus",
           "referencedColumnNames": [
             "id"
           ],

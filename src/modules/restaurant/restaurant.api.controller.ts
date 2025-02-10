@@ -1,4 +1,4 @@
-import { Controller, Get, Logger, Request, UseGuards } from "@nestjs/common";
+import { Controller, Get, Logger, Param, Request, UseGuards } from "@nestjs/common";
 import { UserRole } from "src/modules/user/persistance/User.entity";
 import { Roles } from "src/module/RoleGuard/roles.decorator";
 import { RolesGuard } from "src/module/RoleGuard/roles.guard";
@@ -14,6 +14,13 @@ export class RestaurantController{
     async getProfile(@Request() req){
         return {
             data: await this.restaurantService.getProfile(req.user.id)
+        }
+    }
+
+    @Get(':restaurantId')
+    async getRestaurantById(@Param('restaurantId') restaurantId: string){
+        return {
+            data: await this.restaurantService.getRestaurantById(restaurantId)
         }
     }
 }

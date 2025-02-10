@@ -14,6 +14,8 @@ import { AuthGuardModule } from './module/AuthGuard/AuthGuard.module';
 import { PostCommentModule } from './modules/post-comment/post-comment.module';
 import { PostMediaModule } from './modules/post-media/post-media.module';
 import { LiveStreamModule } from './modules/livestream/livestream.module';
+import { RestaurantMenuModule } from './modules/restaurant-menu/restaurant-menu.module';
+import { MediaModule } from './modules/media/media.module';
 
 @Module({
   imports: [
@@ -29,8 +31,8 @@ import { LiveStreamModule } from './modules/livestream/livestream.module';
       signOptions: { expiresIn: '1d' },
     }),
     AuthModule, RestaurantModule, PostModule,
-    PostCommentModule, PostMediaModule, AuthGuardModule,
-    LiveStreamModule
+    PostCommentModule, MediaModule, AuthGuardModule,
+    LiveStreamModule, RestaurantMenuModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -22,6 +22,12 @@ export class RestaurantEntity extends BaseEntity {
 	@Property({ type: PointType })
 	location: Point
 
+	@Property()
+	openTime: string
+
+	@Property()
+	closeTime: string
+
 	@Enum(() => BankEnum)
 	payoutBank: BankEnum
 
@@ -46,15 +52,11 @@ export class RestaurantEntity extends BaseEntity {
 	@OneToMany({
 		entity: () => RestaurantMenuEntity,
 		mappedBy: 'restaurant',
-        orphanRemoval: true
+		orphanRemoval: true
 	})
 	menus: Collection<RestaurantMenuEntity>
 
-	constructor(
-		userData: UserEntity,
-		restaurantBannerUrl: string,
-		restaurantAddress: Point
-	) {
+	constructor(userData: UserEntity, restaurantBannerUrl: string, restaurantAddress: Point) {
 		super()
 		this.userData = userData
 		this.restaurantBannerUrl = restaurantBannerUrl

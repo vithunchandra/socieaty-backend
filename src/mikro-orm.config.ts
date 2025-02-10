@@ -14,7 +14,7 @@ import { LivestreamRoomLikeEntity } from './modules/livestream/persistence/lives
 import { MikroOrmFilter } from './enums/mikro-orm-filter.enum'
 import { RestaurantThemeEntity } from './modules/restaurant/persistence/restaurant-theme.entity'
 import { RestaurantMenuEntity } from './modules/restaurant-menu/persistence/restaurant-menu.entity'
-import { MenuTypeEntity } from './modules/restaurant-menu/persistence/menu-type.entity'
+import { MenuCategoryEntity } from './modules/restaurant-menu/persistence/menu-category.entity'
 const logger = new Logger('MikroORM')
 
 export default defineConfig({
@@ -30,7 +30,7 @@ export default defineConfig({
 		LivestreamRoomLikeEntity,
 		RestaurantThemeEntity,
 		RestaurantMenuEntity,
-		MenuTypeEntity
+		MenuCategoryEntity
 	],
 	entitiesTs: [
 		UserEntity,
@@ -44,7 +44,7 @@ export default defineConfig({
 		LivestreamRoomLikeEntity,
 		RestaurantThemeEntity,
 		RestaurantMenuEntity,
-		MenuTypeEntity
+		MenuCategoryEntity
 	],
 	dbName: config().dbName ?? 'socieaty_database',
 	driver: PostgreSqlDriver,
@@ -78,7 +78,6 @@ export default defineConfig({
 				'LivestreamRoomCommentEntity',
 				'LivestreamRoomLikeEntity',
 				'RestaurantMenuEntity',
-				'MenuTypeEntity'
 			]
 		},
 		[MikroOrmFilter.DELETED]: {
@@ -97,7 +96,6 @@ export default defineConfig({
 				'LivestreamRoomCommentEntity',
 				'LivestreamRoomLikeEntity',
 				'RestaurantMenuEntity',
-				'MenuTypeEntity'
 			]
 		}
 	},

@@ -4,6 +4,7 @@ export class PostComment{
     id: string
     postId: string
     userName: string
+    userId: string
     text: string
     likes?: User[]
 }
