@@ -1,16 +1,16 @@
-import { RestaurantMenuEntity } from '../persistence/restaurant-menu.entity'
-import { RestaurantMenu } from './restaurant-menu'
 import { MenuCategory } from './menu-category'
 import { MenuCategoryMapper } from './menu-category.mapper'
 import { BASE_URL } from '../../../constants'
+import { FoodMenuEntity } from '../persistence/food-menu.entity'
+import { FoodMenu } from './food-menu'
 
-export class RestaurantMenuMapper {
-	static toDomain(raw: RestaurantMenuEntity | null): RestaurantMenu | null {
+export class FoodMenuMapper {
+	static toDomain(raw: FoodMenuEntity | null): FoodMenu | null {
 		if (!raw) return null
 
-		const menu = new RestaurantMenu()
+		const menu = new FoodMenu()
 		menu.id = raw.id
-        menu.restaurantId = raw.restaurant.id
+		menu.restaurantId = raw.restaurant.id
 		menu.name = raw.name
 		menu.price = raw.price
 		menu.description = raw.description

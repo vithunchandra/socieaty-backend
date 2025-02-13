@@ -1,8 +1,8 @@
 import { MenuCategory } from './menu-category'
 
-export class RestaurantMenu {
+export class FoodMenu {
 	id: string
-    restaurantId: string
+	restaurantId: string
 	name: string
 	price: number
 	description: string

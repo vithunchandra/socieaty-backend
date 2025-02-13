@@ -9,6 +9,9 @@ import { PostHashtagDaoService } from "../post-hashtag/persistence/post-hashtag.
 import { Post } from "./domain/post";
 import { wrap } from "module";
 import { Point } from "../restaurant/persistence/custom-type/PointType";
+import { GetPaginatedPostQueryRequestDto } from "./dto/get-paginated-post-query.request.dto";
+import { PaginationDirection } from "../../enums/pagination-direction.enum";
+import { PaginationDto } from "../../dto/pagination.dto";
 
 @Injectable()
 export class PostService{
@@ -80,6 +83,20 @@ export class PostService{
         const posts = await this.postDaoService.findAll()
         return {
             posts: posts.map(post => PostMapper.toDomain(post)).filter(post => post !== null)
+        }
+    }
+
+    async getPaginatedPosts(query: GetPaginatedPostQueryRequestDto){
+        const {items, count} = await this.postDaoService.paginatePosts(query)
+        const pagination = new PaginationDto()
+        pagination.nextOffset = items.length + query.offset
+        pagination.previousOffset = query.offset - query.limit
+        pagination.hasNext = pagination.nextOffset < count
+        pagination.hasPrevious = pagination.previousOffset >= 0
+        pagination.count = count
+        return {
+            posts: items.map(post => PostMapper.toDomain(post)).filter(post => post !== null),
+            pagination: pagination
         }
     }
 

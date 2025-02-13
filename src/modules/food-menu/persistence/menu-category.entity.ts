@@ -1,6 +1,6 @@
 import { Collection, Entity, ManyToMany, PrimaryKey, Property } from '@mikro-orm/core'
 import { BaseEntity } from '../../../database/model/base/Base.entity'
-import { RestaurantMenuEntity } from './restaurant-menu.entity'
+import { FoodMenuEntity } from './food-menu.entity'
 
 @Entity({ tableName: 'menu_category' })
 export class MenuCategoryEntity {
@@ -11,11 +11,11 @@ export class MenuCategoryEntity {
 	name: string
 
 	@ManyToMany({
-		entity: () => RestaurantMenuEntity,
+		entity: () => FoodMenuEntity,
 		inversedBy: 'categories',
 		fieldName: 'menu_id'
 	})
-	menus = new Collection<RestaurantMenuEntity>(this)
+	menus = new Collection<FoodMenuEntity>(this)
 
 	constructor(name: string) {
 		this.name = name

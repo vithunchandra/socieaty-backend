@@ -1,9 +1,8 @@
-import { Type } from "class-transformer"
-import { IsArray, IsNotEmpty, IsNumber, IsString } from "class-validator"
+import { Type } from 'class-transformer'
+import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator'
 
-export class UpdateRestaurantMenuRequestDto{
-    
-    @IsString()
+export class CreateFoodMenuRequestDto {
+	@IsString()
 	@IsNotEmpty()
 	name: string
 

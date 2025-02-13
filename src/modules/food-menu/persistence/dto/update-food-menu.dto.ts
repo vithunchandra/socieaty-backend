@@ -1,4 +1,4 @@
-export class UpdateRestaurantMenuDto {
+export class UpdateFoodMenuDto {
 	name: string
 	price: number
 	description: string

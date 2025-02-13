@@ -31,7 +31,7 @@ export class PointType extends Type<Point | undefined, string | undefined> {
             return undefined;
         }
     
-        return `(${value.latitude}, ${value.longitude})`;
+        return `(${value.longitude}, ${value.latitude})`;
     }
   
     convertToJSValue(value: string | undefined): Point | undefined {
@@ -42,7 +42,7 @@ export class PointType extends Type<Point | undefined, string | undefined> {
         const databasePoint = JSON.parse(JSON.stringify(value)) as DatabasePoint
 
         const {x, y} = databasePoint;
-        return new Point(x, y);
+        return new Point(y, x);
     }
   
     getColumnType(): string {

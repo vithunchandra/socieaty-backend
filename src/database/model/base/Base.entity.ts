@@ -1,4 +1,4 @@
-import { HiddenProps, OptionalProps, PrimaryKey, Property } from '@mikro-orm/core';
+import { HiddenProps, Index, OptionalProps, PrimaryKey, Property } from '@mikro-orm/core';
 import { v7 } from 'uuid';
 
 export abstract class BaseEntity<Optional = never> {

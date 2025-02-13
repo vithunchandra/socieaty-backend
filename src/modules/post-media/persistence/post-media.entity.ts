@@ -1,4 +1,4 @@
-import { Entity, ManyToOne, Property } from "@mikro-orm/core";
+import { Entity, Index, ManyToOne, Property } from "@mikro-orm/core";
 import { BaseEntity } from "../../../database/model/base/Base.entity";
 import { PostEntity } from "../../post/persistence/post.entity";
 
@@ -13,6 +13,7 @@ export class PostMediaEntity extends BaseEntity{
     @Property({nullable: false})
     extension: string
     
+    @Index()
     @ManyToOne({
         entity: () => PostEntity,
         fieldName: "post_id",

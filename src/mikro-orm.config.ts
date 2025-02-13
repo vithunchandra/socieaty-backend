@@ -13,8 +13,8 @@ import { LivestreamRoomCommentEntity } from './modules/livestream/persistence/li
 import { LivestreamRoomLikeEntity } from './modules/livestream/persistence/livestream-room-like.entity'
 import { MikroOrmFilter } from './enums/mikro-orm-filter.enum'
 import { RestaurantThemeEntity } from './modules/restaurant/persistence/restaurant-theme.entity'
-import { RestaurantMenuEntity } from './modules/restaurant-menu/persistence/restaurant-menu.entity'
-import { MenuCategoryEntity } from './modules/restaurant-menu/persistence/menu-category.entity'
+import { FoodMenuEntity } from './modules/food-menu/persistence/food-menu.entity'
+import { MenuCategoryEntity } from './modules/food-menu/persistence/menu-category.entity'
 const logger = new Logger('MikroORM')
 
 export default defineConfig({
@@ -29,7 +29,7 @@ export default defineConfig({
 		LivestreamRoomCommentEntity,
 		LivestreamRoomLikeEntity,
 		RestaurantThemeEntity,
-		RestaurantMenuEntity,
+		FoodMenuEntity,
 		MenuCategoryEntity
 	],
 	entitiesTs: [
@@ -43,7 +43,7 @@ export default defineConfig({
 		LivestreamRoomCommentEntity,
 		LivestreamRoomLikeEntity,
 		RestaurantThemeEntity,
-		RestaurantMenuEntity,
+		FoodMenuEntity,
 		MenuCategoryEntity
 	],
 	dbName: config().dbName ?? 'socieaty_database',
@@ -77,7 +77,7 @@ export default defineConfig({
 				'PostHashtagEntity',
 				'LivestreamRoomCommentEntity',
 				'LivestreamRoomLikeEntity',
-				'RestaurantMenuEntity',
+				'FoodMenuEntity'
 			]
 		},
 		[MikroOrmFilter.DELETED]: {
@@ -95,7 +95,7 @@ export default defineConfig({
 				'PostHashtagEntity',
 				'LivestreamRoomCommentEntity',
 				'LivestreamRoomLikeEntity',
-				'RestaurantMenuEntity',
+				'FoodMenuEntity'
 			]
 		}
 	},

@@ -11,7 +11,7 @@ import { BaseEntity } from '../../../database/model/base/Base.entity'
 import { UserEntity } from '../../user/persistance/User.entity'
 import { Point, PointType } from './custom-type/PointType'
 import { RestaurantThemeEntity } from './restaurant-theme.entity'
-import { RestaurantMenuEntity } from '../../restaurant-menu/persistence/restaurant-menu.entity'
+import { FoodMenuEntity } from '../../food-menu/persistence/food-menu.entity'
 import { BankEnum } from '../../../enums/bank.enum'
 
 @Entity({ tableName: 'restaurant' })
@@ -50,11 +50,11 @@ export class RestaurantEntity extends BaseEntity {
 	themes: Collection<RestaurantThemeEntity>
 
 	@OneToMany({
-		entity: () => RestaurantMenuEntity,
+		entity: () => FoodMenuEntity,
 		mappedBy: 'restaurant',
 		orphanRemoval: true
 	})
-	menus: Collection<RestaurantMenuEntity>
+	menus: Collection<FoodMenuEntity>
 
 	constructor(userData: UserEntity, restaurantBannerUrl: string, restaurantAddress: Point) {
 		super()

@@ -2,6 +2,7 @@ import {
 	Cascade,
 	Collection,
 	Entity,
+	Index,
 	ManyToMany,
 	ManyToOne,
 	OneToMany,
@@ -32,6 +33,7 @@ export class PostEntity extends BaseEntity<'location'> {
 	@OneToMany({
 		entity: () => PostMediaEntity,
 		mappedBy: 'post',
+		index: true,
 		cascade: [Cascade.PERSIST, Cascade.REMOVE],
 		orphanRemoval: true
 	})
@@ -40,6 +42,7 @@ export class PostEntity extends BaseEntity<'location'> {
 	@OneToMany({
 		entity: () => PostCommentEntity,
 		mappedBy: 'post',
+		index: true,
 		cascade: [Cascade.PERSIST, Cascade.REMOVE],
 		orphanRemoval: true
 	})
@@ -47,20 +50,24 @@ export class PostEntity extends BaseEntity<'location'> {
 
 	@ManyToMany({
 		entity: () => UserEntity,
-		mappedBy: 'likedPosts'
+		mappedBy: 'likedPosts',
+		index: true
 	})
 	postLikes = new Collection<UserEntity>(this)
 
+	@Index()
 	@ManyToOne({
 		entity: () => UserEntity,
 		inversedBy: 'posts',
-		fieldName: 'user_id'
+		fieldName: 'user_id',
+		index: true
 	})
 	user: UserEntity
 
 	@ManyToMany({
 		entity: () => PostHashtagEntity,
-		mappedBy: 'post'
+		mappedBy: 'post',
+		index: true
 	})
 	hashtags = new Collection<PostHashtagEntity>(this)
 

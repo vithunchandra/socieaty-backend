@@ -13,7 +13,7 @@ export class Post{
     caption: string
     location?: Point | null
     medias: PostMedia[]
-    comments: number
-    likes: User[]
-    hashtags: PostHashtag[]
+    comments?: number
+    likes?: User[]
+    hashtags?: PostHashtag[]
 }

@@ -1,4 +1,4 @@
-import { Collection, Entity, ManyToMany, ManyToOne, Property } from "@mikro-orm/core";
+import { Collection, Entity, Index, ManyToMany, ManyToOne, Property } from "@mikro-orm/core";
 import { BaseEntity } from "../../../database/model/base/Base.entity";
 import { PostEntity } from "../../post/persistence/post.entity";
 import { UserEntity } from "../../user/persistance/User.entity";
@@ -8,23 +8,28 @@ export class PostCommentEntity extends BaseEntity{
     @Property()
     text: string
 
+    @Index()
     @ManyToOne({
         entity: () => PostEntity,
         inversedBy: 'comments',
-        fieldName: 'post_id'
+        fieldName: 'post_id',
+        index: true
     })
     post: PostEntity
 
+    @Index()
     @ManyToOne({
         entity: () => UserEntity,
         inversedBy: 'comments',
         fieldName: 'user_id',
+        index: true
     })
     user: UserEntity
 
     @ManyToMany({
         entity: () => UserEntity,
-        mappedBy: 'likedComments'
+        mappedBy: 'likedComments',
+        index: true
     })
     commentLikes = new Collection<UserEntity>(this)
 

@@ -1,6 +1,6 @@
 import { RestaurantEntity } from '../../../restaurant/persistence/Restaurant.entity'
 
-export class CreateRestaurantMenuDto {
+export class CreateFoodMenuDto {
 	name: string
 	price: number
 	description: string

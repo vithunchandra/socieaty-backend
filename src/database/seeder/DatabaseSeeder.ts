@@ -12,13 +12,13 @@ import {
 	RESTAURANT_BANNER_UPLOADS_DIR,
 	RESTAURANT_MENU_UPLOADS_DIR
 } from '../../constants'
-import { MenuCategoryEntity } from '../../modules/restaurant-menu/persistence/menu-category.entity'
+import { MenuCategoryEntity } from '../../modules/food-menu/persistence/menu-category.entity'
 import { PostEntity } from '../../modules/post/persistence/post.entity'
 import { POST_MEDIA_UPLOADS_DIR } from '../../constants'
 import { PostMediaEntity } from '../../modules/post-media/persistence/post-media.entity'
 import { PostHashtagEntity } from '../../modules/post-hashtag/persistence/post-hashtag.entity'
 import { PostCommentEntity } from '../../modules/post-comment/persistence/post-comment.entity'
-import { RestaurantMenuEntity } from '../../modules/restaurant-menu/persistence/restaurant-menu.entity'
+import { FoodMenuEntity } from '../../modules/food-menu/persistence/food-menu.entity'
 
 const bank: BankEnum[] = [BankEnum.BNI, BankEnum.BCA, BankEnum.BRI, BankEnum.MANDIRI]
 const themeName: string[] = [
@@ -97,7 +97,7 @@ const dummyRestaurantBanner: string[] = [
 	'restaurant_6.jpg',
 	'restaurant_7.jpg'
 ]
-const dummyRestaurantMenuPicture: string[] = [
+const dummyFoodMenuPicture: string[] = [
 	'menu_1.jpg',
 	'menu_2.jpg',
 	'menu_3.jpg',
@@ -116,7 +116,7 @@ export class DatabaseSeeder extends Seeder {
 		const customers: CustomerEntity[] = []
 		const posts: PostEntity[] = []
 		const postComments: PostCommentEntity[] = []
-		const menuDummies: RestaurantMenuEntity[] = []
+		const menuDummies: FoodMenuEntity[] = []
 
 		for (const theme of themeName) {
 			restaurantThemes.push(em.create(RestaurantThemeEntity, { name: theme }))
@@ -224,7 +224,7 @@ export class DatabaseSeeder extends Seeder {
 		}
 		for (const user of users) {
 			// Create 2-5 posts for each user
-			const numberOfPosts = faker.number.int({ min: 2, max: 5 })
+			const numberOfPosts = faker.number.int({ min: 15, max: 30 })
 
 			for (let i = 0; i < numberOfPosts; i++) {
 				// Generate random post resource
@@ -287,18 +287,18 @@ export class DatabaseSeeder extends Seeder {
 				}
 			}
 
-			const numberOfMenus = faker.number.int({ min: 1, max: 10 })
+			const numberOfMenus = faker.number.int({ min: 10, max: 20 })
 			for (let i = 0; i < numberOfMenus; i++) {
 				if (user.role == UserRole.RESTAURANT) {
 					const restaurant = user.restaurantData
 					const menuDummyCategories = faker.helpers.shuffle(menuCategories).splice(0, 3)
-					const menuDummy = em.create(RestaurantMenuEntity, {
+					const menuDummy = em.create(FoodMenuEntity, {
 						restaurant: restaurant?.id!,
 						categories: menuDummyCategories,
 						name: faker.food.dish(),
 						price: faker.number.int({ min: 10000, max: 100000 }),
 						description: faker.food.description(),
-						pictureUrl: `files/menu/dummy/${faker.helpers.arrayElement(dummyRestaurantMenuPicture)}`,
+						pictureUrl: `files/menu/dummy/${faker.helpers.arrayElement(dummyFoodMenuPicture)}`,
 						estimatedTime: faker.number.int({ min: 10, max: 60 }),
 						isStockAvailable: true
 					})

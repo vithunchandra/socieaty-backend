@@ -1,16 +1,10 @@
-import {
-	Collection,
-	Entity,
-	ManyToMany,
-	ManyToOne,
-	Property
-} from '@mikro-orm/core'
+import { Collection, Entity, ManyToMany, ManyToOne, Property } from '@mikro-orm/core'
 import { BaseEntity } from '../../../database/model/base/Base.entity'
 import { RestaurantEntity } from '../../restaurant/persistence/Restaurant.entity'
 import { MenuCategoryEntity } from './menu-category.entity'
 
-@Entity({ tableName: 'restaurant_menu' })
-export class RestaurantMenuEntity extends BaseEntity {
+@Entity({ tableName: 'food_menu' })
+export class FoodMenuEntity extends BaseEntity {
 	@Property()
 	name: string
 
@@ -25,8 +19,8 @@ export class RestaurantMenuEntity extends BaseEntity {
 
 	@Property()
 	estimatedTime: number
-	
-	@Property({default: true})
+
+	@Property({ default: true })
 	isStockAvailable: boolean
 
 	@ManyToMany({
@@ -34,7 +28,6 @@ export class RestaurantMenuEntity extends BaseEntity {
 		mappedBy: 'menus',
 		fieldName: 'menu_id'
 	})
-
 	categories = new Collection<MenuCategoryEntity>(this)
 
 	@ManyToOne({

@@ -467,6 +467,73 @@
     },
     {
       "columns": {
+        "restaurant_theme_entity_id": {
+          "name": "restaurant_theme_entity_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "restaurant_entity_id": {
+          "name": "restaurant_entity_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        }
+      },
+      "name": "restaurant_theme_restaurants",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "restaurant_theme_restaurants_pkey",
+          "columnNames": [
+            "restaurant_theme_entity_id",
+            "restaurant_entity_id"
+          ],
+          "composite": true,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "restaurant_theme_restaurants_restaurant_theme_entity_id_foreign": {
+          "constraintName": "restaurant_theme_restaurants_restaurant_theme_entity_id_foreign",
+          "columnNames": [
+            "restaurant_theme_entity_id"
+          ],
+          "localTableName": "public.restaurant_theme_restaurants",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.restaurant_theme",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        },
+        "restaurant_theme_restaurants_restaurant_entity_id_foreign": {
+          "constraintName": "restaurant_theme_restaurants_restaurant_entity_id_foreign",
+          "columnNames": [
+            "restaurant_entity_id"
+          ],
+          "localTableName": "public.restaurant_theme_restaurants",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.restaurant",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
         "id": {
           "name": "id",
           "type": "uuid",
@@ -574,11 +641,11 @@
           "mappedType": "uuid"
         }
       },
-      "name": "restaurant_menu",
+      "name": "food_menu",
       "schema": "public",
       "indexes": [
         {
-          "keyName": "restaurant_menu_pkey",
+          "keyName": "food_menu_pkey",
           "columnNames": [
             "id"
           ],
@@ -590,12 +657,12 @@
       ],
       "checks": [],
       "foreignKeys": {
-        "restaurant_menu_restaurant_id_foreign": {
-          "constraintName": "restaurant_menu_restaurant_id_foreign",
+        "food_menu_restaurant_id_foreign": {
+          "constraintName": "food_menu_restaurant_id_foreign",
           "columnNames": [
             "restaurant_id"
           ],
-          "localTableName": "public.restaurant_menu",
+          "localTableName": "public.food_menu",
           "referencedColumnNames": [
             "id"
           ],
@@ -616,8 +683,8 @@
           "nullable": false,
           "mappedType": "integer"
         },
-        "restaurant_menu_entity_id": {
-          "name": "restaurant_menu_entity_id",
+        "food_menu_entity_id": {
+          "name": "food_menu_entity_id",
           "type": "uuid",
           "unsigned": false,
           "autoincrement": false,
@@ -633,7 +700,7 @@
           "keyName": "menu_category_menus_pkey",
           "columnNames": [
             "menu_category_entity_id",
-            "restaurant_menu_entity_id"
+            "food_menu_entity_id"
           ],
           "composite": true,
           "constraint": true,
@@ -656,83 +723,16 @@
           "deleteRule": "cascade",
           "updateRule": "cascade"
         },
-        "menu_category_menus_restaurant_menu_entity_id_foreign": {
-          "constraintName": "menu_category_menus_restaurant_menu_entity_id_foreign",
+        "menu_category_menus_food_menu_entity_id_foreign": {
+          "constraintName": "menu_category_menus_food_menu_entity_id_foreign",
           "columnNames": [
-            "restaurant_menu_entity_id"
+            "food_menu_entity_id"
           ],
           "localTableName": "public.menu_category_menus",
           "referencedColumnNames": [
             "id"
           ],
-          "referencedTableName": "public.restaurant_menu",
-          "deleteRule": "cascade",
-          "updateRule": "cascade"
-        }
-      },
-      "nativeEnums": {}
-    },
-    {
-      "columns": {
-        "restaurant_theme_entity_id": {
-          "name": "restaurant_theme_entity_id",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "integer"
-        },
-        "restaurant_entity_id": {
-          "name": "restaurant_entity_id",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "uuid"
-        }
-      },
-      "name": "restaurant_theme_restaurants",
-      "schema": "public",
-      "indexes": [
-        {
-          "keyName": "restaurant_theme_restaurants_pkey",
-          "columnNames": [
-            "restaurant_theme_entity_id",
-            "restaurant_entity_id"
-          ],
-          "composite": true,
-          "constraint": true,
-          "primary": true,
-          "unique": true
-        }
-      ],
-      "checks": [],
-      "foreignKeys": {
-        "restaurant_theme_restaurants_restaurant_theme_entity_id_foreign": {
-          "constraintName": "restaurant_theme_restaurants_restaurant_theme_entity_id_foreign",
-          "columnNames": [
-            "restaurant_theme_entity_id"
-          ],
-          "localTableName": "public.restaurant_theme_restaurants",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.restaurant_theme",
-          "deleteRule": "cascade",
-          "updateRule": "cascade"
-        },
-        "restaurant_theme_restaurants_restaurant_entity_id_foreign": {
-          "constraintName": "restaurant_theme_restaurants_restaurant_entity_id_foreign",
-          "columnNames": [
-            "restaurant_entity_id"
-          ],
-          "localTableName": "public.restaurant_theme_restaurants",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.restaurant",
+          "referencedTableName": "public.food_menu",
           "deleteRule": "cascade",
           "updateRule": "cascade"
         }
@@ -823,6 +823,26 @@
       "name": "post",
       "schema": "public",
       "indexes": [
+        {
+          "columnNames": [
+            "user_id"
+          ],
+          "composite": false,
+          "keyName": "post_user_id_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "keyName": "post_user_id_index",
+          "columnNames": [
+            "user_id"
+          ],
+          "composite": false,
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
         {
           "keyName": "post_pkey",
           "columnNames": [
@@ -1013,6 +1033,16 @@
           "unique": false
         },
         {
+          "keyName": "post-media_post_id_index",
+          "columnNames": [
+            "post_id"
+          ],
+          "composite": false,
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
           "keyName": "post-media_pkey",
           "columnNames": [
             "id"
@@ -1180,6 +1210,46 @@
       "name": "post_comment",
       "schema": "public",
       "indexes": [
+        {
+          "columnNames": [
+            "post_id"
+          ],
+          "composite": false,
+          "keyName": "post_comment_post_id_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "columnNames": [
+            "user_id"
+          ],
+          "composite": false,
+          "keyName": "post_comment_user_id_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "keyName": "post_comment_post_id_index",
+          "columnNames": [
+            "post_id"
+          ],
+          "composite": false,
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "keyName": "post_comment_user_id_index",
+          "columnNames": [
+            "user_id"
+          ],
+          "composite": false,
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
         {
           "keyName": "post_comment_pkey",
           "columnNames": [

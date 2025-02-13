@@ -36,40 +36,46 @@ export class UserEntity extends BaseEntity {
 	@OneToOne({
 		entity: () => RestaurantEntity,
 		mappedBy: (restaurant) => restaurant.userData,
-		nullable: true
+		nullable: true,
+		index: true
 	})
 	restaurantData: RestaurantEntity | null = null
 
 	@OneToOne({
 		entity: () => CustomerEntity,
 		mappedBy: (customer) => customer.userData,
-		nullable: true
+		nullable: true,
+		index: true
 	})
 	customerData: CustomerEntity | null = null
 
 	@OneToMany({
 		entity: () => PostEntity,
 		mappedBy: 'user',
-		orphanRemoval: true
+		orphanRemoval: true,
+		index: true
 	})
 	posts = new Collection<PostEntity>(this)
 
 	@OneToMany({
 		entity: () => PostCommentEntity,
 		mappedBy: 'user',
-		orphanRemoval: true
+		orphanRemoval: true,
+		index: true
 	})
 	comments = new Collection<PostCommentEntity>(this)
 
 	@ManyToMany({
 		entity: () => PostEntity,
-		inversedBy: 'postLikes'
+		inversedBy: 'postLikes',
+		index: true
 	})
 	likedPosts = new Collection<PostEntity>(this)
 
 	@ManyToMany({
 		entity: () => PostCommentEntity,
-		inversedBy: 'commentLikes'
+		inversedBy: 'commentLikes',
+		index: true
 	})
 	likedComments = new Collection<PostCommentEntity>(this)
 

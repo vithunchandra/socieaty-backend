@@ -1,5 +1,5 @@
-import { RestaurantMenuService } from './restaurant-menu.service'
-import { CreateRestaurantMenuRequestDto } from './dto/create-restaurant-menu-request.dto'
+import { FoodMenuService } from './food-menu.service'
+import { CreateFoodMenuRequestDto } from './dto/create-food-menu-request.dto'
 import {
 	BadRequestException,
 	Body,
@@ -13,20 +13,22 @@ import {
 	UseGuards,
 	UseInterceptors,
 	ParseFilePipeBuilder,
-	Delete
+	Delete,
+	Query
 } from '@nestjs/common'
 import { GuardedRequestDto } from '../../module/AuthGuard/dto/guarded-request.dto'
-import { UpdateRestaurantMenuRequestDto } from './dto/update-restaurant-menu-request.dto'
+import { UpdateFoodMenuRequestDto } from './dto/update-food-menu-request.dto'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { diskStorage } from 'multer'
 import { RESTAURANT_MENU_UPLOADS_DIR } from '../../constants'
 import { fileNameEditor, imageFileFilter } from '../../utils/image.utils'
 import { AuthGuard } from '../../module/AuthGuard/AuthGuard.service'
 import { UpdateMenuStockRequestDto } from './dto/update-menu-stock-request.dto'
+import { GetAllFoodMenuQueryDto } from './dto/get-all-food-menu-query.dto'
 
 @Controller('restaurant/menu')
-export class RestaurantMenuController {
-	constructor(private readonly restaurantMenuService: RestaurantMenuService) {}
+export class FoodMenuController {
+	constructor(private readonly foodMenuService: FoodMenuService) {}
 
 	@Post('')
 	@UseInterceptors(
@@ -44,22 +46,28 @@ export class RestaurantMenuController {
 	@UseGuards(AuthGuard)
 	async createMenu(
 		@Request() req: GuardedRequestDto,
-		@Body() data: CreateRestaurantMenuRequestDto,
+		@Body() data: CreateFoodMenuRequestDto,
 		@UploadedFile() menuPicture: Express.Multer.File
 	) {
-		return await this.restaurantMenuService.createMenu(
+		return await this.foodMenuService.createMenu(
 			req.user.restaurantData,
 			menuPicture,
 			data
 		)
 	}
 
+	@Get('categories')
+	async getAllMenuCategories() {
+		return await this.foodMenuService.getAllMenuCategories()
+	}
+
 	@Get(':restaurantid')
 	async findAllMenuByRestaurantId(
-		@Request() req: GuardedRequestDto,
-		@Param('restaurantid') restaurantId: string
+		@Param('restaurantid') restaurantId: string,
+		@Query() query: GetAllFoodMenuQueryDto
 	) {
-		return await this.restaurantMenuService.findAllMenusByRestaurantId(restaurantId)
+		console.log(query)
+		return await this.foodMenuService.findAllMenusByRestaurantId(restaurantId, query)
 	}
 
 	@Put(':menuId/stock')
@@ -69,7 +77,7 @@ export class RestaurantMenuController {
 		@Param('menuId') menuId: string,
 		@Body() data: UpdateMenuStockRequestDto
 	) {
-		return await this.restaurantMenuService.updateMenuStockAvailablity(
+		return await this.foodMenuService.updateMenuStockAvailablity(
 			req.user.restaurantData,
 			menuId,
 			data.isAvailable
@@ -79,12 +87,11 @@ export class RestaurantMenuController {
 	@Delete(':menuId')
 	@UseGuards(AuthGuard)
 	async removeMenu(@Request() req: GuardedRequestDto, @Param('menuId') menuId: string) {
-		return await this.restaurantMenuService.removeMenu(req.user.restaurantData, menuId)
+		return await this.foodMenuService.removeMenu(req.user.restaurantData, menuId)
 	}
 
 	@Put(':menuId')
 	@UseInterceptors(
-
 		FileInterceptor('menuPicture', {
 			storage: diskStorage({
 				destination: RESTAURANT_MENU_UPLOADS_DIR,
@@ -99,7 +106,7 @@ export class RestaurantMenuController {
 	@UseGuards(AuthGuard)
 	async updateMenu(
 		@Request() req: GuardedRequestDto,
-		@Body() data: UpdateRestaurantMenuRequestDto,
+		@Body() data: UpdateFoodMenuRequestDto,
 		@Param('menuId') menuId: string,
 		@UploadedFile(
 			new ParseFilePipeBuilder().build({
@@ -108,17 +115,12 @@ export class RestaurantMenuController {
 		)
 		menuPicture?: Express.Multer.File
 	) {
-		return await this.restaurantMenuService.updateMenu(
+		return await this.foodMenuService.updateMenu(
 			req.user.restaurantData,
 			menuId,
 			data,
 			menuPicture
 		)
-	}
-
-	@Get('categories')
-	async getAllMenuCategories() {
-		return await this.restaurantMenuService.getAllMenuCategories()
 	}
 
 	// @Get('')
@@ -129,6 +131,6 @@ export class RestaurantMenuController {
 	// 	if (!req.user.restaurantData) {
 	// 		throw new BadRequestException('Unauthorized Request')
 	// 	}
-	// 	return await this.restaurantMenuService.findAllMenusByRestaurantId(req.user.restaurantData!.id)
+	// 	return await this.foodMenuService.findAllMenusByRestaurantId(req.user.restaurantData!.id)
 	// }
 }
