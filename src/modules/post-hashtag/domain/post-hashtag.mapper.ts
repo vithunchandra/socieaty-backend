@@ -6,7 +6,6 @@ export class PostHashtagMapper{
         const postHashtag = new PostHashtag()
         postHashtag.id = raw.id
         postHashtag.tag = raw.tag
-        postHashtag.popularity = raw.post.length
         return postHashtag
     }
 }

@@ -9,6 +9,7 @@ export class PostMediaMapper{
         postMedia.type = raw.type
         postMedia.postId = raw.post.id
         postMedia.extension = raw.extension
+        postMedia.videoThumbnailUrl = raw.videoThumbnailUrl ? `${BASE_URL}${raw.videoThumbnailUrl}` : undefined
         return postMedia
     }
 }

@@ -30,6 +30,18 @@ export class MediaController {
 		return new StreamableFile(file)
 	}
 
+	@Get('post/thumbnails/:fileName')
+	getPostThumbnail(@Param('fileName') fileName: string): StreamableFile {
+		const file = createReadStream(join(POST_MEDIA_UPLOADS_DIR, 'thumbnails', fileName))
+		return new StreamableFile(file)
+	}
+
+	@Get('post/thumbnails/dummy/:fileName')
+	getDummyPostThumbnail(@Param('fileName') fileName: string): StreamableFile {
+		const file = createReadStream(join(POST_MEDIA_UPLOADS_DIR, 'thumbnails', 'dummy', fileName))
+		return new StreamableFile(file)
+	}
+
 	//   @Get('restaurant/banner/:fileName')
 	//   getRestaurantBanner(@Param('fileName') fileName: string): StreamableFile {
 	//     const file = createReadStream(join(RESTAURANT_MEDIA_UPLOADS_DIR, 'banner', fileName));

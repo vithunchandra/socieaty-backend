@@ -3,4 +3,5 @@ export class PostMedia{
     type: string
     postId: string
     extension: string
+    videoThumbnailUrl?: string
 }

@@ -5,7 +5,7 @@ import { UserEntity } from "../../user/persistance/User.entity";
 
 @Entity({tableName: "post_comment"})
 export class PostCommentEntity extends BaseEntity{
-    @Property()
+    @Property({type: 'text'})
     text: string
 
     @Index()

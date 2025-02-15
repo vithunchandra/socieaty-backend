@@ -8,7 +8,7 @@ export class PostHashtagEntity extends BaseEntity{
     @Unique()
     tag: string
 
-    @ManyToMany({entity: () => PostEntity, inversedBy: 'hashtags', index: true})
+    @ManyToMany({entity: () => PostEntity, inversedBy: 'hashtags'})
     post = new Collection<PostEntity>(this)
 
     constructor(tag: string) {

@@ -793,13 +793,12 @@
         },
         "caption": {
           "name": "caption",
-          "type": "varchar(255)",
+          "type": "text",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "length": 255,
-          "mappedType": "string"
+          "mappedType": "text"
         },
         "location": {
           "name": "location",
@@ -1009,6 +1008,16 @@
           "length": 255,
           "mappedType": "string"
         },
+        "video_thumbnail_url": {
+          "name": "video_thumbnail_url",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 255,
+          "mappedType": "string"
+        },
         "post_id": {
           "name": "post_id",
           "type": "uuid",
@@ -1180,13 +1189,12 @@
         },
         "text": {
           "name": "text",
-          "type": "varchar(255)",
+          "type": "text",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "length": 255,
-          "mappedType": "string"
+          "mappedType": "text"
         },
         "post_id": {
           "name": "post_id",

@@ -59,7 +59,6 @@ export class FoodMenuService {
 			if (!menu.pictureUrl.includes('dummy')) {
 				unlink(`src/${menu.pictureUrl}`, (err) => {
 					if (err) throw new BadRequestException('Error deleting menu picture')
-					console.log('Menu picture deleted')
 				})
 			}
 		}
@@ -95,7 +94,6 @@ export class FoodMenuService {
 		if (menu.restaurant.id !== restaurant.id) {
 			throw new BadRequestException('Unauthorized Request')
 		}
-		console.log(isAvailable)
 
 		this.foodMenuDaoService.updateMenuStockAvailablity(menu, isAvailable)
 		await this.em.flush()

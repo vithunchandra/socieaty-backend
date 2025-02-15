@@ -66,7 +66,6 @@ export class FoodMenuController {
 		@Param('restaurantid') restaurantId: string,
 		@Query() query: GetAllFoodMenuQueryDto
 	) {
-		console.log(query)
 		return await this.foodMenuService.findAllMenusByRestaurantId(restaurantId, query)
 	}
 
@@ -127,7 +126,6 @@ export class FoodMenuController {
 	// @UseGuards(AuthGuard)
 
 	// async findAllMenu(@Request() req: GuardedRequestDto) {
-	// 	console.log(req.user)
 	// 	if (!req.user.restaurantData) {
 	// 		throw new BadRequestException('Unauthorized Request')
 	// 	}

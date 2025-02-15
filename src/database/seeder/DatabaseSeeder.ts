@@ -62,6 +62,16 @@ const videosMedias: string[] = [
 	'post_dummy_video_6.mp4',
 	'post_dummy_video_7.mp4'
 ]
+const videoThumbnails: string[] = [
+	'post_thumbnail_1.png',
+	'post_thumbnail_2.png',
+	'post_thumbnail_3.png',
+	'post_thumbnail_4.png',
+	'post_thumbnail_5.png',
+	'post_thumbnail_6.png',
+	'post_thumbnail_7.png',
+	'post_thumbnail_8.png'
+]
 const foodCategories: string[] = [
 	'Drink',
 	'Rice',
@@ -224,7 +234,7 @@ export class DatabaseSeeder extends Seeder {
 		}
 		for (const user of users) {
 			// Create 2-5 posts for each user
-			const numberOfPosts = faker.number.int({ min: 15, max: 30 })
+			const numberOfPosts = faker.number.int({ min: 100, max: 300 })
 
 			for (let i = 0; i < numberOfPosts; i++) {
 				// Generate random post resource
@@ -241,7 +251,7 @@ export class DatabaseSeeder extends Seeder {
 				// Create Post Entity
 				const post = em.create(PostEntity, {
 					user: user.id,
-					title: faker.lorem.sentence(),
+					title: faker.lorem.sentence({ min: 1, max: 5 }),
 					caption: faker.lorem.paragraph(),
 					location: faker.datatype.boolean()
 						? new Point(faker.location.latitude(), faker.location.longitude())
@@ -257,11 +267,16 @@ export class DatabaseSeeder extends Seeder {
 					if (extension.match(/(mp4|webm|ogg|mp3|wav|flac|aac)$/i)) {
 						type = 'video'
 					}
+					let videoThumbnailUrl: string | undefined = undefined
+					if (type === 'video') {
+						videoThumbnailUrl = `files/post/thumbnails/dummy/${faker.helpers.arrayElement(videoThumbnails)}`
+					}
 					const postMedia = em.create(PostMediaEntity, {
 						post: post.id,
 						url: `files/post/${type}s/dummy/${randomMedia}`,
 						type: type,
-						extension: extension
+						extension: extension,
+						videoThumbnailUrl: videoThumbnailUrl
 					})
 					postMedias.push(postMedia)
 				}

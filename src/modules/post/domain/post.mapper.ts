@@ -12,8 +12,6 @@ export class PostMapper {
 		if (!raw) return null
 
 		const post = new Post()
-
-		const comments = raw.comments.map((comment) => PostCommentMapper.toDomain(comment))
 		const likes = raw.postLikes.map((like) => UserMapper.toDomain(like))
 		const medias = raw.medias.map((media) => PostMediaMapper.toDomain(media))
 		const hashtags = raw.hashtags.map((hashtag) => PostHashtagMapper.toDomain(hashtag))
@@ -23,7 +21,7 @@ export class PostMapper {
 		post.authorName = raw.user.name
 		post.title = raw.title
 		post.caption = raw.caption
-		post.comments = comments.length
+		post.comments = raw.comments.length
 		post.location =
 			raw.location?.latitude === 0 && raw.location?.longitude === 0 ? undefined : raw.location
 		post.likes = likes

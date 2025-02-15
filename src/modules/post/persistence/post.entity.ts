@@ -24,7 +24,7 @@ export class PostEntity extends BaseEntity<'location'> {
 	@Property({ nullable: true, default: '' })
 	title: string
 
-	@Property({ nullable: false })
+	@Property({ nullable: false, type: 'text' })
 	caption: string
 
 	@Property({ type: PointType, nullable: true })

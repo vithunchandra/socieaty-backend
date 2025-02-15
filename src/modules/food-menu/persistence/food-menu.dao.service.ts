@@ -85,8 +85,6 @@ export class FoodMenuDaoService {
 			}
 		}
 
-		console.log(queryObject)
-
 		return await this.foodMenuRepository.find(queryObject, {
 			populate: ['restaurant', 'categories']
 		})

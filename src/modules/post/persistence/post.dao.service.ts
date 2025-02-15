@@ -59,11 +59,9 @@ export class PostDaoService {
 		const posts = await this.postRepository.findAll({
 			populate: [
 				'medias',
-				'comments',
-				'comments.*',
+				'comments:ref',
 				'postLikes',
 				'hashtags',
-				'hashtags.post',
 				'user'
 			],
 			orderBy: { createdAt: 'ASC' }
@@ -77,20 +75,16 @@ export class PostDaoService {
 		if (authorId && authorId.trim().length > 0) {
 			where.user = { id: authorId }
 		}
-		const [posts, count] = await this.postRepository.findAndCount(where, {
-			populate: [
-				'medias',
-				'comments',
-				'comments.*',
-				'postLikes',
-				'hashtags',
-				'hashtags.post',
-				'user'
-			],
+		console.log(`Query:`, query)
+		const count = await this.postRepository.count(where)
+
+		const posts = await this.postRepository.find(where, {
+			populate: ['medias', 'postLikes', 'comments:ref', 'hashtags', 'user'],
 			orderBy: { createdAt: 'ASC' },
 			offset: offset,
 			limit: limit
 		})
+		console.log(`Count:`, count)
 		return {
 			items: posts,
 			count: count
