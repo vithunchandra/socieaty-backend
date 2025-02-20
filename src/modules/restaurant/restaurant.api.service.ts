@@ -3,6 +3,9 @@ import { RestaurantDaoService } from 'src/modules/restaurant/persistence/Restaur
 import { UserDaoService } from '../user/persistance/User.dao.service'
 import { RestaurantCreateDto } from '../auth/dto/RestaurantCreate.dto'
 import { UserMapper } from '../user/domain/user.mapper'
+import { PaginateRestaurantRequestDto } from './dto/paginate_restaurant_request.dto'
+import { PaginationDto } from '../../dto/pagination.dto'
+import { RestaurantThemeMapper } from './domain/restaurant-theme.mapper'
 
 @Injectable()
 export class RestaurantService {
@@ -21,10 +24,9 @@ export class RestaurantService {
 			email: data.email,
 			password: data.password,
 			phoneNumber: data.phoneNumber,
-			
+
 			profilePictureUrl: `/files/user/profile_picture/${profilePicture.filename}`,
 			role: data.role
-
 		})
 		const restaurant = this.restaurantDao.create(user, {
 			userId: user.id,
@@ -51,6 +53,20 @@ export class RestaurantService {
 		}
 	}
 
+	async paginateRestaurant(query: PaginateRestaurantRequestDto) {
+		const { items, count } = await this.restaurantDao.paginateRestaurant(query)
+		const pagination = new PaginationDto()
+		pagination.nextOffset = items.length + query.offset
+		pagination.previousOffset = query.offset - query.limit
+		pagination.hasNext = pagination.nextOffset < count
+		pagination.hasPrevious = pagination.previousOffset >= 0
+		pagination.count = count
+		return {
+			restaurants: items.map((item) => UserMapper.fromRestaurantToDomain(item)),
+			pagination
+		}
+	}
+
 	async getRestaurantById(restaurantId: string) {
 		const restaurant = await this.restaurantDao.getRestaurantById(restaurantId)
 		if (!restaurant) {
@@ -60,6 +76,13 @@ export class RestaurantService {
 		restaurantMapped.password = undefined
 		return {
 			restaurant: restaurantMapped
+		}
+	}
+
+	async getAllRestaurantThemes() {
+		const themes = await this.restaurantDao.getAllRestaurantThemes()
+		return {
+			themes: themes.map((theme) => RestaurantThemeMapper.toDomain(theme))
 		}
 	}
 }

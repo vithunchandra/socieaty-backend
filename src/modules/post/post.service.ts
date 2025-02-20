@@ -87,8 +87,9 @@ export class PostService {
 			result = this.postDaoService.likePost({ post, user })
 		}
 		await this.em.flush()
-		const refreshedPost = await this.em.refresh(post, { populate: ['postLikes'] })
+		const refreshedPost = await this.postDaoService.findOneById(postId)
 		return {
+			updatedPost: PostMapper.toDomain(refreshedPost!),
 			isLiked: result,
 			likes: refreshedPost!.postLikes.length
 		}

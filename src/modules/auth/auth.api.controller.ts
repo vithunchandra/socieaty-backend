@@ -111,7 +111,7 @@ export class AuthController {
 	}
 
 	@Get(':id')
-	async getAuth(@Param('id') id: string) {
+	async getDataById(@Param('id') id: string) {
 		return this.authService.getData(id)
 	}
 }

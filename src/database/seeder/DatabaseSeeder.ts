@@ -21,6 +21,11 @@ import { PostCommentEntity } from '../../modules/post-comment/persistence/post-c
 import { FoodMenuEntity } from '../../modules/food-menu/persistence/food-menu.entity'
 
 const bank: BankEnum[] = [BankEnum.BNI, BankEnum.BCA, BankEnum.BRI, BankEnum.MANDIRI]
+class Medias {
+	media: string
+	thumbnail?: string
+}
+
 const themeName: string[] = [
 	'Casual',
 	'Fine Dining',
@@ -44,33 +49,62 @@ const hashtags: string[] = [
 	'dinner',
 	'lunch'
 ]
-const imagesMedias: string[] = [
-	'post_dummy_image_1.jpg',
-	'post_dummy_image_2.jpg',
-	'post_dummy_image_3.jpg',
-	'post_dummy_image_4.jpg',
-	'post_dummy_image_5.jpg',
-	'post_dummy_image_6.jpg',
-	'post_dummy_image_7.jpg'
+const imagesMedias: Medias[] = [
+	{
+		media: 'post_dummy_image_1.jpg'
+	},
+	{
+		media: 'post_dummy_image_2.jpg'
+	},
+	{
+		media: 'post_dummy_image_3.jpg'
+	},
+	{
+		media: 'post_dummy_image_4.jpg'
+	},
+	{
+		media: 'post_dummy_image_5.jpg'
+	},
+	{
+		media: 'post_dummy_image_6.jpg'
+	},
+	{
+		media: 'post_dummy_image_7.jpg'
+	}
 ]
-const videosMedias: string[] = [
-	'post_dummy_video_1.mp4',
-	'post_dummy_video_2.mp4',
-	'post_dummy_video_3.mp4',
-	'post_dummy_video_4.mp4',
-	'post_dummy_video_5.mp4',
-	'post_dummy_video_6.mp4',
-	'post_dummy_video_7.mp4'
-]
-const videoThumbnails: string[] = [
-	'post_thumbnail_1.png',
-	'post_thumbnail_2.png',
-	'post_thumbnail_3.png',
-	'post_thumbnail_4.png',
-	'post_thumbnail_5.png',
-	'post_thumbnail_6.png',
-	'post_thumbnail_7.png',
-	'post_thumbnail_8.png'
+const videosMedias: Medias[] = [
+	{
+		media: 'post_dummy_video_1.mp4',
+		thumbnail: 'post_thumbnail_1.png'
+	},
+	{
+		media: 'post_dummy_video_2.mp4',
+		thumbnail: 'post_thumbnail_2.png'
+	},
+	{
+		media: 'post_dummy_video_3.mp4',
+		thumbnail: 'post_thumbnail_3.png'
+	},
+	{
+		media: 'post_dummy_video_4.mp4',
+		thumbnail: 'post_thumbnail_4.png'
+	},
+	{
+		media: 'post_dummy_video_5.mp4',
+		thumbnail: 'post_thumbnail_5.png'
+	},
+	{
+		media: 'post_dummy_video_6.mp4',
+		thumbnail: 'post_thumbnail_6.png'
+	},
+	{
+		media: 'post_dummy_video_7.mp4',
+		thumbnail: 'post_thumbnail_7.png'
+	},
+	{
+		media: 'post_dummy_video_8.mp4',
+		thumbnail: 'post_thumbnail_8.png'
+	}
 ]
 const foodCategories: string[] = [
 	'Drink',
@@ -234,7 +268,7 @@ export class DatabaseSeeder extends Seeder {
 		}
 		for (const user of users) {
 			// Create 2-5 posts for each user
-			const numberOfPosts = faker.number.int({ min: 100, max: 300 })
+			const numberOfPosts = faker.number.int({ min: 5, max: 10 })
 
 			for (let i = 0; i < numberOfPosts; i++) {
 				// Generate random post resource
@@ -262,18 +296,21 @@ export class DatabaseSeeder extends Seeder {
 				// Create Post Media Entity
 				for (let i = 0; i < faker.number.int({ min: 2, max: 10 }); i++) {
 					const randomMedia = faker.helpers.arrayElement(randomMedias)
-					const extension = randomMedia.substring(randomMedia.lastIndexOf('.') + 1)
+
+					const extension = randomMedia.media.substring(
+						randomMedia.media.lastIndexOf('.') + 1
+					)
 					let type = 'image'
 					if (extension.match(/(mp4|webm|ogg|mp3|wav|flac|aac)$/i)) {
 						type = 'video'
 					}
 					let videoThumbnailUrl: string | undefined = undefined
 					if (type === 'video') {
-						videoThumbnailUrl = `files/post/thumbnails/dummy/${faker.helpers.arrayElement(videoThumbnails)}`
+						videoThumbnailUrl = `files/post/thumbnails/dummy/${randomMedia.thumbnail}`
 					}
 					const postMedia = em.create(PostMediaEntity, {
 						post: post.id,
-						url: `files/post/${type}s/dummy/${randomMedia}`,
+						url: `files/post/${type}s/dummy/${randomMedia.media}`,
 						type: type,
 						extension: extension,
 						videoThumbnailUrl: videoThumbnailUrl

@@ -1,7 +1,12 @@
 import { Controller, Get, Param, StreamableFile } from '@nestjs/common'
 import { createReadStream } from 'fs'
 import { join } from 'path'
-import { POST_MEDIA_UPLOADS_DIR, RESTAURANT_MENU_UPLOADS_DIR } from '../../constants'
+import {
+	POST_MEDIA_UPLOADS_DIR,
+	PROFILE_PICTURE_UPLOADS_DIR,
+	RESTAURANT_BANNER_UPLOADS_DIR,
+	RESTAURANT_MENU_UPLOADS_DIR
+} from '../../constants'
 
 @Controller('files')
 export class MediaController {
@@ -63,6 +68,30 @@ export class MediaController {
 	@Get('menu/:fileName')
 	getMenu(@Param('fileName') fileName: string): StreamableFile {
 		const file = createReadStream(join(RESTAURANT_MENU_UPLOADS_DIR, fileName))
+		return new StreamableFile(file)
+	}
+
+	@Get('user/restaurant_banner/:fileName')
+	getRestaurantBanner(@Param('fileName') fileName: string): StreamableFile {
+		const file = createReadStream(join(RESTAURANT_BANNER_UPLOADS_DIR, fileName))
+		return new StreamableFile(file)
+	}
+
+	@Get('user/restaurant_banner/dummy/:fileName')
+	getDummyRestaurantBanner(@Param('fileName') fileName: string): StreamableFile {
+		const file = createReadStream(join(RESTAURANT_BANNER_UPLOADS_DIR, 'dummy', fileName))
+		return new StreamableFile(file)
+	}
+
+	@Get('user/profile_picture/:fileName')
+	getUserProfilePicture(@Param('fileName') fileName: string): StreamableFile {
+		const file = createReadStream(join(PROFILE_PICTURE_UPLOADS_DIR, fileName))
+		return new StreamableFile(file)
+	}
+
+	@Get('user/profile_picture/dummy/:fileName')
+	getDummyUserProfilePicture(@Param('fileName') fileName: string): StreamableFile {
+		const file = createReadStream(join(PROFILE_PICTURE_UPLOADS_DIR, 'dummy', fileName))
 		return new StreamableFile(file)
 	}
 }

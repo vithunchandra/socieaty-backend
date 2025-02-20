@@ -8,6 +8,8 @@ import { EntityManager } from '@mikro-orm/postgresql'
 import { MenuCategoryMapper } from './domain/menu-category.mapper'
 import { unlink } from 'fs'
 import { GetAllFoodMenuQueryDto } from './dto/get-all-food-menu-query.dto'
+import { PaginateMenuDto } from './persistence/dto/paginate-menu.dto'
+import { PaginationDto } from '../../dto/pagination.dto'
 
 @Injectable()
 export class FoodMenuService {
@@ -127,6 +129,8 @@ export class FoodMenuService {
 		const menusMapped = menus
 			.map((menu) => FoodMenuMapper.toDomain(menu))
 			.filter((menu) => menu !== null)
+
+		console.log(menusMapped)
 		return {
 			menus: menusMapped
 		}
@@ -136,6 +140,21 @@ export class FoodMenuService {
 		const categories = await this.foodMenuDaoService.getAllMenuCategories()
 		return {
 			categories: categories.map((category) => MenuCategoryMapper.toDomain(category))
+		}
+	}
+
+	async paginateMenu(query: PaginateMenuDto) {
+		const { items, count } = await this.foodMenuDaoService.paginateMenu(query)
+		const pagination = new PaginationDto()
+		pagination.nextOffset = items.length + query.offset
+		pagination.previousOffset = query.offset - query.limit
+		pagination.hasNext = pagination.nextOffset < count
+		pagination.hasPrevious = pagination.previousOffset >= 0
+		pagination.count = count
+		console.log(pagination)
+		return {
+			menus: items.map((menu) => FoodMenuMapper.toDomain(menu)),
+			pagination: pagination
 		}
 	}
 }

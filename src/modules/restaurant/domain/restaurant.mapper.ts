@@ -1,3 +1,4 @@
+import { BASE_URL } from '../../../constants'
 import { RestaurantEntity } from '../persistence/Restaurant.entity'
 import { Restaurant } from './Restaurant'
 import { RestaurantThemeMapper } from './restaurant-theme.mapper'
@@ -10,7 +11,7 @@ export class RestaurantMapper {
 
 		const restaurant = new Restaurant()
 		restaurant.id = raw.id
-		restaurant.restaurantBannerUrl = raw.restaurantBannerUrl
+		restaurant.restaurantBannerUrl = `${BASE_URL}${raw.restaurantBannerUrl}`
 		restaurant.location = raw.location
 		restaurant.themes = raw.themes
 
@@ -20,7 +21,6 @@ export class RestaurantMapper {
 		restaurant.closeTime = `${closeTime[0].padStart(2, '0')}:${closeTime[1].padStart(2, '0')}`
 		restaurant.payoutBank = raw.payoutBank
 		restaurant.accountNumber = raw.accountNumber
-
 
 		return restaurant
 	}

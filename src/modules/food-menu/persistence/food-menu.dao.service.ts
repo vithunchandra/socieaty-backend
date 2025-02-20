@@ -7,6 +7,7 @@ import { MenuCategoryEntity } from './menu-category.entity'
 import { UpdateFoodMenuDto } from './dto/update-food-menu.dto'
 import { GetAllFoodMenuDto } from './dto/get-all-food-menu.dto'
 import { PriceRange } from '../../../enums/price-range.enum'
+import { PaginateMenuDto } from './dto/paginate-menu.dto'
 
 @Injectable()
 export class FoodMenuDaoService {
@@ -88,6 +89,49 @@ export class FoodMenuDaoService {
 		return await this.foodMenuRepository.find(queryObject, {
 			populate: ['restaurant', 'categories']
 		})
+	}
+
+	async paginateMenu(query: PaginateMenuDto) {
+		const queryObject: FilterQuery<FoodMenuEntity> = {}
+
+		if (query.restaurantId) {
+			queryObject.restaurant = { id: query.restaurantId }
+		}
+
+		if (query.searchQuery?.trim().length != 0) {
+			queryObject.name = {
+				$ilike: `%${query.searchQuery}%`
+			}
+		}
+
+		// Handle price range conditions
+		if (query.priceConditionIds?.length) {
+			queryObject.$or = query.priceConditionIds.map((id) => {
+				return {
+					price: {
+						$gte: PriceRange[id].minPrice,
+						$lte: PriceRange[id].maxPrice
+					}
+				}
+			})
+		}
+
+		// Handle category filtering
+		if (query.categoryIds?.length) {
+			queryObject.categories = {
+				$in: query.categoryIds
+			}
+		}
+
+		const [menus, count] = await this.foodMenuRepository.findAndCount(queryObject, {
+			populate: ['restaurant', 'categories'],
+			limit: query.limit,
+			offset: query.offset
+		})
+		return {
+			items: menus,
+			count: count
+		}
 	}
 
 	removeMenu(menu: FoodMenuEntity) {

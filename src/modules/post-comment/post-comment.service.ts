@@ -4,13 +4,16 @@ import { PostCommentDaoService } from "./persistence/post-comment.dao.service";
 import { CreatePostCommentRequestDto } from "./dto/create-post-comment-request.dto";
 import { PostCommentMapper } from "./domain/post-comment.mapper";
 import { UserDaoService } from "../user/persistance/User.dao.service";
+import { PostMapper } from "../post/domain/post.mapper";
+import { PostDaoService } from "../post/persistence/post.dao.service";
 
 @Injectable()
 export class PostCommentService{
     constructor(
         private readonly postCommentDaoService: PostCommentDaoService,
         private readonly userDaoService: UserDaoService,
-        private readonly em: EntityManager
+        private readonly em: EntityManager,
+        private readonly postDaoService: PostDaoService
     ){}
 
     async createPostComment(postId: string, userId: string, data: CreatePostCommentRequestDto){
@@ -20,7 +23,9 @@ export class PostCommentService{
             userId
         })
         await this.em.flush();
+        const refreshedPost = await this.postDaoService.findOneById(postId)
         return {
+            updatedPost: PostMapper.toDomain(refreshedPost!),
             comment: PostCommentMapper.toDomain(postComment)
         };
     }

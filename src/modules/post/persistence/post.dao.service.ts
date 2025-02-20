@@ -50,7 +50,7 @@ export class PostDaoService {
 			{
 				id: post_id
 			},
-			{ populate: ['medias', 'comments.*', 'postLikes', 'user', 'hashtags.*'] }
+			{ populate: ['medias', 'comments:ref', 'postLikes', 'user', 'hashtags'] }
 		)
 		return post
 	}

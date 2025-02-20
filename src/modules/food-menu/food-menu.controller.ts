@@ -25,8 +25,9 @@ import { fileNameEditor, imageFileFilter } from '../../utils/image.utils'
 import { AuthGuard } from '../../module/AuthGuard/AuthGuard.service'
 import { UpdateMenuStockRequestDto } from './dto/update-menu-stock-request.dto'
 import { GetAllFoodMenuQueryDto } from './dto/get-all-food-menu-query.dto'
+import { PaginateMenuRequestDto } from './dto/paginate-menu-request.dto'
 
-@Controller('restaurant/menu')
+@Controller('menu')
 export class FoodMenuController {
 	constructor(private readonly foodMenuService: FoodMenuService) {}
 
@@ -61,6 +62,13 @@ export class FoodMenuController {
 		return await this.foodMenuService.getAllMenuCategories()
 	}
 
+	@Get('')
+	async paginateMenu(
+		@Query() query: PaginateMenuRequestDto
+	) {
+		return await this.foodMenuService.paginateMenu(query)
+	}
+
 	@Get(':restaurantid')
 	async findAllMenuByRestaurantId(
 		@Param('restaurantid') restaurantId: string,
@@ -68,6 +76,8 @@ export class FoodMenuController {
 	) {
 		return await this.foodMenuService.findAllMenusByRestaurantId(restaurantId, query)
 	}
+
+	
 
 	@Put(':menuId/stock')
 	@UseGuards(AuthGuard)

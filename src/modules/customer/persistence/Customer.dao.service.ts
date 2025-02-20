@@ -4,6 +4,8 @@ import { CustomerEntity } from "./Customer.entity";
 import { InjectRepository } from "@mikro-orm/nestjs";
 import { CustomerCreateDto } from "./dto/CustomerCreate.dto";
 import { UserEntity } from "../../user/persistance/User.entity";
+import { UpdateCustomerProfileRequestDto } from "../dto/update-customer-profile-request.dto";
+import { UpdateCustomerDataDto } from "./dto/update-customer-data.dto";
 
 @Injectable()
 export class CustomerDaoService{
@@ -25,6 +27,11 @@ export class CustomerDaoService{
         const customer = await this.customerRepository.findOne({
             userData: {id: user_id}
         }, {populate: ['userData']})
+        return customer
+    }
+
+    updateCustomerData(customer: CustomerEntity, data: UpdateCustomerDataDto){
+        customer.bio = data.bio
         return customer
     }
 }

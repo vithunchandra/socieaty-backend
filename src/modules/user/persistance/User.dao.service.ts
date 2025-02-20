@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common'
 import { UserEntity } from './User.entity'
 import { EntityRepository } from '@mikro-orm/postgresql'
 import { UserCreateDto } from './dto/UserDao.dto'
+import { UpdateUserDataDto } from './dto/update-user-data.dto'
 
 @Injectable()
 export class UserDaoService {
@@ -20,6 +21,13 @@ export class UserDaoService {
 			profilePictureUrl: data.profilePictureUrl,
 			role: data.role
 		})
+		return user
+	}
+
+	update(user: UserEntity, data: UpdateUserDataDto): UserEntity {
+		user.name = data.name
+		user.phoneNumber = data.phoneNumber
+		user.profilePictureUrl = data.profilePictureUrl
 		return user
 	}
 

@@ -1,10 +1,12 @@
-import { EntityRepository, wrap } from '@mikro-orm/postgresql'
+import { EntityRepository, FilterQuery, wrap } from '@mikro-orm/postgresql'
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@mikro-orm/nestjs'
 import { UserEntity } from '../../user/persistance/User.entity'
 import { RestaurantEntity } from './Restaurant.entity'
 import { CreateRestaurantDto } from './dto/create-restaurant-dto'
 import { RestaurantThemeEntity } from './restaurant-theme.entity'
+import { PaginateRestaurantDto } from './dto/paginate_restaurant.dto'
+import { PriceRange } from '../../../enums/price-range.enum'
 
 @Injectable()
 export class RestaurantDaoService {
@@ -40,6 +42,46 @@ export class RestaurantDaoService {
 		return restaurant
 	}
 
+	async paginateRestaurant(query: PaginateRestaurantDto) {
+		const { name, offset, limit, priceConditionIds, categoryIds, themeIds } = query
+		console.log(query)
+		const filter: FilterQuery<RestaurantEntity> = {}
+		if (name) {
+			filter.userData = { name: { $ilike: `%${name}%` } }
+		}
+		if (priceConditionIds) {
+			filter.menus = {
+				$or: priceConditionIds.map((id) => {
+					return {
+						price: {
+							$gte: PriceRange[id].minPrice,
+							$lte: PriceRange[id].maxPrice
+						}
+					}
+				})
+			}
+		}
+		if (categoryIds) {
+			filter.menus = { categories: { $in: categoryIds } }
+		}
+		if (themeIds) {
+			filter.themes = { id: { $in: themeIds } }
+		}
+		console.log(filter)
+		const [items, count] = await this.restaurantRepository.findAndCount(filter, {
+			populate: ['userData.restaurantData', 'themes'],
+			offset: offset,
+			limit
+		})
+
+		console.log(items[0].menus)
+
+		return {
+			items,
+			count
+		}
+	}
+
 	async getRestaurantById(restaurantId: string): Promise<RestaurantEntity | null> {
 		return await this.restaurantRepository.findOne(
 			{
@@ -60,5 +102,9 @@ export class RestaurantDaoService {
 		return await this.restaurantThemeRepository.findOne({
 			id: themeId
 		})
+	}
+
+	async getAllRestaurantThemes(): Promise<RestaurantThemeEntity[]> {
+		return await this.restaurantThemeRepository.findAll()
 	}
 }
