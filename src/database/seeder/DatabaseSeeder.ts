@@ -192,7 +192,7 @@ export class DatabaseSeeder extends Seeder {
 		const customerUserData = em.create(CustomerEntity, {
 			userData: customerUser.id,
 			bio: faker.lorem.sentence(),
-			wallet: 0
+			wallet: 999999999
 		})
 
 		const restaurantUser = em.create(UserEntity, {

@@ -45,7 +45,6 @@ export class UserEntity extends BaseEntity {
 		entity: () => CustomerEntity,
 		mappedBy: (customer) => customer.userData,
 		nullable: true,
-		index: true
 	})
 	customerData: CustomerEntity | null = null
 
@@ -53,7 +52,6 @@ export class UserEntity extends BaseEntity {
 		entity: () => PostEntity,
 		mappedBy: 'user',
 		orphanRemoval: true,
-		index: true
 	})
 	posts = new Collection<PostEntity>(this)
 
@@ -61,14 +59,12 @@ export class UserEntity extends BaseEntity {
 		entity: () => PostCommentEntity,
 		mappedBy: 'user',
 		orphanRemoval: true,
-		index: true
 	})
 	comments = new Collection<PostCommentEntity>(this)
 
 	@ManyToMany({
 		entity: () => PostEntity,
 		inversedBy: 'postLikes',
-		index: true
 	})
 	likedPosts = new Collection<PostEntity>(this)
 

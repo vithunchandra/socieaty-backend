@@ -16,7 +16,6 @@ export class PostMediaEntity extends BaseEntity {
 	@Property({ nullable: true })
 	videoThumbnailUrl?: string
 
-	@Index()
 	@ManyToOne({
 		entity: () => PostEntity,
 		fieldName: 'post_id',

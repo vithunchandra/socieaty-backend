@@ -29,3 +29,5 @@ export const PROFILE_PICTURE_RELATIVE_DIR = 'files/user/profile_picture'
 
 export const RESTAURANT_MENU_UPLOADS_DIR = join(process.cwd(), 'src', 'files', 'menu')
 export const RESTAURANT_MENU_RELATIVE_DIR = 'files/menu'
+
+export const SERVICE_FEE = 5000

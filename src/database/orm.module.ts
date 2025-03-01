@@ -1,10 +1,7 @@
-import { Module } from '@nestjs/common';
-import { MikroOrmModule } from '@mikro-orm/nestjs';
+import { Module } from '@nestjs/common'
+import { MikroOrmModule } from '@mikro-orm/nestjs'
 
 @Module({
-  imports: [
-    MikroOrmModule.forRoot({}),
-  ],
-  exports: [MikroOrmModule],
+	imports: [MikroOrmModule.forRoot({})]
 })
-export class OrmModule { }
+export class OrmModule {}

@@ -55,12 +55,10 @@ export class PostEntity extends BaseEntity<'location'> {
 	})
 	postLikes = new Collection<UserEntity>(this)
 
-	@Index()
 	@ManyToOne({
 		entity: () => UserEntity,
 		inversedBy: 'posts',
 		fieldName: 'user_id',
-		index: true
 	})
 	user: UserEntity
 

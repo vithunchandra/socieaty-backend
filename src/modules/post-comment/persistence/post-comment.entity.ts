@@ -8,7 +8,6 @@ export class PostCommentEntity extends BaseEntity{
     @Property({type: 'text'})
     text: string
 
-    @Index()
     @ManyToOne({
         entity: () => PostEntity,
         inversedBy: 'comments',
@@ -17,7 +16,6 @@ export class PostCommentEntity extends BaseEntity{
     })
     post: PostEntity
 
-    @Index()
     @ManyToOne({
         entity: () => UserEntity,
         inversedBy: 'comments',

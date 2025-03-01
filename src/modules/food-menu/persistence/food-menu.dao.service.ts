@@ -56,6 +56,10 @@ export class FoodMenuDaoService {
 		return await this.foodMenuRepository.findOne({ id: id }, { populate: ['categories'] })
 	}
 
+	async findMenusByIds(ids: string[]) {
+		return await this.foodMenuRepository.find({ id: { $in: ids } }, { populate: ['categories'] })
+	}
+
 	async findMenusByRestaurantId(restaurantId: string, query: GetAllFoodMenuDto) {
 		const queryObject: FilterQuery<FoodMenuEntity> = {
 			restaurant: { id: restaurantId }

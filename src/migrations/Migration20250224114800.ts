@@ -1,6 +1,6 @@
 import { Migration } from '@mikro-orm/migrations';
 
-export class Migration20250212162037 extends Migration {
+export class Migration20250224114800 extends Migration {
 
   override async up(): Promise<void> {
     this.addSql(`create table "menu_category" ("id" serial primary key, "name" varchar(255) not null);`);
@@ -23,16 +23,18 @@ export class Migration20250212162037 extends Migration {
 
     this.addSql(`create table "menu_category_menus" ("menu_category_entity_id" int not null, "food_menu_entity_id" uuid not null, constraint "menu_category_menus_pkey" primary key ("menu_category_entity_id", "food_menu_entity_id"));`);
 
-    this.addSql(`create table "post" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "title" varchar(255) null default '', "caption" varchar(255) not null, "location" point null, "user_id" uuid not null, constraint "post_pkey" primary key ("id"));`);
+    this.addSql(`create table "post" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "title" varchar(255) null default '', "caption" text not null, "location" point null, "user_id" uuid not null, constraint "post_pkey" primary key ("id"));`);
 
     this.addSql(`create table "user_liked_posts" ("user_entity_id" uuid not null, "post_entity_id" uuid not null, constraint "user_liked_posts_pkey" primary key ("user_entity_id", "post_entity_id"));`);
 
-    this.addSql(`create table "post-media" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "url" varchar(255) not null, "type" varchar(255) not null, "extension" varchar(255) not null, "post_id" uuid not null, constraint "post-media_pkey" primary key ("id"));`);
+    this.addSql(`create table "post-media" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "url" varchar(255) not null, "type" varchar(255) not null, "extension" varchar(255) not null, "video_thumbnail_url" varchar(255) null, "post_id" uuid not null, constraint "post-media_pkey" primary key ("id"));`);
     this.addSql(`create index "post-media_post_id_index" on "post-media" ("post_id");`);
 
     this.addSql(`create table "post_hashtag_post" ("post_hashtag_entity_id" uuid not null, "post_entity_id" uuid not null, constraint "post_hashtag_post_pkey" primary key ("post_hashtag_entity_id", "post_entity_id"));`);
 
-    this.addSql(`create table "post_comment" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "text" varchar(255) not null, "post_id" uuid not null, "user_id" uuid not null, constraint "post_comment_pkey" primary key ("id"));`);
+    this.addSql(`create table "post_comment" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "text" text not null, "post_id" uuid not null, "user_id" uuid not null, constraint "post_comment_pkey" primary key ("id"));`);
+    this.addSql(`create index "post_comment_post_id_index" on "post_comment" ("post_id");`);
+    this.addSql(`create index "post_comment_user_id_index" on "post_comment" ("user_id");`);
 
     this.addSql(`create table "user_liked_comments" ("user_entity_id" uuid not null, "post_comment_entity_id" uuid not null, constraint "user_liked_comments_pkey" primary key ("user_entity_id", "post_comment_entity_id"));`);
 
@@ -42,6 +44,13 @@ export class Migration20250212162037 extends Migration {
 
     this.addSql(`create table "customer" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "bio" text null default '', "wallet" int not null default 0, "user_id" uuid not null, constraint "customer_pkey" primary key ("id"));`);
     this.addSql(`alter table "customer" add constraint "customer_user_id_unique" unique ("user_id");`);
+
+    this.addSql(`create table "transactions" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "service_type" text check ("service_type" in ('food_order', 'reservation')) not null, "gross_amount" int not null, "service_fee" int not null, "status" text check ("status" in ('confirming', 'pending', 'process', 'completed', 'cancelled')) not null, "restaurant_id" uuid not null, "customer_id" uuid not null, constraint "transactions_pkey" primary key ("id"));`);
+    this.addSql(`create index "transactions_restaurant_id_index" on "transactions" ("restaurant_id");`);
+    this.addSql(`create index "transactions_customer_id_index" on "transactions" ("customer_id");`);
+
+    this.addSql(`create table "transaction_menu_items" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "quantity" int not null, "price" int not null, "total_price" int not null, "menu_id" uuid not null, "transaction_id" uuid not null, constraint "transaction_menu_items_pkey" primary key ("id"));`);
+    this.addSql(`create index "transaction_menu_items_menu_id_index" on "transaction_menu_items" ("menu_id");`);
 
     this.addSql(`alter table "restaurant" add constraint "restaurant_user_id_foreign" foreign key ("user_id") references "user" ("id") on update cascade;`);
 
@@ -75,7 +84,11 @@ export class Migration20250212162037 extends Migration {
 
     this.addSql(`alter table "customer" add constraint "customer_user_id_foreign" foreign key ("user_id") references "user" ("id") on update cascade;`);
 
-    this.addSql(`drop table if exists "restaurant_menu" cascade;`);
+    this.addSql(`alter table "transactions" add constraint "transactions_restaurant_id_foreign" foreign key ("restaurant_id") references "restaurant" ("id") on update cascade;`);
+    this.addSql(`alter table "transactions" add constraint "transactions_customer_id_foreign" foreign key ("customer_id") references "customer" ("id") on update cascade;`);
+
+    this.addSql(`alter table "transaction_menu_items" add constraint "transaction_menu_items_menu_id_foreign" foreign key ("menu_id") references "food_menu" ("id") on update cascade;`);
+    this.addSql(`alter table "transaction_menu_items" add constraint "transaction_menu_items_transaction_id_foreign" foreign key ("transaction_id") references "transactions" ("id") on update cascade;`);
   }
 
   override async down(): Promise<void> {
@@ -105,7 +118,11 @@ export class Migration20250212162037 extends Migration {
 
     this.addSql(`alter table "food_menu" drop constraint "food_menu_restaurant_id_foreign";`);
 
+    this.addSql(`alter table "transactions" drop constraint "transactions_restaurant_id_foreign";`);
+
     this.addSql(`alter table "menu_category_menus" drop constraint "menu_category_menus_food_menu_entity_id_foreign";`);
+
+    this.addSql(`alter table "transaction_menu_items" drop constraint "transaction_menu_items_menu_id_foreign";`);
 
     this.addSql(`alter table "user_liked_posts" drop constraint "user_liked_posts_post_entity_id_foreign";`);
 
@@ -117,7 +134,9 @@ export class Migration20250212162037 extends Migration {
 
     this.addSql(`alter table "user_liked_comments" drop constraint "user_liked_comments_post_comment_entity_id_foreign";`);
 
-    this.addSql(`create table "restaurant_menu" ("id" uuid not null, "created_at" timestamptz(6) not null, "updated_at" timestamptz(6) not null, "deleted_at" timestamptz(6) null, "name" varchar(255) not null, "price" int4 not null, "description" varchar(255) not null, "picture_url" varchar(255) not null, "estimated_time" int4 not null, "restaurant_id" uuid not null, "is_stock_available" bool not null default true, constraint "restaurant_menu_pkey" primary key ("id"));`);
+    this.addSql(`alter table "transactions" drop constraint "transactions_customer_id_foreign";`);
+
+    this.addSql(`alter table "transaction_menu_items" drop constraint "transaction_menu_items_transaction_id_foreign";`);
 
     this.addSql(`drop table if exists "menu_category" cascade;`);
 
@@ -152,6 +171,10 @@ export class Migration20250212162037 extends Migration {
     this.addSql(`drop table if exists "livestream-room-comment" cascade;`);
 
     this.addSql(`drop table if exists "customer" cascade;`);
+
+    this.addSql(`drop table if exists "transactions" cascade;`);
+
+    this.addSql(`drop table if exists "transaction_menu_items" cascade;`);
   }
 
 }
