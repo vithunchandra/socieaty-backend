@@ -44,7 +44,6 @@ export class RestaurantDaoService {
 
 	async paginateRestaurant(query: PaginateRestaurantDto) {
 		const { name, offset, limit, priceConditionIds, categoryIds, themeIds } = query
-		console.log(query)
 		const filter: FilterQuery<RestaurantEntity> = {}
 		if (name) {
 			filter.userData = { name: { $ilike: `%${name}%` } }
@@ -67,14 +66,11 @@ export class RestaurantDaoService {
 		if (themeIds) {
 			filter.themes = { id: { $in: themeIds } }
 		}
-		console.log(filter)
 		const [items, count] = await this.restaurantRepository.findAndCount(filter, {
 			populate: ['userData.restaurantData', 'themes'],
 			offset: offset,
 			limit
 		})
-
-		console.log(items[0].menus)
 
 		return {
 			items,

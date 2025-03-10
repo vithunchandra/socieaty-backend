@@ -75,7 +75,6 @@ export class PostDaoService {
 		if (authorId && authorId.trim().length > 0) {
 			where.user = { id: authorId }
 		}
-		console.log(`Query:`, query)
 		const count = await this.postRepository.count(where)
 
 		const posts = await this.postRepository.find(where, {
@@ -84,7 +83,6 @@ export class PostDaoService {
 			offset: offset,
 			limit: limit
 		})
-		console.log(`Count:`, count)
 		return {
 			items: posts,
 			count: count

@@ -13,6 +13,7 @@ import { Point, PointType } from './custom-type/PointType'
 import { RestaurantThemeEntity } from './restaurant-theme.entity'
 import { FoodMenuEntity } from '../../food-menu/persistence/food-menu.entity'
 import { BankEnum } from '../../../enums/bank.enum'
+import { RestaurantReviewEntity } from '../../food-order-review/persistence/restaurant-review.entity'
 
 @Entity({ tableName: 'restaurant' })
 export class RestaurantEntity extends BaseEntity {
@@ -55,6 +56,13 @@ export class RestaurantEntity extends BaseEntity {
 		orphanRemoval: true
 	})
 	menus: Collection<FoodMenuEntity>
+
+	@OneToMany({
+		entity: () => RestaurantReviewEntity,
+		mappedBy: 'restaurant',
+		orphanRemoval: true
+	})
+	reviews: Collection<RestaurantReviewEntity>
 
 	constructor(userData: UserEntity, restaurantBannerUrl: string, restaurantAddress: Point) {
 		super()

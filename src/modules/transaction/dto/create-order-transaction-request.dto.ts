@@ -1,4 +1,4 @@
-import { IsArray, IsEnum, IsNumber, IsString } from 'class-validator'
+import { IsArray, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator'
 import { TransactionServiceType } from '../../../enums/transaction.enum'
 import { Type } from 'class-transformer'
 
@@ -12,6 +12,9 @@ export class CreateOrderTransactionRequestDto {
 	@IsArray()
 	@Type(() => OrderMenuItem)
 	menuItems: OrderMenuItem[]
+
+	@IsString()
+	note: string
 }
 
 class OrderMenuItem {

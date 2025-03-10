@@ -130,7 +130,6 @@ export class FoodMenuService {
 			.map((menu) => FoodMenuMapper.toDomain(menu))
 			.filter((menu) => menu !== null)
 
-		console.log(menusMapped)
 		return {
 			menus: menusMapped
 		}
@@ -151,7 +150,6 @@ export class FoodMenuService {
 		pagination.hasNext = pagination.nextOffset < count
 		pagination.hasPrevious = pagination.previousOffset >= 0
 		pagination.count = count
-		console.log(pagination)
 		return {
 			menus: items.map((menu) => FoodMenuMapper.toDomain(menu)),
 			pagination: pagination

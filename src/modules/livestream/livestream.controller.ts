@@ -115,7 +115,6 @@ export class LiveStreamController {
 				authHeader
 			)
 
-			console.log('Received webhook event:', event)
 			await this.liveStreamService.handleWebhook(event)
 		} catch (error) {
 			console.error('Error processing webhook:', error)

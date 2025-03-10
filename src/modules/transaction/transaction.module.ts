@@ -8,6 +8,9 @@ import { FoodMenuDaoModule } from '../food-menu/persistence/food-menu.dao.module
 import { UserDaoModule } from '../user/persistance/User.dao.module'
 import { TransactionGateway } from './transaction.gateway'
 import { JwtService } from '@nestjs/jwt'
+import { MikroOrmModule } from '@mikro-orm/nestjs'
+import { TransactionEntity } from './persistence/entity/transaction.entity'
+import { TransactionMenuItemEntity } from './persistence/entity/transaction-menu-item.entity'
 
 @Module({
 	imports: [TransactionDaoModule, RestaurantDaoModule, FoodMenuDaoModule, UserDaoModule],

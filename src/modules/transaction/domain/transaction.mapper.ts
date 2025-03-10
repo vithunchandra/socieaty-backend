@@ -25,6 +25,7 @@ export class TransactionMapper {
         foodOrderTransaction.grossAmount = raw.grossAmount
         foodOrderTransaction.serviceFee = raw.serviceFee
         foodOrderTransaction.status = raw.status
+        foodOrderTransaction.note = raw.note
         foodOrderTransaction.restaurant = UserMapper.fromRestaurantToDomain(raw.restaurant)
         foodOrderTransaction.customer = UserMapper.fromCustomerToDomain(raw.customer)
         foodOrderTransaction.menuItems = menuItems.map(item => TransactionMenuItemMapper.toDomain(item))

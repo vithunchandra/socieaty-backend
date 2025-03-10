@@ -15,10 +15,8 @@ export const GatewayAuthMiddleware = (
 	em: EntityManager
 ): GatewayIOMiddleware => {
 	return async (client: Socket, next: (err?: Error) => void) => {
-		console.log("hashshaashas")
 		try {
 			const token = client.handshake.headers.authorization?.split('Bearer ')[1]
-			console.log(token)
 
 			if (!token) {
 				next(new UnauthorizedException('Token is required'))
@@ -39,9 +37,9 @@ export const GatewayAuthMiddleware = (
 					return
 				}
 				client['user'] = user
+				console.log('hallo')
 				next()
 			} catch (error) {
-				console.log(error)
 				next(new UnauthorizedException('Invalid token'))
 			}
 		} catch (error) {

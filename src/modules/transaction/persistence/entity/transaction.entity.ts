@@ -5,6 +5,7 @@ import {
 	Enum,
 	ManyToOne,
 	OneToMany,
+	OneToOne,
 	Property,
 	Unique
 } from '@mikro-orm/core'
@@ -19,6 +20,8 @@ import { RestaurantEntity } from '../../../restaurant/persistence/Restaurant.ent
 import { UserEntity } from '../../../user/persistance/User.entity'
 import { CustomerEntity } from '../../../customer/persistence/Customer.entity'
 import { BaseEntity } from '../../../../database/model/base/Base.entity'
+import { TransactionMessageEntity } from '../../../transaction-message/persistence/transaction-message.entity'
+import { RestaurantReviewEntity } from '../../../food-order-review/persistence/restaurant-review.entity'
 
 @Entity({ tableName: 'transactions' })
 export class TransactionEntity extends BaseEntity {
@@ -34,6 +37,9 @@ export class TransactionEntity extends BaseEntity {
 	@Enum(() => TransactionStatus)
 	status: TransactionStatus
 
+	@Property()
+	note: string
+
 	@ManyToOne({
 		entity: () => RestaurantEntity,
 		fieldName: 'restaurant_id',
@@ -47,6 +53,25 @@ export class TransactionEntity extends BaseEntity {
 		index: true
 	})
 	customer: CustomerEntity
+
+	@OneToMany({
+		entity: () => TransactionMenuItemEntity,
+		mappedBy: 'transaction'
+	})
+	menuItems = new Collection<TransactionMenuItemEntity>(this)
+
+	@OneToMany({
+		entity: () => TransactionMessageEntity,
+		mappedBy: 'transaction',
+		orphanRemoval: true
+	})
+	messages = new Collection<TransactionMessageEntity>(this)
+
+	@OneToOne({
+		entity: () => RestaurantReviewEntity,
+		mappedBy: 'transaction'
+	})
+	review: RestaurantReviewEntity
 
 	constructor(dto: CreateTransactionDto) {
 		super()

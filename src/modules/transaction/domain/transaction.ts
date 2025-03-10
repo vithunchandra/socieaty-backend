@@ -8,6 +8,7 @@ export class Transaction {
     grossAmount: number
     serviceFee: number
     status: TransactionStatus
+    note: string
     restaurant: User
     customer: User
 }

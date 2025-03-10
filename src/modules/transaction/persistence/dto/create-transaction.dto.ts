@@ -8,5 +8,6 @@ export class CreateTransactionDto {
 	serviceType: TransactionServiceType
 	grossAmount: number
 	serviceFee: number
+	note: string
 }
 

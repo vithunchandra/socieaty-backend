@@ -12,6 +12,7 @@ import { RestaurantEntity } from '../../restaurant/persistence/Restaurant.entity
 import { CustomerEntity } from '../../customer/persistence/Customer.entity'
 import { PostEntity } from '../../post/persistence/post.entity'
 import { PostCommentEntity } from '../../post-comment/persistence/post-comment.entity'
+import { RestaurantReviewEntity } from '../../food-order-review/persistence/restaurant-review.entity'
 
 @Entity({ tableName: 'user' })
 export class UserEntity extends BaseEntity {
@@ -44,27 +45,27 @@ export class UserEntity extends BaseEntity {
 	@OneToOne({
 		entity: () => CustomerEntity,
 		mappedBy: (customer) => customer.userData,
-		nullable: true,
+		nullable: true
 	})
 	customerData: CustomerEntity | null = null
 
 	@OneToMany({
 		entity: () => PostEntity,
 		mappedBy: 'user',
-		orphanRemoval: true,
+		orphanRemoval: true
 	})
 	posts = new Collection<PostEntity>(this)
 
 	@OneToMany({
 		entity: () => PostCommentEntity,
 		mappedBy: 'user',
-		orphanRemoval: true,
+		orphanRemoval: true
 	})
 	comments = new Collection<PostCommentEntity>(this)
 
 	@ManyToMany({
 		entity: () => PostEntity,
-		inversedBy: 'postLikes',
+		inversedBy: 'postLikes'
 	})
 	likedPosts = new Collection<PostEntity>(this)
 
@@ -74,6 +75,13 @@ export class UserEntity extends BaseEntity {
 		index: true
 	})
 	likedComments = new Collection<PostCommentEntity>(this)
+
+	@OneToMany({
+		entity: () => RestaurantReviewEntity,
+		mappedBy: 'user',
+		orphanRemoval: true
+	})
+	reviews = new Collection<RestaurantReviewEntity>(this)
 
 	// @OneToMany({
 	//    entity: () => LivestreamRoomCommentEntity,

@@ -17,6 +17,7 @@ import { FoodMenuEntity } from './modules/food-menu/persistence/food-menu.entity
 import { MenuCategoryEntity } from './modules/food-menu/persistence/menu-category.entity'
 import { TransactionEntity } from './modules/transaction/persistence/entity/transaction.entity'
 import { TransactionMenuItemEntity } from './modules/transaction/persistence/entity/transaction-menu-item.entity'
+import { TransactionMessageEntity } from './modules/transaction-message/persistence/transaction-message.entity'
 const logger = new Logger('MikroORM')
 
 export default defineConfig({
@@ -34,7 +35,8 @@ export default defineConfig({
 		FoodMenuEntity,
 		MenuCategoryEntity,
 		TransactionEntity,
-		TransactionMenuItemEntity
+		TransactionMenuItemEntity,
+		TransactionMessageEntity
 	],
 	entitiesTs: [
 		UserEntity,
@@ -50,7 +52,8 @@ export default defineConfig({
 		FoodMenuEntity,
 		MenuCategoryEntity,
 		TransactionEntity,
-		TransactionMenuItemEntity
+		TransactionMenuItemEntity,
+		TransactionMessageEntity
 	],
 	dbName: config().dbName ?? 'socieaty_database',
 	driver: PostgreSqlDriver,
@@ -84,6 +87,7 @@ export default defineConfig({
 				'LivestreamRoomCommentEntity',
 				'LivestreamRoomLikeEntity',
 				'FoodMenuEntity',
+				'TransactionMessageEntity'
 			]
 		},
 		[MikroOrmFilter.DELETED]: {
@@ -102,6 +106,7 @@ export default defineConfig({
 				'LivestreamRoomCommentEntity',
 				'LivestreamRoomLikeEntity',
 				'FoodMenuEntity',
+				'TransactionMessageEntity'
 			]
 		}
 	},

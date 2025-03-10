@@ -17,6 +17,7 @@ import { LiveStreamModule } from './modules/livestream/livestream.module'
 import { FoodMenuModule } from './modules/food-menu/food-menu.module'
 import { MediaModule } from './modules/media/media.module'
 import { TransactionModule } from './modules/transaction/transaction.module'
+import { TransactionMessageModule } from './modules/transaction-message/transaction-message.module'
 
 @Module({
 	imports: [
@@ -39,7 +40,8 @@ import { TransactionModule } from './modules/transaction/transaction.module'
 		AuthGuardModule,
 		LiveStreamModule,
 		FoodMenuModule,
-		TransactionModule
+		TransactionModule,
+		TransactionMessageModule
 	],
 	controllers: [AppController],
 	providers: [AppService]

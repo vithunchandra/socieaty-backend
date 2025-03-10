@@ -73,7 +73,6 @@ async function generateVideoThumbnail(videoPath: string, filename: string) {
 				resolve(`${POST_MEDIA_UPLOADS_DIR}/thumbnails/thumbnail_${videoThumbnailFilename}.jpg`)
 			})
 			.on('error', (err) => {
-                console.log(err)
 				reject(new BadRequestException('Error generating thumbnail'))
 			})
 	})

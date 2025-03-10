@@ -1,4 +1,10 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
+import {
+	BadRequestException,
+	forwardRef,
+	Inject,
+	Injectable,
+	NotFoundException
+} from '@nestjs/common'
 import { TransactionDaoService } from './persistence/transaction.dao.service'
 import { CreateOrderTransactionRequestDto } from './dto/create-order-transaction-request.dto'
 import { FoodMenuDaoService } from '../food-menu/persistence/food-menu.dao.service'
@@ -13,6 +19,8 @@ import { TransactionMapper } from './domain/transaction.mapper'
 import { TransactionGateway } from './transaction.gateway'
 import { UpdateOrderTransactionRequestDto } from './dto/update-order-transaction-request.dto'
 import { RestaurantEntity } from '../restaurant/persistence/Restaurant.entity'
+import { UserEntity, UserRole } from '../user/persistance/User.entity'
+import { FoodOrderTransaction } from './domain/food-order-transaction'
 
 @Injectable()
 export class TransactionService {
@@ -20,12 +28,12 @@ export class TransactionService {
 		private readonly transactionDaoService: TransactionDaoService,
 		private readonly restaurantDaoService: RestaurantDaoService,
 		private readonly menuItemDaoService: FoodMenuDaoService,
+		@Inject(forwardRef(() => TransactionGateway))
 		private readonly transactionGateway: TransactionGateway,
 		private readonly em: EntityManager
 	) {}
 
 	async createTransaction(customer: CustomerEntity, dto: CreateOrderTransactionRequestDto) {
-		console.log(dto)
 		const restaurant = await this.restaurantDaoService.getRestaurantById(dto.restaurantId)
 		if (!restaurant) {
 			throw new NotFoundException('Restaurant not found')
@@ -68,7 +76,8 @@ export class TransactionService {
 			grossAmount: totalPrice,
 			serviceFee: SERVICE_FEE,
 			customer: customer,
-			serviceType: TransactionServiceType.FOOD_ORDER
+			serviceType: TransactionServiceType.FOOD_ORDER,
+			note: dto.note
 		})
 
 		let orderItems: TransactionMenuItemEntity[] = []
@@ -83,13 +92,19 @@ export class TransactionService {
 		}
 
 		await this.em.flush()
-		this.transactionGateway.notifyNewOrder(TransactionMapper.toFoodOrderTransaction(transaction, orderItems))
+		this.transactionGateway.notifyNewOrder(
+			TransactionMapper.toFoodOrderTransaction(transaction, orderItems)
+		)
 		return {
 			transaction: TransactionMapper.toFoodOrderTransaction(transaction, orderItems)
 		}
 	}
 
-	async updateOrderTransaction(id: string, restaurant: RestaurantEntity, dto: UpdateOrderTransactionRequestDto) {
+	async updateOrderTransaction(
+		id: string,
+		restaurant: RestaurantEntity,
+		dto: UpdateOrderTransactionRequestDto
+	) {
 		const transaction = await this.transactionDaoService.findTransactionById(id)
 		if (!transaction) {
 			throw new NotFoundException('Transaction not found')
@@ -97,15 +112,68 @@ export class TransactionService {
 		if (transaction.restaurant.id !== restaurant.id) {
 			throw new BadRequestException('Transaction does not belong to the restaurant')
 		}
-		if(transaction.serviceType !== TransactionServiceType.FOOD_ORDER) {
+		if (transaction.serviceType !== TransactionServiceType.FOOD_ORDER) {
 			throw new BadRequestException('Transaction is not a food order')
 		}
 		transaction.status = dto.status
 		const menuItems = await this.transactionDaoService.findOrderMenuItemsByTransactionId(id)
 		await this.em.flush()
-		this.transactionGateway.notifyTrackOrder(TransactionMapper.toFoodOrderTransaction(transaction, menuItems))
+		this.transactionGateway.notifyTrackOrder(
+			TransactionMapper.toFoodOrderTransaction(transaction, menuItems)
+		)
 		return {
 			transaction: TransactionMapper.toFoodOrderTransaction(transaction, menuItems)
+		}
+	}
+
+	async findFoodOrderTransactionByOrderId(orderId: string, user: UserEntity) {
+		const transaction = await this.transactionDaoService.findTransactionById(orderId)
+		if (!transaction) {
+			throw new NotFoundException('Transaction not found')
+		}
+		if (user.role === UserRole.CUSTOMER) {
+			if (transaction.customer.id !== user.customerData?.id) {
+				throw new BadRequestException('Transaction does not belong to the customer')
+			}
+		}
+		if (user.role === UserRole.RESTAURANT) {
+			if (transaction.restaurant.id !== user.restaurantData?.id) {
+				throw new BadRequestException('Transaction does not belong to the restaurant')
+			}
+		}
+		if (transaction.serviceType !== TransactionServiceType.FOOD_ORDER) {
+			throw new BadRequestException('Transaction is not a food order')
+		}
+		const menuItems =
+			await this.transactionDaoService.findOrderMenuItemsByTransactionId(orderId)
+		return {
+			transaction: TransactionMapper.toFoodOrderTransaction(transaction, menuItems)
+		}
+	}
+
+	async findRestaurantFoodOrderTransaction(
+		restaurant: RestaurantEntity,
+		status: TransactionStatus[]
+	) {
+		const transactions = await this.transactionDaoService.findRestaurantFoodTransactions(
+			restaurant,
+			status
+		)
+		return {
+			transactions: transactions.map((transaction) =>
+				TransactionMapper.toFoodOrderTransaction(
+					transaction,
+					transaction.menuItems.getItems()
+				)
+			)
+		}
+	}
+
+	async trackOrder(orderId: string, customer: UserEntity) {
+		const { transaction } = await this.findFoodOrderTransactionByOrderId(orderId, customer)
+		await this.transactionGateway.trackOrder(customer, transaction)
+		return {
+			message: 'Order is being tracked'
 		}
 	}
 }
