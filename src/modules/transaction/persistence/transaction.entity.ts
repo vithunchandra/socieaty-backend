@@ -6,22 +6,16 @@ import {
 	ManyToOne,
 	OneToMany,
 	OneToOne,
-	Property,
-	Unique
+	Property
 } from '@mikro-orm/core'
-import {
-	TransactionPaymentType,
-	TransactionServiceType,
-	TransactionStatus
-} from '../../../../enums/transaction.enum'
-import { TransactionMenuItemEntity } from './transaction-menu-item.entity'
-import { CreateTransactionDto } from '../dto/create-transaction.dto'
-import { RestaurantEntity } from '../../../restaurant/persistence/Restaurant.entity'
-import { UserEntity } from '../../../user/persistance/User.entity'
-import { CustomerEntity } from '../../../customer/persistence/Customer.entity'
-import { BaseEntity } from '../../../../database/model/base/Base.entity'
-import { TransactionMessageEntity } from '../../../transaction-message/persistence/transaction-message.entity'
-import { RestaurantReviewEntity } from '../../../food-order-review/persistence/restaurant-review.entity'
+import { TransactionServiceType, TransactionStatus } from '../../../enums/transaction.enum'
+import { CreateTransactionDto } from './dto/create-transaction.dto'
+import { RestaurantEntity } from '../../restaurant/persistence/Restaurant.entity'
+import { CustomerEntity } from '../../customer/persistence/Customer.entity'
+import { BaseEntity } from '../../../database/model/base/Base.entity'
+import { TransactionMessageEntity } from '../../transaction-message/persistence/transaction-message.entity'
+import { TransactionReviewEntity } from '../../transaction-review/persistence/transaction-review.entity'
+import { FoodOrderEntity } from '../../food-order-transaction/persistence/entity/food-order-transaction.entity'
 
 @Entity({ tableName: 'transactions' })
 export class TransactionEntity extends BaseEntity {
@@ -34,11 +28,14 @@ export class TransactionEntity extends BaseEntity {
 	@Property()
 	serviceFee: number
 
+	@Property()
+	note: string
+
 	@Enum(() => TransactionStatus)
 	status: TransactionStatus
 
-	@Property()
-	note: string
+	@Property({ nullable: true })
+	finishedAt: Date | null
 
 	@ManyToOne({
 		entity: () => RestaurantEntity,
@@ -55,12 +52,6 @@ export class TransactionEntity extends BaseEntity {
 	customer: CustomerEntity
 
 	@OneToMany({
-		entity: () => TransactionMenuItemEntity,
-		mappedBy: 'transaction'
-	})
-	menuItems = new Collection<TransactionMenuItemEntity>(this)
-
-	@OneToMany({
 		entity: () => TransactionMessageEntity,
 		mappedBy: 'transaction',
 		orphanRemoval: true
@@ -68,10 +59,16 @@ export class TransactionEntity extends BaseEntity {
 	messages = new Collection<TransactionMessageEntity>(this)
 
 	@OneToOne({
-		entity: () => RestaurantReviewEntity,
+		entity: () => TransactionReviewEntity,
 		mappedBy: 'transaction'
 	})
-	review: RestaurantReviewEntity
+	review: TransactionReviewEntity | null
+
+	@OneToOne({
+		entity: () => FoodOrderEntity,
+		mappedBy: 'transaction'
+	})
+	foodOrder: FoodOrderEntity | null
 
 	constructor(dto: CreateTransactionDto) {
 		super()

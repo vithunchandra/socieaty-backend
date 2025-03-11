@@ -1,6 +1,6 @@
 import { join } from 'path'
 
-// export const BASE_URL = 'http://192.168.97.142:3000/'
+// export const BASE_URL = 'http://192.168.18.142:3000/'
 export const BASE_URL = 'http://192.168.200.205:3000/'
 // export const BASE_URL = 'https://massive-dominant-grubworm.ngrok-free.app/'
 

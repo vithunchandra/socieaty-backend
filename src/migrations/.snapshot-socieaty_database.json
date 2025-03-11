@@ -1693,22 +1693,6 @@
           "nullable": false,
           "mappedType": "integer"
         },
-        "status": {
-          "name": "status",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "enumItems": [
-            "pending",
-            "rejected",
-            "preparing",
-            "ready",
-            "completed"
-          ],
-          "mappedType": "enum"
-        },
         "note": {
           "name": "note",
           "type": "varchar(255)",
@@ -1718,6 +1702,31 @@
           "nullable": false,
           "length": 255,
           "mappedType": "string"
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "enumItems": [
+            "success",
+            "failed",
+            "ongoing",
+            "refunded"
+          ],
+          "mappedType": "enum"
+        },
+        "finished_at": {
+          "name": "finished_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "mappedType": "datetime"
         },
         "restaurant_id": {
           "name": "restaurant_id",
@@ -1796,6 +1805,189 @@
             "id"
           ],
           "referencedTableName": "public.customer",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "rating": {
+          "name": "rating",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "review": {
+          "name": "review",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "transaction_id": {
+          "name": "transaction_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        },
+        "restaurant_id": {
+          "name": "restaurant_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        }
+      },
+      "name": "transaction_reviews",
+      "schema": "public",
+      "indexes": [
+        {
+          "columnNames": [
+            "transaction_id"
+          ],
+          "composite": false,
+          "keyName": "transaction_reviews_transaction_id_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "columnNames": [
+            "transaction_id"
+          ],
+          "composite": false,
+          "keyName": "transaction_reviews_transaction_id_unique",
+          "constraint": true,
+          "primary": false,
+          "unique": true
+        },
+        {
+          "columnNames": [
+            "user_id"
+          ],
+          "composite": false,
+          "keyName": "transaction_reviews_user_id_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "columnNames": [
+            "restaurant_id"
+          ],
+          "composite": false,
+          "keyName": "transaction_reviews_restaurant_id_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
+          "keyName": "transaction_reviews_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "transaction_reviews_transaction_id_foreign": {
+          "constraintName": "transaction_reviews_transaction_id_foreign",
+          "columnNames": [
+            "transaction_id"
+          ],
+          "localTableName": "public.transaction_reviews",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.transactions",
+          "updateRule": "cascade"
+        },
+        "transaction_reviews_user_id_foreign": {
+          "constraintName": "transaction_reviews_user_id_foreign",
+          "columnNames": [
+            "user_id"
+          ],
+          "localTableName": "public.transaction_reviews",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.customer",
+          "updateRule": "cascade"
+        },
+        "transaction_reviews_restaurant_id_foreign": {
+          "constraintName": "transaction_reviews_restaurant_id_foreign",
+          "columnNames": [
+            "restaurant_id"
+          ],
+          "localTableName": "public.transaction_reviews",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.restaurant",
           "updateRule": "cascade"
         }
       },
@@ -1975,6 +2167,114 @@
           "length": 6,
           "mappedType": "datetime"
         },
+        "transaction_id": {
+          "name": "transaction_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "enumItems": [
+            "pending",
+            "rejected",
+            "preparing",
+            "ready",
+            "completed"
+          ],
+          "mappedType": "enum"
+        }
+      },
+      "name": "food_orders",
+      "schema": "public",
+      "indexes": [
+        {
+          "columnNames": [
+            "transaction_id"
+          ],
+          "composite": false,
+          "keyName": "food_orders_transaction_id_unique",
+          "constraint": true,
+          "primary": false,
+          "unique": true
+        },
+        {
+          "keyName": "food_orders_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "food_orders_transaction_id_foreign": {
+          "constraintName": "food_orders_transaction_id_foreign",
+          "columnNames": [
+            "transaction_id"
+          ],
+          "localTableName": "public.food_orders",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.transactions",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "mappedType": "datetime"
+        },
         "quantity": {
           "name": "quantity",
           "type": "int",
@@ -2011,8 +2311,8 @@
           "nullable": false,
           "mappedType": "uuid"
         },
-        "transaction_id": {
-          "name": "transaction_id",
+        "food_order_id": {
+          "name": "food_order_id",
           "type": "uuid",
           "unsigned": false,
           "autoincrement": false,
@@ -2021,7 +2321,7 @@
           "mappedType": "uuid"
         }
       },
-      "name": "transaction_menu_items",
+      "name": "food_order_menu_items",
       "schema": "public",
       "indexes": [
         {
@@ -2029,13 +2329,13 @@
             "menu_id"
           ],
           "composite": false,
-          "keyName": "transaction_menu_items_menu_id_index",
+          "keyName": "food_order_menu_items_menu_id_index",
           "constraint": false,
           "primary": false,
           "unique": false
         },
         {
-          "keyName": "transaction_menu_items_pkey",
+          "keyName": "food_order_menu_items_pkey",
           "columnNames": [
             "id"
           ],
@@ -2047,28 +2347,28 @@
       ],
       "checks": [],
       "foreignKeys": {
-        "transaction_menu_items_menu_id_foreign": {
-          "constraintName": "transaction_menu_items_menu_id_foreign",
+        "food_order_menu_items_menu_id_foreign": {
+          "constraintName": "food_order_menu_items_menu_id_foreign",
           "columnNames": [
             "menu_id"
           ],
-          "localTableName": "public.transaction_menu_items",
+          "localTableName": "public.food_order_menu_items",
           "referencedColumnNames": [
             "id"
           ],
           "referencedTableName": "public.food_menu",
           "updateRule": "cascade"
         },
-        "transaction_menu_items_transaction_id_foreign": {
-          "constraintName": "transaction_menu_items_transaction_id_foreign",
+        "food_order_menu_items_food_order_id_foreign": {
+          "constraintName": "food_order_menu_items_food_order_id_foreign",
           "columnNames": [
-            "transaction_id"
+            "food_order_id"
           ],
-          "localTableName": "public.transaction_menu_items",
+          "localTableName": "public.food_order_menu_items",
           "referencedColumnNames": [
             "id"
           ],
-          "referencedTableName": "public.transactions",
+          "referencedTableName": "public.food_orders",
           "updateRule": "cascade"
         }
       },

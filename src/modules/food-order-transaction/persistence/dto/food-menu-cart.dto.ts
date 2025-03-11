@@ -1,6 +1,6 @@
-import { FoodMenuEntity } from "../../food-menu/persistence/food-menu.entity";
+import { FoodMenuEntity } from "../../../food-menu/persistence/food-menu.entity";
 
-export class FoodMenuCartDto {
+export class FoodMenuCartDto{
     menu: FoodMenuEntity
     quantity: number
 

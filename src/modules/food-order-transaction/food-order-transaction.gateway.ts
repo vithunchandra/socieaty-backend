@@ -12,7 +12,7 @@ import { JwtService } from '@nestjs/jwt'
 import { GatewayAuthMiddleware, GuardedSocketDto } from '../../middleware/gateway.middleware'
 import { EntityManager } from '@mikro-orm/postgresql'
 import { FoodOrderTransaction } from './domain/food-order-transaction'
-import { TransactionService } from './transaction.service'
+import { TransactionService } from '../transaction/transaction.service'
 import { UserEntity } from '../user/persistance/User.entity'
 
 export type ServerToClientTransactionEvents = {
@@ -22,7 +22,9 @@ export type ServerToClientTransactionEvents = {
 
 @Injectable()
 @WebSocketGateway({ namespace: 'food-order' })
-export class TransactionGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+export class FoodOrderTransactionGateway
+	implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
+{
 	constructor(
 		private readonly jwtService: JwtService,
 		private readonly entityManager: EntityManager
@@ -40,7 +42,7 @@ export class TransactionGateway implements OnGatewayInit, OnGatewayConnection, O
 	}
 
 	async trackOrder(user: UserEntity, transaction: FoodOrderTransaction) {
-		this.server.in(`${user.id}`).socketsJoin(`track-order-${transaction.id}`)
+		this.server.in(`${user.id}`).socketsJoin(`track-order-${transaction.transactionId}`)
 		await this.notifyTrackOrder(transaction)
 	}
 
@@ -49,7 +51,8 @@ export class TransactionGateway implements OnGatewayInit, OnGatewayConnection, O
 	}
 
 	async notifyTrackOrder(order: FoodOrderTransaction) {
-		this.server.to(`track-order-${order.id}`).emit('track-order', order)
+		console.log('notifyTrackOrder', order)
+		this.server.to(`track-order-${order.transactionId}`).emit('track-order', order)
 	}
 
 	handleDisconnect(client: GuardedSocketDto) {

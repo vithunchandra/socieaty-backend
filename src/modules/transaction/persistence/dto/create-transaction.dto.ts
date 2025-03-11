@@ -1,4 +1,4 @@
-import { TransactionServiceType } from "../../../../enums/transaction.enum"
+import { TransactionServiceType, TransactionStatus } from "../../../../enums/transaction.enum"
 import { CustomerEntity } from "../../../customer/persistence/Customer.entity"
 import { RestaurantEntity } from "../../../restaurant/persistence/Restaurant.entity"
 
@@ -9,5 +9,6 @@ export class CreateTransactionDto {
 	grossAmount: number
 	serviceFee: number
 	note: string
+	status: TransactionStatus
 }
 

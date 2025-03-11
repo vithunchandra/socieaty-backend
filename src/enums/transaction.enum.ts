@@ -1,9 +1,16 @@
-export enum TransactionStatus {
+export enum FoodOrderStatus {
 	PENDING = 'pending',
 	REJECTED = 'rejected',
 	PREPARING = 'preparing',
 	READY = 'ready',
-	COMPLETED = 'completed',
+	COMPLETED = 'completed'
+}
+
+export enum TransactionStatus {
+	SUCCESS = 'success',
+	FAILED = 'failed',
+	ONGOING = 'ongoing',
+	REFUNDED = 'refunded'
 }
 
 export enum TransactionPaymentType {

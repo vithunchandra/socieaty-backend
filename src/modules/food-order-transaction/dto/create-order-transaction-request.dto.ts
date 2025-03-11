@@ -2,7 +2,7 @@ import { IsArray, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator
 import { TransactionServiceType } from '../../../enums/transaction.enum'
 import { Type } from 'class-transformer'
 
-export class CreateOrderTransactionRequestDto {
+export class CreateFoodOrderTransactionRequestDto {
 	@IsString()
 	restaurantId: string
 

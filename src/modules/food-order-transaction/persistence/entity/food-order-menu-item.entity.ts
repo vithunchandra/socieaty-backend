@@ -1,11 +1,12 @@
 import { Entity, Index, ManyToOne, OneToOne, Property } from '@mikro-orm/core'
-import { TransactionEntity } from './transaction.entity'
+import { TransactionEntity } from '../../../transaction/persistence/transaction.entity'
 
 import { FoodMenuEntity } from '../../../food-menu/persistence/food-menu.entity'
 import { BaseEntity } from '../../../../database/model/base/Base.entity'
+import { FoodOrderEntity } from './food-order-transaction.entity'
 
-@Entity({ tableName: 'transaction_menu_items' })
-export class TransactionMenuItemEntity extends BaseEntity {
+@Entity({ tableName: 'food_order_menu_items' })
+export class FoodOrderMenuItemEntity extends BaseEntity {
 	@Property()
 	quantity: number
 
@@ -23,15 +24,15 @@ export class TransactionMenuItemEntity extends BaseEntity {
 	menu: FoodMenuEntity
 
 	@ManyToOne({
-		entity: () => TransactionEntity,
-		fieldName: 'transaction_id',
+		entity: () => FoodOrderEntity,
+		fieldName: 'food_order_id'
 	})
-	transaction: TransactionEntity
+	foodOrder: FoodOrderEntity
 
-	constructor(menu: FoodMenuEntity, transaction: TransactionEntity, quantity: number) {
+	constructor(menu: FoodMenuEntity, foodOrder: FoodOrderEntity, quantity: number) {
 		super()
 		this.menu = menu
-		this.transaction = transaction
+		this.foodOrder = foodOrder
 		this.quantity = quantity
 		this.price = menu.price
 		this.totalPrice = menu.price * quantity

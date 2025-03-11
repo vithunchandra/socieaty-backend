@@ -6,16 +6,16 @@ import { RestaurantDaoModule } from '../restaurant/persistence/Restaurant.dao.mo
 import { CustomerDaoModule } from '../customer/persistence/Customer.dao.module'
 import { FoodMenuDaoModule } from '../food-menu/persistence/food-menu.dao.module'
 import { UserDaoModule } from '../user/persistance/User.dao.module'
-import { TransactionGateway } from './transaction.gateway'
+import { FoodOrderTransactionGateway } from '../food-order-transaction/food-order-transaction.gateway'
 import { JwtService } from '@nestjs/jwt'
 import { MikroOrmModule } from '@mikro-orm/nestjs'
-import { TransactionEntity } from './persistence/entity/transaction.entity'
-import { TransactionMenuItemEntity } from './persistence/entity/transaction-menu-item.entity'
+import { TransactionEntity } from './persistence/transaction.entity'
+import { FoodOrderMenuItemEntity } from '../food-order-transaction/persistence/entity/food-order-menu-item.entity'
 
 @Module({
 	imports: [TransactionDaoModule, RestaurantDaoModule, FoodMenuDaoModule, UserDaoModule],
 	controllers: [TransactionController],
-	providers: [TransactionService, TransactionGateway, JwtService],
+	providers: [TransactionService, FoodOrderTransactionGateway, JwtService],
 	exports: [TransactionService]
 })
 export class TransactionModule {}

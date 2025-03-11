@@ -12,12 +12,12 @@ import { UserEntity } from './modules/user/persistance/User.entity'
 import { PostModule } from './modules/post/post.module'
 import { AuthGuardModule } from './module/AuthGuard/AuthGuard.module'
 import { PostCommentModule } from './modules/post-comment/post-comment.module'
-import { PostMediaModule } from './modules/post-media/post-media.module'
 import { LiveStreamModule } from './modules/livestream/livestream.module'
 import { FoodMenuModule } from './modules/food-menu/food-menu.module'
 import { MediaModule } from './modules/media/media.module'
 import { TransactionModule } from './modules/transaction/transaction.module'
 import { TransactionMessageModule } from './modules/transaction-message/transaction-message.module'
+import { FoodOrderTransactionModule } from './modules/food-order-transaction/food-order-transaction.module'
 
 @Module({
 	imports: [
@@ -41,7 +41,8 @@ import { TransactionMessageModule } from './modules/transaction-message/transact
 		LiveStreamModule,
 		FoodMenuModule,
 		TransactionModule,
-		TransactionMessageModule
+		TransactionMessageModule,
+		FoodOrderTransactionModule
 	],
 	controllers: [AppController],
 	providers: [AppService]

@@ -1,6 +1,7 @@
-import { Entity, OneToOne, Property } from "@mikro-orm/core";
+import { Collection, Entity, OneToMany, OneToOne, Property } from "@mikro-orm/core";
 import { BaseEntity } from "../../../database/model/base/Base.entity";
 import { UserEntity } from "../../user/persistance/User.entity";
+import { TransactionReviewEntity } from "../../transaction-review/persistence/transaction-review.entity";
 
 @Entity({tableName: "customer"})
 export class CustomerEntity extends BaseEntity{
@@ -16,6 +17,13 @@ export class CustomerEntity extends BaseEntity{
         fieldName: 'user_id',
     })
     userData: UserEntity
+
+    @OneToMany({
+		entity: () => TransactionReviewEntity,
+		mappedBy: 'customer',
+		orphanRemoval: true
+	})
+	reviews = new Collection<TransactionReviewEntity>(this)
 
     constructor(userData: UserEntity){
         super()

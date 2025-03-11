@@ -1,14 +1,19 @@
-import { TransactionServiceType, TransactionStatus } from "../../../enums/transaction.enum"
-import { User } from "../../user/domain/User"
-import { TransactionMenuItem } from "./transaction-menu-item"
+import {
+	TransactionServiceType,
+	FoodOrderStatus,
+	TransactionStatus
+} from '../../../enums/transaction.enum'
+import { User } from '../../user/domain/User'
 
-export class Transaction {
-    id: string
-    serviceType: TransactionServiceType
-    grossAmount: number
-    serviceFee: number
-    status: TransactionStatus
-    note: string
-    restaurant: User
-    customer: User
+export abstract class BaseTransaction {
+	transactionId: string
+	serviceType: TransactionServiceType
+	grossAmount: number
+	serviceFee: number
+	note: string
+	status: TransactionStatus
+	restaurant: User
+	customer: User
 }
+
+export class Transaction extends BaseTransaction {}
