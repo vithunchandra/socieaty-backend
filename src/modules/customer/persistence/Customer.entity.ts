@@ -18,12 +18,12 @@ export class CustomerEntity extends BaseEntity{
     })
     userData: UserEntity
 
-    @OneToMany({
-		entity: () => TransactionReviewEntity,
-		mappedBy: 'customer',
-		orphanRemoval: true
-	})
-	reviews = new Collection<TransactionReviewEntity>(this)
+    // @OneToMany({
+	// 	entity: () => TransactionReviewEntity,
+	// 	mappedBy: 'customer',
+	// 	orphanRemoval: true
+	// })
+	// reviews = new Collection<TransactionReviewEntity>(this)
 
     constructor(userData: UserEntity){
         super()

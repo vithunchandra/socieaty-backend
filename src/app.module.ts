@@ -18,6 +18,7 @@ import { MediaModule } from './modules/media/media.module'
 import { TransactionModule } from './modules/transaction/transaction.module'
 import { TransactionMessageModule } from './modules/transaction-message/transaction-message.module'
 import { FoodOrderTransactionModule } from './modules/food-order-transaction/food-order-transaction.module'
+import { TransactionReviewModule } from './modules/transaction-review/transaction-review.module'
 
 @Module({
 	imports: [
@@ -42,7 +43,8 @@ import { FoodOrderTransactionModule } from './modules/food-order-transaction/foo
 		FoodMenuModule,
 		TransactionModule,
 		TransactionMessageModule,
-		FoodOrderTransactionModule
+		FoodOrderTransactionModule,
+		TransactionReviewModule
 	],
 	controllers: [AppController],
 	providers: [AppService]

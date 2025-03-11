@@ -31,7 +31,7 @@ export class TransactionDaoService {
 
 	async findTransactionById(id: string): Promise<TransactionEntity | null> {
 		return await this.transactionRepository.findOne(
-			{ id },
+			{ id: id },
 			{ populate: ['restaurant.userData', 'restaurant.themes', 'customer.userData'] }
 		)
 	}

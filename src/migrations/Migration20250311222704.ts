@@ -1,6 +1,6 @@
 import { Migration } from '@mikro-orm/migrations';
 
-export class Migration20250311173031 extends Migration {
+export class Migration20250311222704 extends Migration {
 
   override async up(): Promise<void> {
     this.addSql(`create table "menu_category" ("id" serial primary key, "name" varchar(255) not null);`);
@@ -49,11 +49,9 @@ export class Migration20250311173031 extends Migration {
     this.addSql(`create index "transactions_restaurant_id_index" on "transactions" ("restaurant_id");`);
     this.addSql(`create index "transactions_customer_id_index" on "transactions" ("customer_id");`);
 
-    this.addSql(`create table "transaction_reviews" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "rating" int not null, "review" varchar(255) not null, "transaction_id" uuid not null, "user_id" uuid not null, "restaurant_id" uuid not null, constraint "transaction_reviews_pkey" primary key ("id"));`);
+    this.addSql(`create table "transaction_reviews" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "rating" int not null, "review" varchar(255) not null, "transaction_id" uuid not null, constraint "transaction_reviews_pkey" primary key ("id"));`);
     this.addSql(`create index "transaction_reviews_transaction_id_index" on "transaction_reviews" ("transaction_id");`);
     this.addSql(`alter table "transaction_reviews" add constraint "transaction_reviews_transaction_id_unique" unique ("transaction_id");`);
-    this.addSql(`create index "transaction_reviews_user_id_index" on "transaction_reviews" ("user_id");`);
-    this.addSql(`create index "transaction_reviews_restaurant_id_index" on "transaction_reviews" ("restaurant_id");`);
 
     this.addSql(`create table "transaction_messages" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "message" varchar(255) not null, "user_id" uuid not null, "transaction_id" uuid not null, constraint "transaction_messages_pkey" primary key ("id"));`);
     this.addSql(`create index "transaction_messages_user_id_index" on "transaction_messages" ("user_id");`);
@@ -101,8 +99,6 @@ export class Migration20250311173031 extends Migration {
     this.addSql(`alter table "transactions" add constraint "transactions_customer_id_foreign" foreign key ("customer_id") references "customer" ("id") on update cascade;`);
 
     this.addSql(`alter table "transaction_reviews" add constraint "transaction_reviews_transaction_id_foreign" foreign key ("transaction_id") references "transactions" ("id") on update cascade;`);
-    this.addSql(`alter table "transaction_reviews" add constraint "transaction_reviews_user_id_foreign" foreign key ("user_id") references "customer" ("id") on update cascade;`);
-    this.addSql(`alter table "transaction_reviews" add constraint "transaction_reviews_restaurant_id_foreign" foreign key ("restaurant_id") references "restaurant" ("id") on update cascade;`);
 
     this.addSql(`alter table "transaction_messages" add constraint "transaction_messages_user_id_foreign" foreign key ("user_id") references "user" ("id") on update cascade;`);
     this.addSql(`alter table "transaction_messages" add constraint "transaction_messages_transaction_id_foreign" foreign key ("transaction_id") references "transactions" ("id") on update cascade;`);
@@ -111,10 +107,6 @@ export class Migration20250311173031 extends Migration {
 
     this.addSql(`alter table "food_order_menu_items" add constraint "food_order_menu_items_menu_id_foreign" foreign key ("menu_id") references "food_menu" ("id") on update cascade;`);
     this.addSql(`alter table "food_order_menu_items" add constraint "food_order_menu_items_food_order_id_foreign" foreign key ("food_order_id") references "food_orders" ("id") on update cascade;`);
-
-    this.addSql(`drop table if exists "restaurant_reviews" cascade;`);
-
-    this.addSql(`drop table if exists "transaction_menu_items" cascade;`);
   }
 
   override async down(): Promise<void> {
@@ -148,8 +140,6 @@ export class Migration20250311173031 extends Migration {
 
     this.addSql(`alter table "transactions" drop constraint "transactions_restaurant_id_foreign";`);
 
-    this.addSql(`alter table "transaction_reviews" drop constraint "transaction_reviews_restaurant_id_foreign";`);
-
     this.addSql(`alter table "menu_category_menus" drop constraint "menu_category_menus_food_menu_entity_id_foreign";`);
 
     this.addSql(`alter table "food_order_menu_items" drop constraint "food_order_menu_items_menu_id_foreign";`);
@@ -166,8 +156,6 @@ export class Migration20250311173031 extends Migration {
 
     this.addSql(`alter table "transactions" drop constraint "transactions_customer_id_foreign";`);
 
-    this.addSql(`alter table "transaction_reviews" drop constraint "transaction_reviews_user_id_foreign";`);
-
     this.addSql(`alter table "transaction_reviews" drop constraint "transaction_reviews_transaction_id_foreign";`);
 
     this.addSql(`alter table "transaction_messages" drop constraint "transaction_messages_transaction_id_foreign";`);
@@ -175,15 +163,6 @@ export class Migration20250311173031 extends Migration {
     this.addSql(`alter table "food_orders" drop constraint "food_orders_transaction_id_foreign";`);
 
     this.addSql(`alter table "food_order_menu_items" drop constraint "food_order_menu_items_food_order_id_foreign";`);
-
-    this.addSql(`create table "restaurant_reviews" ("id" uuid not null, "created_at" timestamptz(6) not null, "updated_at" timestamptz(6) not null, "deleted_at" timestamptz(6) null, "rating" int4 not null, "review" varchar(255) not null, "transaction_id" uuid not null, "user_id" uuid not null, "restaurant_id" uuid not null, constraint "restaurant_reviews_pkey" primary key ("id"));`);
-    this.addSql(`create index "restaurant_reviews_restaurant_id_index" on "restaurant_reviews" ("restaurant_id");`);
-    this.addSql(`create index "restaurant_reviews_transaction_id_index" on "restaurant_reviews" ("transaction_id");`);
-    this.addSql(`alter table "restaurant_reviews" add constraint "restaurant_reviews_transaction_id_unique" unique ("transaction_id");`);
-    this.addSql(`create index "restaurant_reviews_user_id_index" on "restaurant_reviews" ("user_id");`);
-
-    this.addSql(`create table "transaction_menu_items" ("id" uuid not null, "created_at" timestamptz(6) not null, "updated_at" timestamptz(6) not null, "deleted_at" timestamptz(6) null, "quantity" int4 not null, "price" int4 not null, "total_price" int4 not null, "menu_id" uuid not null, "food_order_id" uuid not null, constraint "transaction_menu_items_pkey" primary key ("id"));`);
-    this.addSql(`create index "transaction_menu_items_menu_id_index" on "transaction_menu_items" ("menu_id");`);
 
     this.addSql(`drop table if exists "menu_category" cascade;`);
 

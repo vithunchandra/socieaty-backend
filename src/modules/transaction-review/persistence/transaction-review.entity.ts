@@ -20,19 +20,26 @@ export class TransactionReviewEntity extends BaseEntity {
 	})
 	transaction: TransactionEntity
 
-	@ManyToOne({
-		entity: () => CustomerEntity,
-		inversedBy: 'reviews',
-		fieldName: 'user_id',
-		index: true
-	})
-	customer: CustomerEntity
+	// @ManyToOne({
+	// 	entity: () => CustomerEntity,
+	// 	inversedBy: 'reviews',
+	// 	fieldName: 'user_id',
+	// 	index: true
+	// })
+	// customer: CustomerEntity
 
-	@ManyToOne({
-		entity: () => RestaurantEntity,
-		inversedBy: 'reviews',
-		fieldName: 'restaurant_id',
-		index: true
-	})
-	restaurant: RestaurantEntity
+	// @ManyToOne({
+	// 	entity: () => RestaurantEntity,
+	// 	inversedBy: 'reviews',
+	// 	fieldName: 'restaurant_id',
+	// 	index: true
+	// })
+	// restaurant: RestaurantEntity
+
+	constructor(transaction: TransactionEntity, rating: number, review: string){
+		super()
+		this.transaction = transaction
+		this.rating = rating
+		this.review = review
+	}
 }

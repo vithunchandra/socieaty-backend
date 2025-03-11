@@ -57,12 +57,12 @@ export class RestaurantEntity extends BaseEntity {
 	})
 	menus: Collection<FoodMenuEntity>
 
-	@OneToMany({
-		entity: () => TransactionReviewEntity,
-		mappedBy: 'restaurant',
-		orphanRemoval: true
-	})
-	reviews: Collection<TransactionReviewEntity>
+	// @OneToMany({
+	// 	entity: () => TransactionReviewEntity,
+	// 	mappedBy: 'restaurant',
+	// 	orphanRemoval: true
+	// })
+	// reviews: Collection<TransactionReviewEntity>
 
 	constructor(userData: UserEntity, restaurantBannerUrl: string, restaurantAddress: Point) {
 		super()

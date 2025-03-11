@@ -1878,24 +1878,6 @@
           "primary": false,
           "nullable": false,
           "mappedType": "uuid"
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "uuid"
-        },
-        "restaurant_id": {
-          "name": "restaurant_id",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "uuid"
         }
       },
       "name": "transaction_reviews",
@@ -1922,26 +1904,6 @@
           "unique": true
         },
         {
-          "columnNames": [
-            "user_id"
-          ],
-          "composite": false,
-          "keyName": "transaction_reviews_user_id_index",
-          "constraint": false,
-          "primary": false,
-          "unique": false
-        },
-        {
-          "columnNames": [
-            "restaurant_id"
-          ],
-          "composite": false,
-          "keyName": "transaction_reviews_restaurant_id_index",
-          "constraint": false,
-          "primary": false,
-          "unique": false
-        },
-        {
           "keyName": "transaction_reviews_pkey",
           "columnNames": [
             "id"
@@ -1964,30 +1926,6 @@
             "id"
           ],
           "referencedTableName": "public.transactions",
-          "updateRule": "cascade"
-        },
-        "transaction_reviews_user_id_foreign": {
-          "constraintName": "transaction_reviews_user_id_foreign",
-          "columnNames": [
-            "user_id"
-          ],
-          "localTableName": "public.transaction_reviews",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.customer",
-          "updateRule": "cascade"
-        },
-        "transaction_reviews_restaurant_id_foreign": {
-          "constraintName": "transaction_reviews_restaurant_id_foreign",
-          "columnNames": [
-            "restaurant_id"
-          ],
-          "localTableName": "public.transaction_reviews",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.restaurant",
           "updateRule": "cascade"
         }
       },
