@@ -5,6 +5,7 @@ import {
 	Get,
 	Param,
 	Post,
+	Query,
 	Req,
 	UseGuards
 } from '@nestjs/common'
@@ -15,8 +16,9 @@ import { RolesGuard } from '../../module/RoleGuard/roles.guard'
 import { UserRole } from '../user/persistance/User.entity'
 import { Roles } from '../../module/RoleGuard/roles.decorator'
 import { GuardedRequestDto } from '../../module/AuthGuard/dto/guarded-request.dto'
+import { GetAllRestaurantTransactionReviewsRequestDto } from './dto/get-all-restaurant-transaction-reviews-request.dto'
 
-@Controller('transactions/:id/review')
+@Controller('reviews')
 export class TransactionReviewController {
 	constructor(private readonly transactionReviewService: TransactionReviewService) {}
 
@@ -24,7 +26,6 @@ export class TransactionReviewController {
 	@UseGuards(AuthGuard, RolesGuard)
 	@Roles(UserRole.CUSTOMER)
 	async createTransactionReview(
-		@Param('id') id: string,
 		@Req() req: GuardedRequestDto,
 		@Body() data: CreateTransactionReviewRequestDto
 	) {
@@ -33,22 +34,21 @@ export class TransactionReviewController {
 		}
 		return this.transactionReviewService.createTransactionReview(
 			req.user.customerData,
-			id,
 			data
 		)
 	}
 
-	@Get('/:restaurantId')
-	async getRestaurantTransactionReviews(@Param('restaurantId') restaurantId: string) {
-		return this.transactionReviewService.getReviewByRestaurantId(restaurantId)
+	@Get('restaurants/:restaurantId')
+	async getRestaurantTransactionReviews(@Param('restaurantId') restaurantId: string, @Query() data: GetAllRestaurantTransactionReviewsRequestDto) {
+		return this.transactionReviewService.getAllReviewByRestaurantId(restaurantId, data)
 	}
 
-	@Get('/:customerId')
+	@Get('customers/:customerId')
 	async getCustomerTransactionReviews(@Param('customerId') customerId: string) {
-		return this.transactionReviewService.getReviewByCustomerId(customerId)
+		return this.transactionReviewService.getAllReviewByCustomerId(customerId)
 	}
 
-	@Get('/:transactionId')
+	@Get('transactions/:transactionId')
 	async getTransactionReview(@Param('transactionId') transactionId: string) {
 		return this.transactionReviewService.getReviewByTransactionId(transactionId)
 	}

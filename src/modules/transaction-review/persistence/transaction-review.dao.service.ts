@@ -1,7 +1,7 @@
 import { InjectRepository } from '@mikro-orm/nestjs'
 import { Injectable } from '@nestjs/common'
 import { TransactionReviewEntity } from './transaction-review.entity'
-import { EntityRepository } from '@mikro-orm/postgresql'
+import { EntityRepository, FilterQuery } from '@mikro-orm/postgresql'
 import { createTransactionReviewDto } from './dto/create-transaction-review.dto'
 import { populate } from 'dotenv'
 
@@ -68,11 +68,15 @@ export class TransactionReviewDaoService {
 		return result
 	}
 
-	async getReviewByRestaurantId(restaurantId: string) {
+	async getReviewByRestaurantId(restaurantId: string, rating: number) {
+		let filter: FilterQuery<TransactionReviewEntity> = {
+			transaction: { restaurant: { id: restaurantId } }
+		}
+		if (rating) {
+			filter.rating = rating
+		}
 		const result = this.transactionReviewRepository.find(
-			{
-				transaction: { restaurant: { id: restaurantId } }
-			},
+			filter,
 			{
 				populate: [
 					'transaction.customer.userData',

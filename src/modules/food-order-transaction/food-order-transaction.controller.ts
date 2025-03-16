@@ -19,6 +19,7 @@ import { CreateFoodOrderTransactionRequestDto } from './dto/create-order-transac
 import { GuardedRequestDto } from '../../module/AuthGuard/dto/guarded-request.dto'
 import { GetRestaurantFoodTransactionQueryDto } from './dto/get_restaurant_food_transaction_query.dto'
 import { UpdateFoodOrderTransactionRequestDto } from './dto/update-food-order-transaction-request.dto'
+import { GetAllCustomerFoodTransactionQueryDto } from './dto/get_all_customer_food_transaction_query.dto'
 
 @Controller('food-orders')
 export class FoodOrderTransactionController {
@@ -52,6 +53,22 @@ export class FoodOrderTransactionController {
 		}
 		return this.foodOrderTransactionService.findRestaurantFoodOrderTransaction(
 			req.user.restaurantData!,
+			query.status
+		)
+	}
+
+	@Get('/customer')
+	@UseGuards(AuthGuard, RolesGuard)
+	@Roles(UserRole.CUSTOMER)
+	async findCustomerFoodOrderTransaction(
+		@Req() req: GuardedRequestDto,
+		@Query() query: GetAllCustomerFoodTransactionQueryDto
+	) {
+		if (!req.user.customerData) {
+			throw new UnauthorizedException('Customer not found')
+		}
+		return this.foodOrderTransactionService.findCustomerFoodOrderTransaction(
+			req.user.customerData!,
 			query.status
 		)
 	}

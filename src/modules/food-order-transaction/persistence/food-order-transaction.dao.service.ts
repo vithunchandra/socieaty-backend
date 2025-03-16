@@ -8,6 +8,7 @@ import { CreateTransactionMenuItemDto } from './dto/create-transaction-menu-item
 import { FoodOrderMenuItemEntity } from './entity/food-order-menu-item.entity'
 import { RestaurantEntity } from '../../restaurant/persistence/Restaurant.entity'
 import { FoodOrderStatus } from '../../../enums/transaction.enum'
+import { CustomerEntity } from '../../customer/persistence/Customer.entity'
 
 @Injectable()
 export class FoodOrderTransactionDaoService {
@@ -47,6 +48,22 @@ export class FoodOrderTransactionDaoService {
 	async findFoodOrderTransactionById(id: string) {
 		const result = await this.foodOrderTransactionRepository.findOne(
 			{ id },
+			{
+				populate: [
+					'transaction',
+					'transaction.customer.userData',
+					'transaction.restaurant.userData',
+					'transaction.restaurant.themes',
+					'menuItems.menu.categories'
+				]
+			}
+		)
+		return result
+	}
+
+	async findFoodOrderTransactionsByCustomer(customer: CustomerEntity, status: FoodOrderStatus[]) {
+		const result = await this.foodOrderTransactionRepository.find(
+			{ transaction: { customer: { id: customer.id } }, status: { $in: status } },
 			{
 				populate: [
 					'transaction',

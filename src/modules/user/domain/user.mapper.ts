@@ -28,12 +28,17 @@ export class UserMapper {
 
 	static fromCustomerToDomain(raw: CustomerEntity) {
 		const user = new User()
+		let profilePictureUrl: string | null = null
+		if (raw.userData.profilePictureUrl) {
+			profilePictureUrl = `${BASE_URL}${raw.userData.profilePictureUrl}`
+		}
 		const userData = raw.userData
 		user.id = userData.id
 		user.email = userData.email
 		user.name = userData.name
 		user.password = userData.password
 		user.phoneNumber = userData.phoneNumber
+		user.profilePictureUrl = profilePictureUrl
 		user.role = userData.role
 		user.customerData = CustomerMapper.toDomain(raw)
 		user.restaurantData = null

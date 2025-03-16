@@ -57,7 +57,10 @@ export class FoodMenuDaoService {
 	}
 
 	async findMenusByIds(ids: string[]) {
-		return await this.foodMenuRepository.find({ id: { $in: ids } }, { populate: ['categories'] })
+		return await this.foodMenuRepository.find(
+			{ id: { $in: ids } },
+			{ populate: ['categories'] }
+		)
 	}
 
 	async findMenusByRestaurantId(restaurantId: string, query: GetAllFoodMenuDto) {
@@ -145,6 +148,14 @@ export class FoodMenuDaoService {
 
 	async getAllMenuCategories() {
 		return await this.menuCategoryRepository.findAll()
+	}
+
+	async getMenuCategoriesOrderByPopularity() {
+		const categories = await this.menuCategoryRepository.findAll({
+			populate: ['menus'],
+		})
+
+		return categories.sort((a, b) => b.menus.count() - a.menus.count())
 	}
 
 	async getMenuCategories(ids: number[]) {

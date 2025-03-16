@@ -9,4 +9,7 @@ export class CreateTransactionReviewRequestDto {
 
 	@IsString()
 	review: string
+
+	@IsString()
+	transactionId: string
 }

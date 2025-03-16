@@ -175,6 +175,19 @@ export class FoodOrderTransactionService {
 		}
 	}
 
+	async findCustomerFoodOrderTransaction(customer: CustomerEntity, status: FoodOrderStatus[]) {
+		const foodOrder =
+			await this.foodOrderTransactionDaoService.findFoodOrderTransactionsByCustomer(
+				customer,
+				status
+			)
+		return {
+			transactions: foodOrder.map((transaction) =>
+				FoodOrderTransactionMapper.toDomain(transaction)
+			)
+		}
+	}
+
 	async findRestaurantFoodOrderTransaction(
 		restaurant: RestaurantEntity,
 		status: FoodOrderStatus[]

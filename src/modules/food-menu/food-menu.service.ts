@@ -106,6 +106,16 @@ export class FoodMenuService {
 		}
 	}
 
+	async findMenuById(menuId: string) {
+		const menu = await this.foodMenuDaoService.findMenuById(menuId)
+		if (!menu) {
+			throw new NotFoundException('Menu not found')
+		}
+		return {
+			menu: FoodMenuMapper.toDomain(menu)
+		}
+	}
+
 	async removeMenu(restaurant: RestaurantEntity | null, menuId: string) {
 		if (!restaurant) {
 			throw new BadRequestException('Unauthorized Request')
@@ -137,6 +147,13 @@ export class FoodMenuService {
 
 	async getAllMenuCategories() {
 		const categories = await this.foodMenuDaoService.getAllMenuCategories()
+		return {
+			categories: categories.map((category) => MenuCategoryMapper.toDomain(category))
+		}
+	}
+
+	async getMenuCategoriesOrderByPopularity() {
+		const categories = await this.foodMenuDaoService.getMenuCategoriesOrderByPopularity()
 		return {
 			categories: categories.map((category) => MenuCategoryMapper.toDomain(category))
 		}

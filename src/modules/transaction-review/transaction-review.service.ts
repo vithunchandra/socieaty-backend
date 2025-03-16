@@ -11,6 +11,7 @@ import { CustomerEntity } from '../customer/persistence/Customer.entity'
 import { TransactionStatus } from '../../enums/transaction.enum'
 import { EntityManager } from '@mikro-orm/postgresql'
 import { TransactionReviewMapper } from './domain/transaction-review.mapper'
+import { GetAllRestaurantTransactionReviewsRequestDto } from './dto/get-all-restaurant-transaction-reviews-request.dto'
 
 @Injectable()
 export class TransactionReviewService {
@@ -22,14 +23,13 @@ export class TransactionReviewService {
 
 	async createTransactionReview(
 		customer: CustomerEntity,
-		transactionId: string,
 		data: CreateTransactionReviewRequestDto
 	) {
-		const transaction = await this.transactionDaoService.findTransactionById(transactionId)
+		const transaction = await this.transactionDaoService.findTransactionById(data.transactionId)
 		if (!transaction) {
 			throw new NotFoundException('Transaksi tidak ditemukan')
 		}
-		if (transaction.id !== transactionId) {
+		if (transaction.id !== data.transactionId) {
 			throw new BadRequestException('Transaksi tidak sesuai')
 		}
 		if (transaction.customer.id !== customer.id) {
@@ -46,13 +46,14 @@ export class TransactionReviewService {
 		}
 
 		const transactionReview = await this.transactionReviewDaoService.createTransactionReview({
-			transactionId: transactionId,
+			transactionId: data.transactionId,
 			rating: data.rating,
 			review: data.review
 		})
 
 		await this.entityManager.flush()
-		const newTransactionReview = await this.transactionReviewDaoService.findTransactionReviewById(transactionReview.id)
+		const newTransactionReview =
+			await this.transactionReviewDaoService.findTransactionReviewById(transactionReview.id)
 		return {
 			review: TransactionReviewMapper.toDomain(newTransactionReview)
 		}
@@ -69,22 +70,25 @@ export class TransactionReviewService {
 		}
 	}
 
-	async getReviewByCustomerId(customerId: string) {
+	async getAllReviewByCustomerId(customerId: string) {
 		const reviews = await this.transactionReviewDaoService.getReviewByCustomerId(customerId)
 		return {
 			reviews
 		}
 	}
 
-	async getReviewByRestaurantId(restaurantId: string) {
-		const reviews = await this.transactionReviewDaoService.getReviewByRestaurantId(restaurantId)
-		const reviewCount = reviews.length
-		const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0)
-		const averageRating = totalRating / reviewCount
+	async getAllReviewByRestaurantId(restaurantId: string, data: GetAllRestaurantTransactionReviewsRequestDto) {
+		const reviews = await this.transactionReviewDaoService.getReviewByRestaurantId(restaurantId, data.rating)
+		let reviewCount = reviews.length
+		let totalRating = reviews.reduce((sum, review) => sum + review.rating, 0)
+		var averageRating = 0
+		if (reviews.length !== 0) {
+			averageRating = totalRating / reviewCount
+		}
 		return {
-			reviewCount,
-			averageRating,
-			reviews
+			count: reviewCount,
+			rating: averageRating,
+			reviews: reviews.map((review) => TransactionReviewMapper.toDomain(review))
 		}
 	}
 }

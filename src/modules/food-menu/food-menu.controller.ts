@@ -62,6 +62,11 @@ export class FoodMenuController {
 		return await this.foodMenuService.getAllMenuCategories()
 	}
 
+	@Get('categories/popular')
+	async getMenuCategoriesOrderByPopularity() {
+		return await this.foodMenuService.getMenuCategoriesOrderByPopularity()
+	}
+
 	@Get('')
 	async paginateMenu(
 		@Query() query: PaginateMenuRequestDto
@@ -91,6 +96,11 @@ export class FoodMenuController {
 			menuId,
 			data.isAvailable
 		)
+	}
+
+	@Get('single/:menuId')
+	async findMenuById(@Param('menuId') menuId: string) {
+		return await this.foodMenuService.findMenuById(menuId)
 	}
 
 	@Delete(':menuId')
