@@ -1,6 +1,6 @@
 import { Collection, Entity, Enum, OneToMany, OneToOne, Property } from '@mikro-orm/core'
 import { BaseEntity } from '../../../../database/model/base/Base.entity'
-import { FoodOrderMenuItemEntity } from './food-order-menu-item.entity'
+import { MenuItemEntity } from '../../../menu-items/persistence/menu-item.entity'
 import { FoodOrderStatus } from '../../../../enums/transaction.enum'
 import { TransactionEntity } from '../../../transaction/persistence/transaction.entity'
 import { CreateFoodOrderTransactionDto } from '../dto/create-food-order-transaction.dto'
@@ -17,10 +17,10 @@ export class FoodOrderEntity extends BaseEntity {
 	status: FoodOrderStatus
 
 	@OneToMany({
-		entity: () => FoodOrderMenuItemEntity,
+		entity: () => MenuItemEntity,
 		mappedBy: 'foodOrder'
 	})
-	menuItems = new Collection<FoodOrderMenuItemEntity>(this)
+	menuItems = new Collection<MenuItemEntity>(this)
 
 	constructor(transaction: TransactionEntity, status: FoodOrderStatus) {
 		super()

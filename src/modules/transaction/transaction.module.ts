@@ -10,7 +10,7 @@ import { FoodOrderTransactionGateway } from '../food-order-transaction/food-orde
 import { JwtService } from '@nestjs/jwt'
 import { MikroOrmModule } from '@mikro-orm/nestjs'
 import { TransactionEntity } from './persistence/transaction.entity'
-import { FoodOrderMenuItemEntity } from '../food-order-transaction/persistence/entity/food-order-menu-item.entity'
+import { MenuItemEntity } from '../menu-items/persistence/menu-item.entity'
 
 @Module({
 	imports: [TransactionDaoModule, RestaurantDaoModule, FoodMenuDaoModule, UserDaoModule],

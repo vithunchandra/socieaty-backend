@@ -8,7 +8,7 @@ import {
 	Property
 } from '@mikro-orm/core'
 import { BaseEntity } from '../../../database/model/base/Base.entity'
-import { RestaurantEntity } from '../../restaurant/persistence/Restaurant.entity'
+import { RestaurantEntity } from '../../restaurant/persistence/entity/Restaurant.entity'
 import { CustomerEntity } from '../../customer/persistence/Customer.entity'
 import { PostEntity } from '../../post/persistence/post.entity'
 import { PostCommentEntity } from '../../post-comment/persistence/post-comment.entity'

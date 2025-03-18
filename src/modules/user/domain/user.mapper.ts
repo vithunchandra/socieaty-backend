@@ -4,7 +4,7 @@ import { User } from './User'
 import { CustomerMapper } from 'src/modules/customer/domain/customer.mapper'
 import { RestaurantMapper } from 'src/modules/restaurant/domain/restaurant.mapper'
 import { CustomerEntity } from 'src/modules/customer/persistence/Customer.entity'
-import { RestaurantEntity } from 'src/modules/restaurant/persistence/Restaurant.entity'
+import { RestaurantEntity } from 'src/modules/restaurant/persistence/entity/Restaurant.entity'
 import { BASE_URL } from '../../../constants'
 
 export class UserMapper {

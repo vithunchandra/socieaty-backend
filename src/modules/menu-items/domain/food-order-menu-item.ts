@@ -1,6 +1,6 @@
 import { FoodMenu } from '../../food-menu/domain/food-menu'
 
-export class FoodOrderMenuItem {
+export class MenuItem {
 	id: string
 	menu: FoodMenu
 	quantity: number

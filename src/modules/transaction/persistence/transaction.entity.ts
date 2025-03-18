@@ -10,12 +10,13 @@ import {
 } from '@mikro-orm/core'
 import { TransactionServiceType, TransactionStatus } from '../../../enums/transaction.enum'
 import { CreateTransactionDto } from './dto/create-transaction.dto'
-import { RestaurantEntity } from '../../restaurant/persistence/Restaurant.entity'
+import { RestaurantEntity } from '../../restaurant/persistence/entity/Restaurant.entity'
 import { CustomerEntity } from '../../customer/persistence/Customer.entity'
 import { BaseEntity } from '../../../database/model/base/Base.entity'
 import { TransactionMessageEntity } from '../../transaction-message/persistence/transaction-message.entity'
 import { TransactionReviewEntity } from '../../transaction-review/persistence/transaction-review.entity'
 import { FoodOrderEntity } from '../../food-order-transaction/persistence/entity/food-order-transaction.entity'
+import { ReservationEntity } from '../../reservation/persistence/reservation.entity'
 
 @Entity({ tableName: 'transactions' })
 export class TransactionEntity extends BaseEntity {
@@ -69,6 +70,12 @@ export class TransactionEntity extends BaseEntity {
 		mappedBy: 'transaction'
 	})
 	foodOrder: FoodOrderEntity | null
+
+	@OneToOne({
+		entity: () => ReservationEntity,
+		mappedBy: 'transaction'
+	})
+	reservation: ReservationEntity | null
 
 	constructor(dto: CreateTransactionDto) {
 		super()

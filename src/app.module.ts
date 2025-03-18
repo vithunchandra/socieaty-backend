@@ -19,6 +19,7 @@ import { TransactionModule } from './modules/transaction/transaction.module'
 import { TransactionMessageModule } from './modules/transaction-message/transaction-message.module'
 import { FoodOrderTransactionModule } from './modules/food-order-transaction/food-order-transaction.module'
 import { TransactionReviewModule } from './modules/transaction-review/transaction-review.module'
+import { ReservationModule } from './modules/reservation/reservation.module'
 
 @Module({
 	imports: [
@@ -44,7 +45,8 @@ import { TransactionReviewModule } from './modules/transaction-review/transactio
 		TransactionModule,
 		TransactionMessageModule,
 		FoodOrderTransactionModule,
-		TransactionReviewModule
+		TransactionReviewModule,
+		ReservationModule
 	],
 	controllers: [AppController],
 	providers: [AppService]

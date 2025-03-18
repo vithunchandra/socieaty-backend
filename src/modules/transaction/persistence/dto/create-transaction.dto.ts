@@ -1,6 +1,6 @@
-import { TransactionServiceType, TransactionStatus } from "../../../../enums/transaction.enum"
-import { CustomerEntity } from "../../../customer/persistence/Customer.entity"
-import { RestaurantEntity } from "../../../restaurant/persistence/Restaurant.entity"
+import { TransactionServiceType, TransactionStatus } from '../../../../enums/transaction.enum'
+import { CustomerEntity } from '../../../customer/persistence/Customer.entity'
+import { RestaurantEntity } from '../../../restaurant/persistence/entity/Restaurant.entity'
 
 export class CreateTransactionDto {
 	restaurant: RestaurantEntity
@@ -11,4 +11,3 @@ export class CreateTransactionDto {
 	note: string
 	status: TransactionStatus
 }
-

@@ -1,10 +1,10 @@
 import { FoodMenuMapper } from '../../food-menu/domain/food-menu.mapper'
-import { FoodOrderMenuItemEntity } from '../persistence/entity/food-order-menu-item.entity'
-import { FoodOrderMenuItem } from './food-order-menu-item'
+import { MenuItemEntity } from '../persistence/menu-item.entity'
+import { MenuItem } from './food-order-menu-item'
 
-export class FoodOrderMenuItemMapper {
-	static toDomain(raw: FoodOrderMenuItemEntity): FoodOrderMenuItem {
-		const foodOrderMenuItem = new FoodOrderMenuItem()
+export class MenuItemMapper {
+	static toDomain(raw: MenuItemEntity): MenuItem {
+		const foodOrderMenuItem = new MenuItem()
 		foodOrderMenuItem.id = raw.id
 		foodOrderMenuItem.menu = FoodMenuMapper.toDomain(raw.menu)!
 		foodOrderMenuItem.quantity = raw.quantity

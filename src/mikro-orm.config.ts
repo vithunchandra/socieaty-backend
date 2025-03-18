@@ -4,7 +4,7 @@ import config from './database/config/config'
 import { CustomerEntity } from './modules/customer/persistence/Customer.entity'
 import { TsMorphMetadataProvider } from '@mikro-orm/reflection'
 import { UserEntity } from './modules/user/persistance/User.entity'
-import { RestaurantEntity } from './modules/restaurant/persistence/Restaurant.entity'
+import { RestaurantEntity } from './modules/restaurant/persistence/entity/Restaurant.entity'
 import { PostCommentEntity } from './modules/post-comment/persistence/post-comment.entity'
 import { PostEntity } from './modules/post/persistence/post.entity'
 import { PostMediaEntity } from './modules/post-media/persistence/post-media.entity'
@@ -12,13 +12,15 @@ import { PostHashtagEntity } from './modules/post-hashtag/persistence/post-hasht
 import { LivestreamRoomCommentEntity } from './modules/livestream/persistence/livestream-room-comment.entity'
 import { LivestreamRoomLikeEntity } from './modules/livestream/persistence/livestream-room-like.entity'
 import { MikroOrmFilter } from './enums/mikro-orm-filter.enum'
-import { RestaurantThemeEntity } from './modules/restaurant/persistence/restaurant-theme.entity'
+import { RestaurantThemeEntity } from './modules/restaurant/persistence/entity/restaurant-theme.entity'
 import { FoodMenuEntity } from './modules/food-menu/persistence/food-menu.entity'
 import { MenuCategoryEntity } from './modules/food-menu/persistence/menu-category.entity'
 import { TransactionEntity } from './modules/transaction/persistence/transaction.entity'
-import { FoodOrderMenuItemEntity } from './modules/food-order-transaction/persistence/entity/food-order-menu-item.entity'
+import { MenuItemEntity } from './modules/menu-items/persistence/menu-item.entity'
 import { TransactionMessageEntity } from './modules/transaction-message/persistence/transaction-message.entity'
 import { FoodOrderEntity } from './modules/food-order-transaction/persistence/entity/food-order-transaction.entity'
+import { ReservationEntity } from './modules/reservation/persistence/reservation.entity'
+import { ReservationConfigEntity } from './modules/restaurant/persistence/entity/reservation-config.entity'
 const logger = new Logger('MikroORM')
 
 export default defineConfig({
@@ -36,9 +38,11 @@ export default defineConfig({
 		FoodMenuEntity,
 		MenuCategoryEntity,
 		TransactionEntity,
-		FoodOrderMenuItemEntity,
+		MenuItemEntity,
 		TransactionMessageEntity,
-		FoodOrderEntity
+		FoodOrderEntity,
+		ReservationEntity,
+		ReservationConfigEntity
 	],
 	entitiesTs: [
 		UserEntity,
@@ -54,9 +58,11 @@ export default defineConfig({
 		FoodMenuEntity,
 		MenuCategoryEntity,
 		TransactionEntity,
-		FoodOrderMenuItemEntity,
+		MenuItemEntity,
 		TransactionMessageEntity,
-		FoodOrderEntity
+		FoodOrderEntity,
+		ReservationEntity,
+		ReservationConfigEntity
 	],
 	dbName: config().dbName ?? 'socieaty_database',
 	driver: PostgreSqlDriver,
@@ -92,7 +98,9 @@ export default defineConfig({
 				'FoodMenuEntity',
 				'TransactionMessageEntity',
 				'FoodOrderEntity',
-				'TransactionMenuItemEntity'
+				'TransactionMenuItemEntity',
+				'ReservationEntity',
+				'ReservationConfigEntity'
 			]
 		},
 		[MikroOrmFilter.DELETED]: {
@@ -113,7 +121,9 @@ export default defineConfig({
 				'FoodMenuEntity',
 				'TransactionMessageEntity',
 				'FoodOrderEntity',
-				'TransactionMenuItemEntity'
+				'TransactionMenuItemEntity',
+				'ReservationEntity',
+				'ReservationConfigEntity'
 			]
 		}
 	},

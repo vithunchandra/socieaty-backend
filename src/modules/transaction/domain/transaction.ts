@@ -14,6 +14,9 @@ export abstract class BaseTransaction {
 	status: TransactionStatus
 	restaurant: User
 	customer: User
+	createdAt: Date
+	updatedAt: Date
+	finishedAt: Date | null
 }
 
 export class Transaction extends BaseTransaction {}

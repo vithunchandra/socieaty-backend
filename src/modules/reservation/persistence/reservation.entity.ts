@@ -1,35 +1,49 @@
-import { Entity, Property, ManyToOne, Enum, OneToMany, Collection } from '@mikro-orm/core'
+import { Entity, Property, ManyToOne, Enum, OneToMany, Collection, OneToOne } from '@mikro-orm/core'
 import { BaseEntity } from '../../../database/model/base/Base.entity'
 import { ReservationStatus } from '../../../enums/reservation.enum'
-import { RestaurantEntity } from '../../restaurant/persistence/Restaurant.entity'
+import { RestaurantEntity } from '../../restaurant/persistence/entity/Restaurant.entity'
 import { CustomerEntity } from '../../customer/persistence/Customer.entity'
-import { FoodOrderMenuItemEntity } from '../../food-order-transaction/persistence/entity/food-order-menu-item.entity'
-
-
+import { MenuItemEntity } from '../../menu-items/persistence/menu-item.entity'
+import { TransactionEntity } from '../../transaction/persistence/transaction.entity'
 
 @Entity({ tableName: 'reservations' })
 export class ReservationEntity extends BaseEntity {
 	@Property()
 	reservationTime: Date
 
-	@Property({ nullable: true })
-	endTime?: Date
+	@Property()
+	endTimeEstimation: Date
 
 	@Property()
 	peopleSize: number
 
 	@Enum(() => ReservationStatus)
-	status: ReservationStatus = ReservationStatus.PENDING
+	status: ReservationStatus
 
-	@ManyToOne(() => RestaurantEntity)
-	restaurant: RestaurantEntity
-
-	@ManyToOne(() => CustomerEntity)
-	customer: CustomerEntity
+	@OneToOne({
+		entity: () => TransactionEntity,
+		inversedBy: 'reservation',
+	})
+	transaction: TransactionEntity
 
 	@OneToMany({
-		entity: () => FoodOrderMenuItemEntity,
-		mappedBy: 'foodOrder'
+		entity: () => MenuItemEntity,
+		mappedBy: 'reservation'
 	})
-	menuItems = new Collection<FoodOrderMenuItemEntity>(this)
+	menuItems = new Collection<MenuItemEntity>(this)
+
+	constructor(
+		reservationTime: Date,
+		peopleSize: number,
+		status: ReservationStatus,
+		transaction: TransactionEntity,
+		endTimeEstimation: Date
+	) {
+		super()
+		this.reservationTime = reservationTime
+		this.peopleSize = peopleSize
+		this.status = status
+		this.transaction = transaction
+		this.endTimeEstimation = endTimeEstimation
+	}
 }

@@ -3,15 +3,21 @@ import { RestaurantDaoService } from 'src/modules/restaurant/persistence/Restaur
 import { UserDaoService } from '../user/persistance/User.dao.service'
 import { RestaurantCreateDto } from '../auth/dto/RestaurantCreate.dto'
 import { UserMapper } from '../user/domain/user.mapper'
-import { PaginateRestaurantRequestDto } from './dto/paginate_restaurant_request.dto'
+import { PaginateRestaurantRequestDto } from './dto/paginate-restaurant-request.dto'
 import { PaginationDto } from '../../dto/pagination.dto'
 import { RestaurantThemeMapper } from './domain/restaurant-theme.mapper'
+import { CreateReservationConfigRequestDto } from './dto/create-reservation-config_request.dto'
+import { RestaurantEntity } from './persistence/entity/Restaurant.entity'
+import { EntityManager, wrap } from '@mikro-orm/postgresql'
+import { UpdateReservationConfigRequestDto } from './dto/update-reservation-config-request.dto'
+import { ReservationConfigMapper } from './domain/reservation-config.mapper'
 
 @Injectable()
 export class RestaurantService {
 	constructor(
 		private readonly restaurantDao: RestaurantDaoService,
-		private readonly userDao: UserDaoService
+		private readonly userDao: UserDaoService,
+		private readonly entityManager: EntityManager
 	) {}
 
 	async createRestaurant(
@@ -36,9 +42,48 @@ export class RestaurantService {
 			payoutBank: data.payoutBank,
 			accountNumber: data.accountNumber,
 			openTime: `${Math.trunc(data.openTime / 60)}:${data.openTime % 60}`,
-			closeTime: `${Math.trunc(data.closeTime / 60)}:${data.closeTime % 60}`
+			closeTime: `${Math.trunc(data.closeTime / 60)}:${data.closeTime % 60}`,
+			isReservationAvailable: false
 		})
 		return restaurant
+	}
+
+	async createReservationConfig(
+		restaurant: RestaurantEntity,
+		data: CreateReservationConfigRequestDto
+	) {
+		const isConfigExist = await this.restaurantDao.getReservationConfig(restaurant.id)
+		if (isConfigExist) {
+			throw new BadRequestException('Config sudah ada')
+		}
+		const reservationConfig = await this.restaurantDao.createReservationConfig({
+			restaurantId: restaurant.id,
+			maxPerson: data.maxPerson,
+			minCostPerPerson: data.minCostPerPerson,
+			timeLimit: data.timeLimit,
+			facilities: data.facilities
+		})
+		this.entityManager.flush()
+		const domainConfig = ReservationConfigMapper.toDomain(reservationConfig)
+		return {
+			reservationConfig: domainConfig
+		}
+	}
+
+	async updateReservationConfig(
+		restaurant: RestaurantEntity,
+		data: UpdateReservationConfigRequestDto
+	) {
+		const config = await this.restaurantDao.getReservationConfig(restaurant.id)
+		if (!config) {
+			throw new BadRequestException('Config tidak ditemukan')
+		}
+		await this.restaurantDao.updateReservationConfig(config, data)
+		this.entityManager.flush()
+		const updatedConfig = this.entityManager.refresh(config)
+		return {
+			updatedConfig
+		}
 	}
 
 	async getProfile(user_id: string) {
@@ -50,6 +95,13 @@ export class RestaurantService {
 		userMapped.password = undefined
 		return {
 			user: userMapped
+		}
+	}
+
+	async getReservationConfig(restaurantId: string) {
+		const config = await this.restaurantDao.getReservationConfig(restaurantId)
+		return {
+			reservationConfig: ReservationConfigMapper.toDomain(config)
 		}
 	}
 

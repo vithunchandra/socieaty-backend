@@ -14,7 +14,7 @@ import { FoodMenuDaoService } from '../food-menu/persistence/food-menu.dao.servi
 import { FoodOrderTransactionGateway } from './food-order-transaction.gateway'
 import { EntityManager } from '@mikro-orm/postgresql'
 import { SERVICE_FEE } from '../../constants'
-import { FoodOrderMenuItemEntity } from './persistence/entity/food-order-menu-item.entity'
+import { MenuItemEntity } from '../menu-items/persistence/menu-item.entity'
 import { TransactionDaoService } from '../transaction/persistence/transaction.dao.service'
 import {
 	FoodOrderStatus,
@@ -22,17 +22,19 @@ import {
 	TransactionStatus
 } from '../../enums/transaction.enum'
 import { FoodOrderTransactionMapper } from './domain/food-order-transaction.mapper'
-import { RestaurantEntity } from '../restaurant/persistence/Restaurant.entity'
+import { RestaurantEntity } from '../restaurant/persistence/entity/Restaurant.entity'
 import { UpdateFoodOrderTransactionRequestDto } from './dto/update-food-order-transaction-request.dto'
 import { UserEntity, UserRole } from '../user/persistance/User.entity'
 import { FoodMenuCartDto } from './persistence/dto/food-menu-cart.dto'
+import { MenuItemDaoService } from '../menu-items/persistence/menu-item.dao.service'
 
 @Injectable()
 export class FoodOrderTransactionService {
 	constructor(
 		private readonly foodOrderTransactionDaoService: FoodOrderTransactionDaoService,
 		private readonly restaurantDaoService: RestaurantDaoService,
-		private readonly menuItemDaoService: FoodMenuDaoService,
+		private readonly foodMenuDaoService: FoodMenuDaoService,
+		private readonly menuItemDaoService: MenuItemDaoService,
 		private readonly transactionDaoService: TransactionDaoService,
 		@Inject(forwardRef(() => FoodOrderTransactionGateway))
 		private readonly transactionGateway: FoodOrderTransactionGateway,
@@ -50,7 +52,7 @@ export class FoodOrderTransactionService {
 		}
 
 		const menuItems = (
-			await this.menuItemDaoService.findMenusByIds(dto.menuItems.map((item) => item.menuId))
+			await this.foodMenuDaoService.findMenusByIds(dto.menuItems.map((item) => item.menuId))
 		).map(
 			(item) =>
 				new FoodMenuCartDto(
@@ -98,10 +100,10 @@ export class FoodOrderTransactionService {
 			status: FoodOrderStatus.PENDING
 		})
 
-		let orderItems: FoodOrderMenuItemEntity[] = []
+		let orderItems: MenuItemEntity[] = []
 		for (const menuItem of menuItems) {
 			orderItems.push(
-				this.foodOrderTransactionDaoService.createTransactionMenuItem({
+				this.menuItemDaoService.createFoodOrderMenuItem({
 					menu: menuItem.menu,
 					quantity: menuItem.quantity,
 					foodOrder: foodOrder
@@ -140,9 +142,11 @@ export class FoodOrderTransactionService {
 		}
 		if (dto.status === FoodOrderStatus.REJECTED) {
 			foodOrder.transaction.status = TransactionStatus.FAILED
+			foodOrder.transaction.finishedAt = new Date()
 		}
 		if (dto.status === FoodOrderStatus.COMPLETED) {
 			foodOrder.transaction.status = TransactionStatus.SUCCESS
+			foodOrder.transaction.finishedAt = new Date()
 		}
 		foodOrder.status = dto.status
 		await this.em.flush()

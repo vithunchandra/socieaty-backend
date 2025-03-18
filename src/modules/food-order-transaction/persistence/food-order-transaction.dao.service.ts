@@ -4,9 +4,7 @@ import { EntityRepository } from '@mikro-orm/postgresql'
 import { InjectRepository } from '@mikro-orm/nestjs'
 import { CreateFoodOrderTransactionDto } from './dto/create-food-order-transaction.dto'
 import { UpdateFoodOrderTransactionDto } from './dto/update-food-order-transaction'
-import { CreateTransactionMenuItemDto } from './dto/create-transaction-menu-item.dto'
-import { FoodOrderMenuItemEntity } from './entity/food-order-menu-item.entity'
-import { RestaurantEntity } from '../../restaurant/persistence/Restaurant.entity'
+import { RestaurantEntity } from '../../restaurant/persistence/entity/Restaurant.entity'
 import { FoodOrderStatus } from '../../../enums/transaction.enum'
 import { CustomerEntity } from '../../customer/persistence/Customer.entity'
 
@@ -14,9 +12,7 @@ import { CustomerEntity } from '../../customer/persistence/Customer.entity'
 export class FoodOrderTransactionDaoService {
 	constructor(
 		@InjectRepository(FoodOrderEntity)
-		private readonly foodOrderTransactionRepository: EntityRepository<FoodOrderEntity>,
-		@InjectRepository(FoodOrderMenuItemEntity)
-		private readonly transactionMenuItemRepository: EntityRepository<FoodOrderMenuItemEntity>
+		private readonly foodOrderTransactionRepository: EntityRepository<FoodOrderEntity>
 	) {}
 
 	createFoodOrderTransaction(dto: CreateFoodOrderTransactionDto) {
@@ -105,26 +101,5 @@ export class FoodOrderTransactionDaoService {
 	) {
 		foodOrderTransaction.status = dto.status
 		return foodOrderTransaction
-	}
-
-	createTransactionMenuItem(dto: CreateTransactionMenuItemDto): FoodOrderMenuItemEntity {
-		const transactionMenuItem = this.transactionMenuItemRepository.create({
-			foodOrder: dto.foodOrder,
-			menu: dto.menu,
-			quantity: dto.quantity,
-			price: dto.menu.price,
-			totalPrice: dto.menu.price * dto.quantity
-		})
-
-		this.transactionMenuItemRepository.getEntityManager().persist(transactionMenuItem)
-
-		return transactionMenuItem
-	}
-
-	async findOrderMenuItemsByOrderId(id: string): Promise<FoodOrderMenuItemEntity[]> {
-		return await this.transactionMenuItemRepository.find(
-			{ foodOrder: { id } },
-			{ populate: ['menu.categories'] }
-		)
 	}
 }

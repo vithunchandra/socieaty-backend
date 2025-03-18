@@ -2,11 +2,11 @@ import type { EntityManager } from '@mikro-orm/core'
 import { Seeder } from '@mikro-orm/seeder'
 import { UserEntity, UserRole } from '../../modules/user/persistance/User.entity'
 import { faker } from '@faker-js/faker'
-import { RestaurantEntity } from '../../modules/restaurant/persistence/Restaurant.entity'
+import { RestaurantEntity } from '../../modules/restaurant/persistence/entity/Restaurant.entity'
 import { Point } from '../../modules/restaurant/persistence/custom-type/PointType'
 import { CustomerEntity } from '../../modules/customer/persistence/Customer.entity'
 import { BankEnum } from '../../enums/bank.enum'
-import { RestaurantThemeEntity } from '../../modules/restaurant/persistence/restaurant-theme.entity'
+import { RestaurantThemeEntity } from '../../modules/restaurant/persistence/entity/restaurant-theme.entity'
 import {
 	PROFILE_PICTURE_UPLOADS_DIR,
 	RESTAURANT_BANNER_UPLOADS_DIR,
@@ -215,7 +215,8 @@ export class DatabaseSeeder extends Seeder {
 			accountNumber: faker.number.int({ min: 10000000, max: 99999999 }).toString(),
 			openTime: `${faker.number.int({ min: 0, max: 23 })}:${faker.number.int({ min: 0, max: 59 })}`,
 			closeTime: `${faker.number.int({ min: 0, max: 23 })}:${faker.number.int({ min: 0, max: 59 })}`,
-			themes: restaurantRandomThemes
+			themes: restaurantRandomThemes,
+			isReservationAvailable: false
 		})
 		users.push(customerUser, restaurantUser)
 		customers.push(customerUserData)
@@ -252,7 +253,8 @@ export class DatabaseSeeder extends Seeder {
 					accountNumber: faker.number.int({ min: 10000000, max: 99999999 }).toString(),
 					openTime: `${faker.number.int({ min: 0, max: 23 })}:${faker.number.int({ min: 0, max: 59 })}`,
 					closeTime: `${faker.number.int({ min: 0, max: 23 })}:${faker.number.int({ min: 0, max: 59 })}`,
-					themes: randomThemes
+					themes: randomThemes,
+					isReservationAvailable: false
 				})
 				restaurants.push(restaurant)
 			} else {

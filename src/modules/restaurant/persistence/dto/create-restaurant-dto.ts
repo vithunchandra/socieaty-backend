@@ -10,4 +10,5 @@ export interface CreateRestaurantDto {
 	accountNumber: string
 	openTime: string
 	closeTime: string
+	isReservationAvailable: boolean
 }

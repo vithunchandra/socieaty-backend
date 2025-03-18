@@ -1,4 +1,4 @@
-import { RestaurantEntity } from '../../../restaurant/persistence/Restaurant.entity'
+import { RestaurantEntity } from '../../../restaurant/persistence/entity/Restaurant.entity'
 
 export class CreateFoodMenuDto {
 	name: string

@@ -1,5 +1,5 @@
 import { BASE_URL } from '../../../constants'
-import { RestaurantEntity } from '../persistence/Restaurant.entity'
+import { RestaurantEntity } from '../persistence/entity/Restaurant.entity'
 import { Restaurant } from './Restaurant'
 import { RestaurantThemeMapper } from './restaurant-theme.mapper'
 
@@ -14,13 +14,13 @@ export class RestaurantMapper {
 		restaurant.restaurantBannerUrl = `${BASE_URL}${raw.restaurantBannerUrl}`
 		restaurant.location = raw.location
 		restaurant.themes = raw.themes
-
 			.map((theme) => RestaurantThemeMapper.toDomain(theme))
 			.filter((element) => element !== null && element !== undefined)
 		restaurant.openTime = `${openTime[0].padStart(2, '0')}:${openTime[1].padStart(2, '0')}`
 		restaurant.closeTime = `${closeTime[0].padStart(2, '0')}:${closeTime[1].padStart(2, '0')}`
 		restaurant.payoutBank = raw.payoutBank
 		restaurant.accountNumber = raw.accountNumber
+		restaurant.isReservationAvailable = raw.isReservationAvailable
 
 		return restaurant
 	}

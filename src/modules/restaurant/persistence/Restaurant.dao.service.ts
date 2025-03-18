@@ -2,11 +2,14 @@ import { EntityRepository, FilterQuery, wrap } from '@mikro-orm/postgresql'
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@mikro-orm/nestjs'
 import { UserEntity } from '../../user/persistance/User.entity'
-import { RestaurantEntity } from './Restaurant.entity'
+import { RestaurantEntity } from './entity/Restaurant.entity'
 import { CreateRestaurantDto } from './dto/create-restaurant-dto'
-import { RestaurantThemeEntity } from './restaurant-theme.entity'
-import { PaginateRestaurantDto } from './dto/paginate_restaurant.dto'
+import { RestaurantThemeEntity } from './entity/restaurant-theme.entity'
+import { PaginateRestaurantDto } from './dto/paginate-restaurant.dto'
 import { PriceRange } from '../../../enums/price-range.enum'
+import { CreateReservationConfigDto } from './dto/create-reservation-config.dto'
+import { ReservationConfigEntity } from './entity/reservation-config.entity'
+import { UpdateReservationConfigRequestDto } from '../dto/update-reservation-config-request.dto'
 
 @Injectable()
 export class RestaurantDaoService {
@@ -14,7 +17,9 @@ export class RestaurantDaoService {
 		@InjectRepository(RestaurantEntity)
 		private readonly restaurantRepository: EntityRepository<RestaurantEntity>,
 		@InjectRepository(RestaurantThemeEntity)
-		private readonly restaurantThemeRepository: EntityRepository<RestaurantThemeEntity>
+		private readonly restaurantThemeRepository: EntityRepository<RestaurantThemeEntity>,
+		@InjectRepository(ReservationConfigEntity)
+		private readonly reservationConfigRepository: EntityRepository<ReservationConfigEntity>
 	) {}
 
 	async create(user: UserEntity, data: CreateRestaurantDto): Promise<RestaurantEntity> {
@@ -25,11 +30,34 @@ export class RestaurantDaoService {
 			payoutBank: data.payoutBank,
 			accountNumber: data.accountNumber,
 			openTime: data.openTime,
-			closeTime: data.closeTime
+			closeTime: data.closeTime,
+			isReservationAvailable: data.isReservationAvailable
 		})
 		const themes = await this.getRestaurantThemes(data.restaurantThemes)
 		restaurant.themes.add(themes)
 		return restaurant
+	}
+
+	async createReservationConfig(data: CreateReservationConfigDto) {
+		const reservationConfig = this.reservationConfigRepository.create({
+			restaurant: data.restaurantId,
+			maxPerson: data.maxPerson,
+			minCostPerPerson: data.minCostPerPerson,
+			timeLimit: data.timeLimit,
+			facilities: data.facilities
+		})
+		return reservationConfig
+	}
+
+	async updateReservationConfig(
+		config: ReservationConfigEntity,
+		data: UpdateReservationConfigRequestDto
+	) {
+		config.maxPerson = data.maxPerson
+		config.minCostPerPerson = data.minCostPerPerson
+		config.timeLimit = data.timeLimit
+		config.facilities = data.facilities
+		return config
 	}
 
 	async getProfile(user_id: string): Promise<RestaurantEntity | null> {
@@ -85,6 +113,12 @@ export class RestaurantDaoService {
 			},
 			{ populate: ['userData', 'userData.restaurantData', 'userData.restaurantData.themes'] }
 		)
+	}
+
+	async getReservationConfig(restaurantId: string) {
+		return await this.reservationConfigRepository.findOne({
+			restaurant: { id: restaurantId }
+		})
 	}
 
 	async getRestaurantThemes(themeIds: number[]): Promise<RestaurantThemeEntity[]> {

@@ -1,6 +1,6 @@
 import { Entity, ManyToOne, OneToOne, Property } from '@mikro-orm/core'
 import { BaseEntity } from '../../../database/model/base/Base.entity'
-import { RestaurantEntity } from '../../restaurant/persistence/Restaurant.entity'
+import { RestaurantEntity } from '../../restaurant/persistence/entity/Restaurant.entity'
 import { TransactionEntity } from '../../transaction/persistence/transaction.entity'
 import { CustomerEntity } from '../../customer/persistence/Customer.entity'
 
@@ -36,7 +36,7 @@ export class TransactionReviewEntity extends BaseEntity {
 	// })
 	// restaurant: RestaurantEntity
 
-	constructor(transaction: TransactionEntity, rating: number, review: string){
+	constructor(transaction: TransactionEntity, rating: number, review: string) {
 		super()
 		this.transaction = transaction
 		this.rating = rating

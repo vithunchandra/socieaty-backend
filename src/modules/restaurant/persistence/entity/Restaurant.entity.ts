@@ -7,13 +7,13 @@ import {
 	OneToOne,
 	Property
 } from '@mikro-orm/core'
-import { BaseEntity } from '../../../database/model/base/Base.entity'
-import { UserEntity } from '../../user/persistance/User.entity'
-import { Point, PointType } from './custom-type/PointType'
+import { BaseEntity } from '../../../../database/model/base/Base.entity'
+import { UserEntity } from '../../../user/persistance/User.entity'
+import { Point, PointType } from '../custom-type/PointType'
 import { RestaurantThemeEntity } from './restaurant-theme.entity'
-import { FoodMenuEntity } from '../../food-menu/persistence/food-menu.entity'
-import { BankEnum } from '../../../enums/bank.enum'
-import { TransactionReviewEntity } from '../../transaction-review/persistence/transaction-review.entity'
+import { FoodMenuEntity } from '../../../food-menu/persistence/food-menu.entity'
+import { BankEnum } from '../../../../enums/bank.enum'
+import { TransactionReviewEntity } from '../../../transaction-review/persistence/transaction-review.entity'
 
 @Entity({ tableName: 'restaurant' })
 export class RestaurantEntity extends BaseEntity {
@@ -34,6 +34,9 @@ export class RestaurantEntity extends BaseEntity {
 
 	@Property()
 	accountNumber: string
+
+	@Property()
+	isReservationAvailable: boolean
 
 	@OneToOne({
 		entity: () => UserEntity,
