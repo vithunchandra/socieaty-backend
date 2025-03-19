@@ -21,6 +21,7 @@ import { TransactionMessageEntity } from './modules/transaction-message/persiste
 import { FoodOrderEntity } from './modules/food-order-transaction/persistence/entity/food-order-transaction.entity'
 import { ReservationEntity } from './modules/reservation/persistence/reservation.entity'
 import { ReservationConfigEntity } from './modules/restaurant/persistence/entity/reservation-config.entity'
+import { ReservationFacilityEntity } from './modules/restaurant/persistence/entity/reservation-facility.entity'
 const logger = new Logger('MikroORM')
 
 export default defineConfig({
@@ -42,7 +43,8 @@ export default defineConfig({
 		TransactionMessageEntity,
 		FoodOrderEntity,
 		ReservationEntity,
-		ReservationConfigEntity
+		ReservationConfigEntity,
+		ReservationFacilityEntity
 	],
 	entitiesTs: [
 		UserEntity,
@@ -62,7 +64,8 @@ export default defineConfig({
 		TransactionMessageEntity,
 		FoodOrderEntity,
 		ReservationEntity,
-		ReservationConfigEntity
+		ReservationConfigEntity,
+		ReservationFacilityEntity
 	],
 	dbName: config().dbName ?? 'socieaty_database',
 	driver: PostgreSqlDriver,
@@ -100,7 +103,8 @@ export default defineConfig({
 				'FoodOrderEntity',
 				'TransactionMenuItemEntity',
 				'ReservationEntity',
-				'ReservationConfigEntity'
+				'ReservationConfigEntity',
+				'ReservationFacilityEntity'
 			]
 		},
 		[MikroOrmFilter.DELETED]: {
@@ -123,7 +127,8 @@ export default defineConfig({
 				'FoodOrderEntity',
 				'TransactionMenuItemEntity',
 				'ReservationEntity',
-				'ReservationConfigEntity'
+				'ReservationConfigEntity',
+				'ReservationFacilityEntity'
 			]
 		}
 	},

@@ -10,6 +10,7 @@ import { PriceRange } from '../../../enums/price-range.enum'
 import { CreateReservationConfigDto } from './dto/create-reservation-config.dto'
 import { ReservationConfigEntity } from './entity/reservation-config.entity'
 import { UpdateReservationConfigRequestDto } from '../dto/update-reservation-config-request.dto'
+import { ReservationFacilityEntity } from './entity/reservation-facility.entity'
 
 @Injectable()
 export class RestaurantDaoService {
@@ -19,7 +20,9 @@ export class RestaurantDaoService {
 		@InjectRepository(RestaurantThemeEntity)
 		private readonly restaurantThemeRepository: EntityRepository<RestaurantThemeEntity>,
 		@InjectRepository(ReservationConfigEntity)
-		private readonly reservationConfigRepository: EntityRepository<ReservationConfigEntity>
+		private readonly reservationConfigRepository: EntityRepository<ReservationConfigEntity>,
+		@InjectRepository(ReservationFacilityEntity)
+		private readonly reservationFacilityRepository: EntityRepository<ReservationFacilityEntity>
 	) {}
 
 	async create(user: UserEntity, data: CreateRestaurantDto): Promise<RestaurantEntity> {
@@ -43,8 +46,7 @@ export class RestaurantDaoService {
 			restaurant: data.restaurantId,
 			maxPerson: data.maxPerson,
 			minCostPerPerson: data.minCostPerPerson,
-			timeLimit: data.timeLimit,
-			facilities: data.facilities
+			timeLimit: data.timeLimit
 		})
 		return reservationConfig
 	}
@@ -56,8 +58,28 @@ export class RestaurantDaoService {
 		config.maxPerson = data.maxPerson
 		config.minCostPerPerson = data.minCostPerPerson
 		config.timeLimit = data.timeLimit
-		config.facilities = data.facilities
 		return config
+	}
+
+	async createReservationFacility(facilities: string[]) {
+		const facilityEntities: ReservationFacilityEntity[] = []
+		for (const facility of facilities) {
+			const existingFacility = await this.getReservationFacilityByName(facility)
+			if (!existingFacility) {
+				facilityEntities.push(this.reservationFacilityRepository.create({ name: facility }))
+			} else {
+				facilityEntities.push(existingFacility)
+			}
+		}
+		return facilityEntities
+	}
+
+	async getReservationFacilityByName(name: string) {
+		return await this.reservationFacilityRepository.findOne({ name })
+	}
+
+	async getReservationFacilityByNameLike(name: string) {
+		return await this.reservationFacilityRepository.find({ name: { $ilike: `%${name}%` } })
 	}
 
 	async getProfile(user_id: string): Promise<RestaurantEntity | null> {

@@ -60,11 +60,15 @@ export class RestaurantService {
 			restaurantId: restaurant.id,
 			maxPerson: data.maxPerson,
 			minCostPerPerson: data.minCostPerPerson,
-			timeLimit: data.timeLimit,
-			facilities: data.facilities
+			timeLimit: data.timeLimit
 		})
-		this.entityManager.flush()
+		const reservationFacilities = await this.restaurantDao.createReservationFacility(
+			data.facilities
+		)
+		reservationConfig.facilities.add(reservationFacilities)
+		await this.entityManager.flush()
 		const domainConfig = ReservationConfigMapper.toDomain(reservationConfig)
+		console.log(domainConfig)
 		return {
 			reservationConfig: domainConfig
 		}
@@ -79,8 +83,13 @@ export class RestaurantService {
 			throw new BadRequestException('Config tidak ditemukan')
 		}
 		await this.restaurantDao.updateReservationConfig(config, data)
-		this.entityManager.flush()
-		const updatedConfig = this.entityManager.refresh(config)
+		config.facilities.removeAll()
+		const reservationFacilities = await this.restaurantDao.createReservationFacility(
+			data.facilities
+		)
+		config.facilities.add(reservationFacilities)
+		await this.entityManager.flush()
+		const updatedConfig = await this.entityManager.refresh(config)
 		return {
 			updatedConfig
 		}
@@ -116,6 +125,13 @@ export class RestaurantService {
 		return {
 			restaurants: items.map((item) => UserMapper.fromRestaurantToDomain(item)),
 			pagination
+		}
+	}
+
+	async getRestaurantFacilitiesByNameLike(name: string) {
+		const facilities = await this.restaurantDao.getReservationFacilityByNameLike(name)
+		return {
+			facilities: facilities.map((facility) => facility.name)
 		}
 	}
 

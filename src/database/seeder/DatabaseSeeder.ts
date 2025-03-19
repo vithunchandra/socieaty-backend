@@ -19,6 +19,7 @@ import { PostMediaEntity } from '../../modules/post-media/persistence/post-media
 import { PostHashtagEntity } from '../../modules/post-hashtag/persistence/post-hashtag.entity'
 import { PostCommentEntity } from '../../modules/post-comment/persistence/post-comment.entity'
 import { FoodMenuEntity } from '../../modules/food-menu/persistence/food-menu.entity'
+import { ReservationFacilityEntity } from '../../modules/restaurant/persistence/entity/reservation-facility.entity'
 
 const bank: BankEnum[] = [BankEnum.BNI, BankEnum.BCA, BankEnum.BRI, BankEnum.MANDIRI]
 class Medias {
@@ -38,6 +39,29 @@ const themeName: string[] = [
 	'Asian Food',
 	'Fast Food',
 	'Buffet'
+]
+const reservationFacilitiesName: string[] = [
+	'Outdoor',
+	'Indoor',
+	'VIP Room',
+	'Private Room',
+	'Wifi',
+	'Parking',
+	'Smoking Area',
+	'Non-Smoking Area',
+	'Pet Friendly',
+	'Wheelchair Accessible',
+	'Standing Table',
+	'Outdoor Table',
+	'Indoor Table',
+	'VIP Table',
+	'Private Table',
+	'Air Conditioner',
+	'Heater',
+	'Elevator',
+	'Parking Space',
+	'Free Parking',
+	'Free Wifi'
 ]
 const hashtags: string[] = [
 	'food',
@@ -161,9 +185,18 @@ export class DatabaseSeeder extends Seeder {
 		const posts: PostEntity[] = []
 		const postComments: PostCommentEntity[] = []
 		const menuDummies: FoodMenuEntity[] = []
+		const reservationFacilities: ReservationFacilityEntity[] = []
 
 		for (const theme of themeName) {
 			restaurantThemes.push(em.create(RestaurantThemeEntity, { name: theme }))
+		}
+
+		for (const facility of reservationFacilitiesName) {
+			reservationFacilities.push(
+				em.create(ReservationFacilityEntity, {
+					name: facility
+				})
+			)
 		}
 
 		for (const category of foodCategories) {

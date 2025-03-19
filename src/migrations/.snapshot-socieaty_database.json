@@ -128,6 +128,76 @@
       "columns": {
         "id": {
           "name": "id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        }
+      },
+      "name": "reservation_facility",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "reservation_facility_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {},
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
           "type": "serial",
           "unsigned": false,
           "autoincrement": true,
@@ -609,15 +679,6 @@
           "nullable": false,
           "mappedType": "integer"
         },
-        "facilities": {
-          "name": "facilities",
-          "type": "text[]",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "array"
-        },
         "restaurant_id": {
           "name": "restaurant_id",
           "type": "uuid",
@@ -664,6 +725,73 @@
             "id"
           ],
           "referencedTableName": "public.restaurant",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "reservation_facility_entity_id": {
+          "name": "reservation_facility_entity_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        },
+        "reservation_config_entity_id": {
+          "name": "reservation_config_entity_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        }
+      },
+      "name": "reservation_facility_reservation_configs",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "reservation_facility_reservation_configs_pkey",
+          "columnNames": [
+            "reservation_facility_entity_id",
+            "reservation_config_entity_id"
+          ],
+          "composite": true,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "reservation_facility_reservation_configs_reserva_01a26_foreign": {
+          "constraintName": "reservation_facility_reservation_configs_reserva_01a26_foreign",
+          "columnNames": [
+            "reservation_facility_entity_id"
+          ],
+          "localTableName": "public.reservation_facility_reservation_configs",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.reservation_facility",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        },
+        "reservation_facility_reservation_configs_reserva_4c639_foreign": {
+          "constraintName": "reservation_facility_reservation_configs_reserva_4c639_foreign",
+          "columnNames": [
+            "reservation_config_entity_id"
+          ],
+          "localTableName": "public.reservation_facility_reservation_configs",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.reservation_configs",
+          "deleteRule": "cascade",
           "updateRule": "cascade"
         }
       },

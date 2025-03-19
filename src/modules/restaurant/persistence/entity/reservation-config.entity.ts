@@ -1,6 +1,7 @@
-import { ArrayType, Entity, ManyToOne, OneToOne, Property } from '@mikro-orm/core'
+import { ArrayType, Collection, Entity, ManyToMany, ManyToOne, OneToOne, Property } from '@mikro-orm/core'
 import { BaseEntity } from '../../../../database/model/base/Base.entity'
 import { RestaurantEntity } from './Restaurant.entity'
+import { ReservationFacilityEntity } from './reservation-facility.entity'
 
 @Entity({ tableName: 'reservation_configs' })
 export class ReservationConfigEntity extends BaseEntity {
@@ -13,8 +14,12 @@ export class ReservationConfigEntity extends BaseEntity {
 	@Property()
 	timeLimit: number
 
-	@Property({ type: ArrayType })
-	facilities: string[]
+	@ManyToMany({
+		entity: () => ReservationFacilityEntity,
+		mappedBy: 'reservationConfigs',
+		fieldName: 'reservation_config_id'
+	})
+	facilities = new Collection<ReservationFacilityEntity>(this)
 
 	@OneToOne(() => RestaurantEntity)
 	restaurant: RestaurantEntity
@@ -23,13 +28,11 @@ export class ReservationConfigEntity extends BaseEntity {
 		maxPerson: number,
 		minCostPerPerson: number,
 		timeLimit: number,
-		facilities: string[]
 	) {
 		super()
 		this.maxPerson = maxPerson
 		this.minCostPerPerson = minCostPerPerson
 		this.timeLimit = timeLimit
-		this.facilities = facilities
 	}
 }
 

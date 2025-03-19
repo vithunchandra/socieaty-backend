@@ -12,7 +12,7 @@ export class ReservationConfigMapper {
 		config.maxPerson = raw.maxPerson
 		config.minCostPerPerson = raw.minCostPerPerson
 		config.timeLimit = raw.timeLimit
-		config.facilities = raw.facilities
+		config.facilities = raw.facilities.map((facility) => facility.name)
 		return config
 	}
 }

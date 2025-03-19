@@ -39,12 +39,10 @@ export class RestaurantController {
 		@Request() req: GuardedRequestDto,
 		@Body() data: CreateReservationConfigRequestDto
 	) {
-		return {
-			data: await this.restaurantService.createReservationConfig(
-				req.user.restaurantData!,
-				data
-			)
-		}
+		return await this.restaurantService.createReservationConfig(
+			req.user.restaurantData!,
+			data
+		)
 	}
 
 	@Put('reservation-config')
@@ -74,6 +72,11 @@ export class RestaurantController {
 	@Get('themes')
 	async getAllRestaurantThemes() {
 		return await this.restaurantService.getAllRestaurantThemes()
+	}
+
+	@Get('facilities')
+	async getRestaurantFacilitiesByNameLike(@Query('name') name: string) {
+		return await this.restaurantService.getRestaurantFacilitiesByNameLike(name)
 	}
 
 	@Get('')
