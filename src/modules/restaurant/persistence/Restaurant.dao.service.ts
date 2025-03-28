@@ -139,7 +139,9 @@ export class RestaurantDaoService {
 
 	async getReservationConfig(restaurantId: string) {
 		return await this.reservationConfigRepository.findOne({
-			restaurant: { id: restaurantId }
+			restaurant: { id: restaurantId },
+		}, {
+			populate: ['facilities', 'restaurant']
 		})
 	}
 

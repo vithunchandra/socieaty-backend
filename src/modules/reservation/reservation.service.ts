@@ -16,6 +16,8 @@ import { ReservationTransactionMapper } from './domain/reservation-transaction.m
 import { UserEntity, UserRole } from '../user/persistance/User.entity'
 import { UpdateReservationRequestDto } from './dto/update-reservation-request.dto'
 import { RestaurantEntity } from '../restaurant/persistence/entity/Restaurant.entity'
+import { ReservationGateway } from './reservation.gateway'
+import { GetCustomerReservationsDto } from './dto/get_customer_reservations.dto'
 
 @Injectable()
 export class ReservationService {
@@ -25,6 +27,7 @@ export class ReservationService {
 		private readonly transactionDaoService: TransactionDaoService,
 		private readonly foodMenuDaoService: FoodMenuDaoService,
 		private readonly menuItemDaoService: MenuItemDaoService,
+		private readonly reservationGateway: ReservationGateway,
 		private readonly em: EntityManager
 	) {}
 
@@ -114,12 +117,18 @@ export class ReservationService {
 			await this.reservationDaoService.findReservationByTransactionId(transaction.id)
 		const reservationDomain = ReservationTransactionMapper.toDomain(reservationTransaction)
 
+		this.reservationGateway.notifyNewOrder(reservationDomain!)
+
 		return {
 			reservation: reservationDomain
 		}
 	}
 
-    async updateReservation(id: string, restaurant: RestaurantEntity, dto: UpdateReservationRequestDto){
+	async updateReservation(
+		id: string,
+		restaurant: RestaurantEntity,
+		dto: UpdateReservationRequestDto
+	) {
 		const reservation = await this.reservationDaoService.findReservationById(id)
 		if (!reservation) {
 			throw new NotFoundException('Transaction not found')
@@ -130,29 +139,28 @@ export class ReservationService {
 		if (reservation.transaction.serviceType !== TransactionServiceType.RESERVATION) {
 			throw new BadRequestException('Transaction is not a reservation')
 		}
-		if (dto.status === ReservationStatus.CONFIRMED) {
-			reservation.status = ReservationStatus.CONFIRMED
-		}
 		if (dto.status === ReservationStatus.CANCELED) {
-			reservation.status = ReservationStatus.CANCELED
 			reservation.transaction.finishedAt = new Date()
+			reservation.transaction.status = TransactionStatus.FAILED
 		}
 		if (dto.status === ReservationStatus.COMPLETED) {
-			reservation.status = ReservationStatus.COMPLETED
 			reservation.transaction.finishedAt = new Date()
+			reservation.transaction.status = TransactionStatus.SUCCESS
 		}
 		reservation.status = dto.status
 		await this.em.flush()
 		const updatedReservation = await this.em.refresh(reservation)
 		const reservationDomain = ReservationTransactionMapper.toDomain(updatedReservation)
+
+		this.reservationGateway.notifyTrackOrder(reservationDomain!)
+
 		return {
 			reservation: reservationDomain
 		}
 	}
 
-    async findReservationById(id: string, user: UserEntity){
-        const reservation =
-			await this.reservationDaoService.findReservationById(id)
+	async getReservationById(id: string, user: UserEntity) {
+		const reservation = await this.reservationDaoService.findReservationById(id)
 		if (!reservation) {
 			throw new NotFoundException('Transaction not found')
 		}
@@ -166,9 +174,41 @@ export class ReservationService {
 				throw new BadRequestException('Transaction does not belong to the restaurant')
 			}
 		}
-
+		const reservationDomain = ReservationTransactionMapper.toDomain(reservation)
 		return {
-			transaction: ReservationTransactionMapper.toDomain(reservation)
+			reservation: reservationDomain
 		}
-    }
+	}
+
+	async getRestaurantReservations(restaurant: RestaurantEntity, status: ReservationStatus[]) {
+		const reservations = await this.reservationDaoService.findReservationsByRestaurant(
+			restaurant,
+			status
+		)
+		return {
+			reservations: reservations.map((reservation) =>
+				ReservationTransactionMapper.toDomain(reservation)
+			)
+		}
+	}
+
+	async getCustomerReservations(customer: CustomerEntity, query: GetCustomerReservationsDto) {
+		const reservations = await this.reservationDaoService.findReservationsByCustomer(
+			customer,
+			query
+		)
+		return {
+			reservations: reservations.map((reservation) =>
+				ReservationTransactionMapper.toDomain(reservation)
+			)
+		}
+	}
+
+	async trackReservation(id: string, user: UserEntity) {
+		const { reservation } = await this.getReservationById(id, user)
+		this.reservationGateway.trackOrder(user, reservation!)
+		return {
+			message: 'Reservation is being tracked'
+		}
+	}
 }

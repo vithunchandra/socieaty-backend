@@ -52,21 +52,15 @@ export class RestaurantController {
 		@Request() req: GuardedRequestDto,
 		@Body() data: UpdateReservationConfigRequestDto
 	) {
-		return {
-			data: await this.restaurantService.updateReservationConfig(
-				req.user.restaurantData!,
-				data
-			)
-		}
+		return await this.restaurantService.updateReservationConfig(
+			req.user.restaurantData!,
+			data
+		)
 	}
 
-	@Get('reservation-config')
-	@Roles(UserRole.RESTAURANT)
-	@UseGuards(AuthGuard, RolesGuard)
-	async getReservationConfig(@Request() req: GuardedRequestDto) {
-		return {
-			data: await this.restaurantService.getReservationConfig(req.user.restaurantData!.id)
-		}
+	@Get('reservation-config/:restaurantId')
+	async getReservationConfig(@Param('restaurantId') restaurantId: string) {
+		return await this.restaurantService.getReservationConfig(restaurantId)
 	}
 
 	@Get('themes')

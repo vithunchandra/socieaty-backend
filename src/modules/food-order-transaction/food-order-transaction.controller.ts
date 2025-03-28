@@ -47,11 +47,11 @@ export class FoodOrderTransactionController {
 		@Req() req: GuardedRequestDto,
 		@Query() query: GetRestaurantFoodTransactionQueryDto
 	) {
-		console.log("Test")
+		console.log('Test')
 		if (!req.user.restaurantData) {
 			throw new UnauthorizedException('Restaurant not found')
 		}
-		return this.foodOrderTransactionService.findRestaurantFoodOrderTransaction(
+		return this.foodOrderTransactionService.findRestaurantFoodOrderTransactions(
 			req.user.restaurantData!,
 			query.status
 		)
@@ -103,6 +103,8 @@ export class FoodOrderTransactionController {
 		}
 		return this.foodOrderTransactionService.findFoodOrderTransactionByOrderId(id, req.user)
 	}
+
+	
 
 	@Get(':id/track')
 	@UseGuards(AuthGuard, RolesGuard)

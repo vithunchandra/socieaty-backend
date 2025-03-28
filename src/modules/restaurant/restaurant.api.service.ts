@@ -66,6 +66,7 @@ export class RestaurantService {
 			data.facilities
 		)
 		reservationConfig.facilities.add(reservationFacilities)
+		restaurant.isReservationAvailable = true
 		await this.entityManager.flush()
 		const domainConfig = ReservationConfigMapper.toDomain(reservationConfig)
 		console.log(domainConfig)
@@ -91,7 +92,7 @@ export class RestaurantService {
 		await this.entityManager.flush()
 		const updatedConfig = await this.entityManager.refresh(config)
 		return {
-			updatedConfig
+			updatedConfig: ReservationConfigMapper.toDomain(updatedConfig)
 		}
 	}
 

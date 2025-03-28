@@ -192,7 +192,7 @@ export class FoodOrderTransactionService {
 		}
 	}
 
-	async findRestaurantFoodOrderTransaction(
+	async findRestaurantFoodOrderTransactions(
 		restaurant: RestaurantEntity,
 		status: FoodOrderStatus[]
 	) {
