@@ -9,6 +9,8 @@ export abstract class BaseTransaction {
 	transactionId: string
 	serviceType: TransactionServiceType
 	grossAmount: number
+	netAmount: number
+	refundAmount: number
 	serviceFee: number
 	note: string
 	status: TransactionStatus

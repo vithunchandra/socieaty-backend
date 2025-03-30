@@ -20,6 +20,7 @@ import { TransactionMessageModule } from './modules/transaction-message/transact
 import { FoodOrderTransactionModule } from './modules/food-order-transaction/food-order-transaction.module'
 import { TransactionReviewModule } from './modules/transaction-review/transaction-review.module'
 import { ReservationModule } from './modules/reservation/reservation.module'
+import { ScheduleModule } from '@nestjs/schedule'
 
 @Module({
 	imports: [
@@ -29,6 +30,7 @@ import { ReservationModule } from './modules/reservation/reservation.module'
 			isGlobal: true,
 			load: [config]
 		}),
+		ScheduleModule.forRoot(),
 		JwtModule.register({
 			global: true,
 			secret: process.env.AUTH_SECRET_KEY,

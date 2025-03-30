@@ -20,6 +20,9 @@ export class RestaurantEntity extends BaseEntity {
 	@Property({ default: '', nullable: true })
 	restaurantBannerUrl: string
 
+	@Property()
+	wallet: number
+
 	@Property({ type: PointType })
 	location: Point
 

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
+import { BadRequestException, Injectable, NotFoundException, StreamableFile } from '@nestjs/common'
 import { ReservationDaoService } from './persistence/reservation.dao.service'
 import { CreateReservationRequestDto } from './dto/create-reservation-request.dto'
 import { CustomerEntity } from '../customer/persistence/Customer.entity'
@@ -18,16 +18,22 @@ import { UpdateReservationRequestDto } from './dto/update-reservation-request.dt
 import { RestaurantEntity } from '../restaurant/persistence/entity/Restaurant.entity'
 import { ReservationGateway } from './reservation.gateway'
 import { GetCustomerReservationsDto } from './dto/get_customer_reservations.dto'
+import { QRCodeService } from '../qr-code/qr-code.service'
+import { TransactionService } from '../transaction/transaction.service'
+import { ReservationEntity } from './persistence/reservation.entity'
+import { SchedulerService } from '../scheduler/scheduler.service'
 
 @Injectable()
 export class ReservationService {
 	constructor(
 		private readonly reservationDaoService: ReservationDaoService,
 		private readonly restaurantDaoService: RestaurantDaoService,
-		private readonly transactionDaoService: TransactionDaoService,
+		private readonly transactionService: TransactionService,
 		private readonly foodMenuDaoService: FoodMenuDaoService,
 		private readonly menuItemDaoService: MenuItemDaoService,
 		private readonly reservationGateway: ReservationGateway,
+		private readonly qrCodeService: QRCodeService,
+		private readonly schedulerService: SchedulerService,
 		private readonly em: EntityManager
 	) {}
 
@@ -80,9 +86,11 @@ export class ReservationService {
 			throw new BadRequestException('Insufficient balance')
 		}
 
-		const transaction = this.transactionDaoService.createTransaction({
+		const transaction = this.transactionService.createTransaction({
 			restaurant: restaurant,
-			grossAmount: totalPrice,
+			grossAmount: totalPrice + SERVICE_FEE,
+			netAmount: totalPrice,
+			refundAmount: 0,
 			serviceFee: SERVICE_FEE,
 			customer: customer,
 			serviceType: TransactionServiceType.RESERVATION,
@@ -117,7 +125,30 @@ export class ReservationService {
 			await this.reservationDaoService.findReservationByTransactionId(transaction.id)
 		const reservationDomain = ReservationTransactionMapper.toDomain(reservationTransaction)
 
-		this.reservationGateway.notifyNewOrder(reservationDomain!)
+		this.reservationGateway.notifyNewReservation(reservationDomain!)
+
+		this.schedulerService.addTimeout(
+			`autoRejectReservation-${reservation.id}`,
+			async () => {
+				let timeoutReservation = await this.reservationDaoService.findReservationById(
+					reservation.id
+				)
+				if (!timeoutReservation) {
+					return
+				}
+				if (timeoutReservation.status !== ReservationStatus.PENDING) {
+					return
+				}
+				this.rejectReservation(timeoutReservation)
+				timeoutReservation.status = ReservationStatus.REJECTED
+				await this.em.flush()
+				timeoutReservation = await this.em.refresh(timeoutReservation)
+				const timeoutReservationDomain =
+					ReservationTransactionMapper.toDomain(timeoutReservation)
+				await this.reservationGateway.notifyTrackReservation(timeoutReservationDomain!)
+			},
+			1000 * 5
+		)
 
 		return {
 			reservation: reservationDomain
@@ -139,20 +170,89 @@ export class ReservationService {
 		if (reservation.transaction.serviceType !== TransactionServiceType.RESERVATION) {
 			throw new BadRequestException('Transaction is not a reservation')
 		}
+
+		if (dto.status === ReservationStatus.CONFIRMED) {
+			if (reservation.status !== ReservationStatus.PENDING) {
+				throw new BadRequestException('Reservation is not in pending state')
+			}
+			this.schedulerService.deleteTimeout(`autoRejectReservation-${reservation.id}`)
+		}
+		if (dto.status === ReservationStatus.REJECTED) {
+			if (reservation.status !== ReservationStatus.PENDING) {
+				throw new BadRequestException('Reservation is not in pending state')
+			}
+			this.rejectReservation(reservation)
+		}
 		if (dto.status === ReservationStatus.CANCELED) {
-			reservation.transaction.finishedAt = new Date()
-			reservation.transaction.status = TransactionStatus.FAILED
+			if (reservation.status !== ReservationStatus.CONFIRMED) {
+				throw new BadRequestException('Reservation is not in confirmed state')
+			}
+			this.cancelReservation(reservation)
 		}
 		if (dto.status === ReservationStatus.COMPLETED) {
-			reservation.transaction.finishedAt = new Date()
-			reservation.transaction.status = TransactionStatus.SUCCESS
+			if (reservation.status !== ReservationStatus.DINING) {
+				throw new BadRequestException('Reservation is not in dining state')
+			}
+			this.completeReservation(reservation)
 		}
+
 		reservation.status = dto.status
 		await this.em.flush()
 		const updatedReservation = await this.em.refresh(reservation)
 		const reservationDomain = ReservationTransactionMapper.toDomain(updatedReservation)
 
-		this.reservationGateway.notifyTrackOrder(reservationDomain!)
+		this.reservationGateway.notifyTrackReservation(reservationDomain!)
+
+		return {
+			reservation: reservationDomain
+		}
+	}
+
+	rejectReservation(reservation: ReservationEntity) {
+		if (reservation.status !== ReservationStatus.PENDING) {
+			throw new BadRequestException('Reservation is not in pending state')
+		}
+		this.transactionService.failTransaction(reservation.transaction)
+		return reservation
+	}
+
+	cancelReservation(reservation: ReservationEntity) {
+		if (reservation.status !== ReservationStatus.CONFIRMED) {
+			throw new BadRequestException('Reservation is not in confirmed state')
+		}
+		this.transactionService.failTransaction(reservation.transaction)
+		return reservation
+	}
+
+	completeReservation(reservation: ReservationEntity) {
+		if (reservation.status !== ReservationStatus.DINING) {
+			throw new BadRequestException('Reservation is not in dining state')
+		}
+		this.transactionService.finishTransaction(reservation.transaction)
+		return reservation
+	}
+
+	async scanCustomerReservation(restaurant: RestaurantEntity, reservationId: string) {
+		const reservation = await this.reservationDaoService.findReservationById(reservationId)
+		if (!reservation) {
+			throw new NotFoundException('Transaction not found')
+		}
+		if (reservation.transaction.restaurant.id !== restaurant.id) {
+			throw new BadRequestException('Transaction does not belong to the restaurant')
+		}
+		if (reservation.transaction.serviceType !== TransactionServiceType.RESERVATION) {
+			throw new BadRequestException('Transaction is not a reservation')
+		}
+		if (reservation.status !== ReservationStatus.CONFIRMED) {
+			throw new BadRequestException('Reservasi tidak valid')
+		}
+
+		reservation.status = ReservationStatus.DINING
+		await this.em.flush()
+		const updatedReservation = await this.em.refresh(reservation)
+		const reservationDomain = ReservationTransactionMapper.toDomain(updatedReservation)
+
+		this.reservationGateway.notifyTrackReservation(reservationDomain!)
 
 		return {
 			reservation: reservationDomain
@@ -206,9 +306,20 @@ export class ReservationService {
 
 	async trackReservation(id: string, user: UserEntity) {
 		const { reservation } = await this.getReservationById(id, user)
-		this.reservationGateway.trackOrder(user, reservation!)
+		this.reservationGateway.trackReservation(user, reservation!)
 		return {
 			message: 'Reservation is being tracked'
 		}
+	}
+
+	async generateQRCode(user: UserEntity, id: string) {
+		const { reservation } = await this.getReservationById(id, user)
+		if (!reservation) {
+			throw new NotFoundException('Reservation not found')
+		}
+		const qrCode = await this.qrCodeService.generateQrCodeBuffer(reservation.reservationId)
+		return new StreamableFile(qrCode, {
+			type: 'image/png'
+		})
 	}
 }

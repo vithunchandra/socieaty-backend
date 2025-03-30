@@ -21,9 +21,7 @@ export type ServerToClientTransactionEvents = {
 
 @Injectable()
 @WebSocketGateway({ namespace: 'reservation' })
-export class ReservationGateway
-	implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
-{
+export class ReservationGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 	constructor(
 		private readonly jwtService: JwtService,
 		private readonly entityManager: EntityManager
@@ -40,18 +38,20 @@ export class ReservationGateway
 		client.join(`${client.user.id}`)
 	}
 
-	async trackOrder(user: UserEntity, reservation: ReservationTransaction) {
+	async trackReservation(user: UserEntity, reservation: ReservationTransaction) {
 		this.server.in(`${user.id}`).socketsJoin(`track-reservation-${reservation.transactionId}`)
-		await this.notifyTrackOrder(reservation)
+		await this.notifyTrackReservation(reservation)
 	}
 
-	notifyNewOrder(reservation: ReservationTransaction) {
+	notifyNewReservation(reservation: ReservationTransaction) {
 		this.server.to(`${reservation.restaurant.id}`).emit('new-reservation', reservation)
 	}
 
-	async notifyTrackOrder(reservation: ReservationTransaction) {
-		console.log('notifyTrackOrder', reservation)
-		this.server.to(`track-reservation-${reservation.transactionId}`).emit('track-reservation', reservation)
+	async notifyTrackReservation(reservation: ReservationTransaction) {
+		console.log('notifyTrackReservation', reservation)
+		this.server
+			.to(`track-reservation-${reservation.transactionId}`)
+			.emit('track-reservation', reservation)
 	}
 
 	handleDisconnect(client: GuardedSocketDto) {

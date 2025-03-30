@@ -10,6 +10,8 @@ export class FoodOrderTransactionMapper {
 		foodOrderTransaction.transactionId = raw.transaction.id
 		foodOrderTransaction.serviceType = raw.transaction.serviceType
 		foodOrderTransaction.grossAmount = raw.transaction.grossAmount
+		foodOrderTransaction.netAmount = raw.transaction.netAmount
+		foodOrderTransaction.refundAmount = raw.transaction.refundAmount
 		foodOrderTransaction.serviceFee = raw.transaction.serviceFee
 		foodOrderTransaction.note = raw.transaction.note
 		foodOrderTransaction.status = raw.transaction.status

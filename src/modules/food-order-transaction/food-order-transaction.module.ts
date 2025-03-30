@@ -6,13 +6,13 @@ import { UserDaoModule } from '../user/persistance/User.dao.module'
 import { FoodOrderTransactionController } from './food-order-transaction.controller'
 import { FoodOrderTransactionService } from './food-order-transaction.service'
 import { FoodOrderTransactionGateway } from './food-order-transaction.gateway'
-import { TransactionDaoModule } from '../transaction/persistence/transaction.dao.module'
 import { MenuItemDaoModule } from '../menu-items/persistence/menu-item.dao.module'
+import { TransactionModule } from '../transaction/transaction.module'
 
 @Module({
 	imports: [
 		FoodOrderTransactionDaoModule,
-		TransactionDaoModule,
+		TransactionModule,
 		RestaurantDaoModule,
 		FoodMenuDaoModule,
 		UserDaoModule,

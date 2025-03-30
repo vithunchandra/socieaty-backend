@@ -4,6 +4,7 @@ import { BankEnum } from '../../../enums/bank.enum'
 
 export class Restaurant {
 	id: string
+	wallet: number
 	restaurantBannerUrl: string
 	location: Point
 	themes: RestaurantTheme[]

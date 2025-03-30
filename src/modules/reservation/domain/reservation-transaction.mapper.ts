@@ -11,6 +11,8 @@ export class ReservationTransactionMapper {
 		reservationTransaction.transactionId = raw.transaction.id
 		reservationTransaction.serviceType = raw.transaction.serviceType
 		reservationTransaction.grossAmount = raw.transaction.grossAmount
+		reservationTransaction.netAmount = raw.transaction.netAmount
+		reservationTransaction.refundAmount = raw.transaction.refundAmount
 		reservationTransaction.serviceFee = raw.transaction.serviceFee
 		reservationTransaction.note = raw.transaction.note
 		reservationTransaction.status = raw.transaction.status

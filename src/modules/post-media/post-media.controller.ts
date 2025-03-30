@@ -28,6 +28,4 @@ export class PostMediaController {
     const file = createReadStream(join(POST_MEDIA_UPLOADS_DIR, 'images', 'dummy', fileName));
     return new StreamableFile(file);
   }
-
-
 }

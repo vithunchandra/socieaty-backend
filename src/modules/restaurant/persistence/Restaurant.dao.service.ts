@@ -28,6 +28,7 @@ export class RestaurantDaoService {
 	async create(user: UserEntity, data: CreateRestaurantDto): Promise<RestaurantEntity> {
 		const restaurant = this.restaurantRepository.create({
 			userData: user,
+			wallet: 0,
 			location: data.restaurantAddress,
 			restaurantBannerUrl: data.restaurantBannerUrl,
 			payoutBank: data.payoutBank,

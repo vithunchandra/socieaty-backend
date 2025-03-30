@@ -30,7 +30,6 @@ export class RestaurantService {
 			email: data.email,
 			password: data.password,
 			phoneNumber: data.phoneNumber,
-
 			profilePictureUrl: `/files/user/profile_picture/${profilePicture.filename}`,
 			role: data.role
 		})

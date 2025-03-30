@@ -11,6 +11,7 @@ export class RestaurantMapper {
 
 		const restaurant = new Restaurant()
 		restaurant.id = raw.id
+		restaurant.wallet = raw.wallet
 		restaurant.restaurantBannerUrl = `${BASE_URL}${raw.restaurantBannerUrl}`
 		restaurant.location = raw.location
 		restaurant.themes = raw.themes

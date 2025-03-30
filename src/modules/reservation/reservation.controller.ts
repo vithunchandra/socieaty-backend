@@ -7,6 +7,8 @@ import {
 	Put,
 	Query,
 	Request,
+	Res,
+	StreamableFile,
 	UnauthorizedException,
 	UseGuards
 } from '@nestjs/common'
@@ -37,7 +39,7 @@ export class ReservationController {
 		}
 		return this.reservationService.createReservation(req.user.customerData, dto)
 	}
-	
+
 	@Get('/restaurant')
 	@UseGuards(AuthGuard, RolesGuard)
 	@Roles(UserRole.RESTAURANT)
@@ -79,10 +81,24 @@ export class ReservationController {
 		return this.reservationService.getReservationById(id, req.user)
 	}
 
+	@Post(':id/scan')
+	@UseGuards(AuthGuard, RolesGuard)
+	@Roles(UserRole.RESTAURANT)
+	async scanCustomerReservation(@Request() req: GuardedRequestDto, @Param('id') id: string) {
+		return this.reservationService.scanCustomerReservation(req.user.restaurantData!, id)
+	}
+
 	@Get(':id/track')
 	@UseGuards(AuthGuard, RolesGuard)
 	@Roles(UserRole.CUSTOMER, UserRole.RESTAURANT)
 	async trackReservation(@Request() req: GuardedRequestDto, @Param('id') id: string) {
 		return this.reservationService.trackReservation(id, req.user)
+	}
+
+	@Get(':id/qr-code')
+	@UseGuards(AuthGuard, RolesGuard)
+	@Roles(UserRole.CUSTOMER, UserRole.RESTAURANT)
+	async generateQRCode(@Request() req: GuardedRequestDto, @Param('id') id: string) {
+		return this.reservationService.generateQRCode(req.user, id)
 	}
 }

@@ -7,7 +7,9 @@ export class CreateTransactionDto {
 	customer: CustomerEntity
 	serviceType: TransactionServiceType
 	grossAmount: number
+	netAmount: number
 	serviceFee: number
+	refundAmount: number
 	note: string
 	status: TransactionStatus
 }

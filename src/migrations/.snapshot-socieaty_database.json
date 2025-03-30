@@ -420,6 +420,15 @@
           "default": "''",
           "mappedType": "string"
         },
+        "wallet": {
+          "name": "wallet",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
         "location": {
           "name": "location",
           "type": "point",
@@ -1949,8 +1958,26 @@
           "nullable": false,
           "mappedType": "integer"
         },
+        "net_amount": {
+          "name": "net_amount",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
         "service_fee": {
           "name": "service_fee",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "refund_amount": {
+          "name": "refund_amount",
           "type": "int",
           "unsigned": false,
           "autoincrement": false,
@@ -2407,8 +2434,10 @@
           "primary": false,
           "nullable": false,
           "enumItems": [
+            "rejected",
             "pending",
             "confirmed",
+            "dining",
             "canceled",
             "completed"
           ],

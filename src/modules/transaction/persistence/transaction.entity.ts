@@ -27,7 +27,13 @@ export class TransactionEntity extends BaseEntity {
 	grossAmount: number
 
 	@Property()
+	netAmount: number
+
+	@Property()
 	serviceFee: number
+
+	@Property()
+	refundAmount: number
 
 	@Property()
 	note: string
@@ -83,6 +89,8 @@ export class TransactionEntity extends BaseEntity {
 		this.customer = dto.customer
 		this.serviceType = dto.serviceType
 		this.grossAmount = dto.grossAmount
+		this.netAmount = dto.netAmount
+		this.refundAmount = 0
 		this.serviceFee = dto.serviceFee
 	}
 }

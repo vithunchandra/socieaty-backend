@@ -1,6 +1,6 @@
 import { Migration } from '@mikro-orm/migrations';
 
-export class Migration20250316135701 extends Migration {
+export class Migration20250329194540 extends Migration {
 
   override async up(): Promise<void> {
     this.addSql(`create table "menu_category" ("id" serial primary key, "name" varchar(255) not null);`);
@@ -8,18 +8,23 @@ export class Migration20250316135701 extends Migration {
     this.addSql(`create table "post_hashtag" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "tag" varchar(255) not null, constraint "post_hashtag_pkey" primary key ("id"));`);
     this.addSql(`alter table "post_hashtag" add constraint "post_hashtag_tag_unique" unique ("tag");`);
 
+    this.addSql(`create table "reservation_facility" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "name" varchar(255) not null, constraint "reservation_facility_pkey" primary key ("id"));`);
+
     this.addSql(`create table "restaurant_theme" ("id" serial primary key, "name" varchar(255) not null);`);
 
     this.addSql(`create table "user" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "name" varchar(255) not null, "email" varchar(255) not null, "password" varchar(255) not null, "phone_number" varchar(255) not null, "profile_picture_url" varchar(255) null, "role" text check ("role" in ('Admin', 'Customer', 'Restaurant')) not null, constraint "user_pkey" primary key ("id"));`);
     this.addSql(`alter table "user" add constraint "user_email_unique" unique ("email");`);
 
-    this.addSql(`create table "restaurant" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "restaurant_banner_url" varchar(255) null default '', "location" point not null, "open_time" varchar(255) not null, "close_time" varchar(255) not null, "payout_bank" text check ("payout_bank" in ('bni', 'bri', 'bca', 'mandiri')) not null, "account_number" varchar(255) not null, "user_id" uuid not null, constraint "restaurant_pkey" primary key ("id"));`);
+    this.addSql(`create table "restaurant" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "restaurant_banner_url" varchar(255) null default '', "wallet" int not null, "location" point not null, "open_time" varchar(255) not null, "close_time" varchar(255) not null, "payout_bank" text check ("payout_bank" in ('bni', 'bri', 'bca', 'mandiri')) not null, "account_number" varchar(255) not null, "is_reservation_available" boolean not null, "user_id" uuid not null, constraint "restaurant_pkey" primary key ("id"));`);
     this.addSql(`create index "restaurant_user_id_index" on "restaurant" ("user_id");`);
     this.addSql(`alter table "restaurant" add constraint "restaurant_user_id_unique" unique ("user_id");`);
 
     this.addSql(`create table "restaurant_theme_restaurants" ("restaurant_theme_entity_id" int not null, "restaurant_entity_id" uuid not null, constraint "restaurant_theme_restaurants_pkey" primary key ("restaurant_theme_entity_id", "restaurant_entity_id"));`);
 
-    this.addSql(`create table "reservation_configs" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "max_person" int not null, "min_cost_per_person" int not null, "time_limit" int not null, "facilities" text[] not null, "restaurant_id" uuid not null, constraint "reservation_configs_pkey" primary key ("id"));`);
+    this.addSql(`create table "reservation_configs" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "max_person" int not null, "min_cost_per_person" int not null, "time_limit" int not null, "restaurant_id" uuid not null, constraint "reservation_configs_pkey" primary key ("id"));`);
+    this.addSql(`alter table "reservation_configs" add constraint "reservation_configs_restaurant_id_unique" unique ("restaurant_id");`);
+
+    this.addSql(`create table "reservation_facility_reservation_configs" ("reservation_facility_entity_id" uuid not null, "reservation_config_entity_id" uuid not null, constraint "reservation_facility_reservation_configs_pkey" primary key ("reservation_facility_entity_id", "reservation_config_entity_id"));`);
 
     this.addSql(`create table "food_menu" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "name" varchar(255) not null, "price" int not null, "description" varchar(255) not null, "picture_url" varchar(255) not null, "estimated_time" int not null, "is_stock_available" boolean not null default true, "restaurant_id" uuid not null, constraint "food_menu_pkey" primary key ("id"));`);
 
@@ -47,7 +52,7 @@ export class Migration20250316135701 extends Migration {
     this.addSql(`create table "customer" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "bio" text null default '', "wallet" int not null default 0, "user_id" uuid not null, constraint "customer_pkey" primary key ("id"));`);
     this.addSql(`alter table "customer" add constraint "customer_user_id_unique" unique ("user_id");`);
 
-    this.addSql(`create table "transactions" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "service_type" text check ("service_type" in ('food_order', 'reservation')) not null, "gross_amount" int not null, "service_fee" int not null, "note" varchar(255) not null, "status" text check ("status" in ('success', 'failed', 'ongoing', 'refunded')) not null, "finished_at" timestamptz null, "restaurant_id" uuid not null, "customer_id" uuid not null, constraint "transactions_pkey" primary key ("id"));`);
+    this.addSql(`create table "transactions" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "service_type" text check ("service_type" in ('food_order', 'reservation')) not null, "gross_amount" int not null, "net_amount" int not null, "service_fee" int not null, "refund_amount" int not null, "note" varchar(255) not null, "status" text check ("status" in ('success', 'failed', 'ongoing', 'refunded')) not null, "finished_at" timestamptz null, "restaurant_id" uuid not null, "customer_id" uuid not null, constraint "transactions_pkey" primary key ("id"));`);
     this.addSql(`create index "transactions_restaurant_id_index" on "transactions" ("restaurant_id");`);
     this.addSql(`create index "transactions_customer_id_index" on "transactions" ("customer_id");`);
 
@@ -59,11 +64,11 @@ export class Migration20250316135701 extends Migration {
     this.addSql(`create index "transaction_messages_user_id_index" on "transaction_messages" ("user_id");`);
     this.addSql(`create index "transaction_messages_transaction_id_index" on "transaction_messages" ("transaction_id");`);
 
+    this.addSql(`create table "reservations" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "reservation_time" timestamptz not null, "end_time_estimation" timestamptz not null, "people_size" int not null, "status" text check ("status" in ('rejected', 'pending', 'confirmed', 'dining', 'canceled', 'completed')) not null, "transaction_id" uuid not null, constraint "reservations_pkey" primary key ("id"));`);
+    this.addSql(`alter table "reservations" add constraint "reservations_transaction_id_unique" unique ("transaction_id");`);
+
     this.addSql(`create table "food_orders" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "transaction_id" uuid not null, "status" text check ("status" in ('pending', 'rejected', 'preparing', 'ready', 'completed')) not null, constraint "food_orders_pkey" primary key ("id"));`);
     this.addSql(`alter table "food_orders" add constraint "food_orders_transaction_id_unique" unique ("transaction_id");`);
-
-    this.addSql(`create table "reservations" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "reservation_time" timestamptz not null, "end_time" timestamptz null, "people_size" int not null, "status" text check ("status" in ('pending', 'confirmed', 'canceled', 'completed')) not null default 'pending', "restaurant_id" uuid not null, "customer_id" uuid not null, "transaction_id" uuid not null, constraint "reservations_pkey" primary key ("id"));`);
-    this.addSql(`alter table "reservations" add constraint "reservations_transaction_id_unique" unique ("transaction_id");`);
 
     this.addSql(`create table "menu_items" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "quantity" int not null, "price" int not null, "total_price" int not null, "menu_id" uuid not null, "food_order_id" uuid null, "reservation_id" uuid null, constraint "menu_items_pkey" primary key ("id"));`);
     this.addSql(`create index "menu_items_menu_id_index" on "menu_items" ("menu_id");`);
@@ -74,6 +79,9 @@ export class Migration20250316135701 extends Migration {
     this.addSql(`alter table "restaurant_theme_restaurants" add constraint "restaurant_theme_restaurants_restaurant_entity_id_foreign" foreign key ("restaurant_entity_id") references "restaurant" ("id") on update cascade on delete cascade;`);
 
     this.addSql(`alter table "reservation_configs" add constraint "reservation_configs_restaurant_id_foreign" foreign key ("restaurant_id") references "restaurant" ("id") on update cascade;`);
+
+    this.addSql(`alter table "reservation_facility_reservation_configs" add constraint "reservation_facility_reservation_configs_reserva_01a26_foreign" foreign key ("reservation_facility_entity_id") references "reservation_facility" ("id") on update cascade on delete cascade;`);
+    this.addSql(`alter table "reservation_facility_reservation_configs" add constraint "reservation_facility_reservation_configs_reserva_4c639_foreign" foreign key ("reservation_config_entity_id") references "reservation_configs" ("id") on update cascade on delete cascade;`);
 
     this.addSql(`alter table "food_menu" add constraint "food_menu_restaurant_id_foreign" foreign key ("restaurant_id") references "restaurant" ("id") on update cascade;`);
 
@@ -110,23 +118,21 @@ export class Migration20250316135701 extends Migration {
     this.addSql(`alter table "transaction_messages" add constraint "transaction_messages_user_id_foreign" foreign key ("user_id") references "user" ("id") on update cascade;`);
     this.addSql(`alter table "transaction_messages" add constraint "transaction_messages_transaction_id_foreign" foreign key ("transaction_id") references "transactions" ("id") on update cascade;`);
 
-    this.addSql(`alter table "food_orders" add constraint "food_orders_transaction_id_foreign" foreign key ("transaction_id") references "transactions" ("id") on update cascade;`);
-
-    this.addSql(`alter table "reservations" add constraint "reservations_restaurant_id_foreign" foreign key ("restaurant_id") references "restaurant" ("id") on update cascade;`);
-    this.addSql(`alter table "reservations" add constraint "reservations_customer_id_foreign" foreign key ("customer_id") references "customer" ("id") on update cascade;`);
     this.addSql(`alter table "reservations" add constraint "reservations_transaction_id_foreign" foreign key ("transaction_id") references "transactions" ("id") on update cascade;`);
+
+    this.addSql(`alter table "food_orders" add constraint "food_orders_transaction_id_foreign" foreign key ("transaction_id") references "transactions" ("id") on update cascade;`);
 
     this.addSql(`alter table "menu_items" add constraint "menu_items_menu_id_foreign" foreign key ("menu_id") references "food_menu" ("id") on update cascade;`);
     this.addSql(`alter table "menu_items" add constraint "menu_items_food_order_id_foreign" foreign key ("food_order_id") references "food_orders" ("id") on update cascade on delete set null;`);
     this.addSql(`alter table "menu_items" add constraint "menu_items_reservation_id_foreign" foreign key ("reservation_id") references "reservations" ("id") on update cascade on delete set null;`);
-
-    this.addSql(`drop table if exists "food_order_menu_items" cascade;`);
   }
 
   override async down(): Promise<void> {
     this.addSql(`alter table "menu_category_menus" drop constraint "menu_category_menus_menu_category_entity_id_foreign";`);
 
     this.addSql(`alter table "post_hashtag_post" drop constraint "post_hashtag_post_post_hashtag_entity_id_foreign";`);
+
+    this.addSql(`alter table "reservation_facility_reservation_configs" drop constraint "reservation_facility_reservation_configs_reserva_01a26_foreign";`);
 
     this.addSql(`alter table "restaurant_theme_restaurants" drop constraint "restaurant_theme_restaurants_restaurant_theme_entity_id_foreign";`);
 
@@ -156,7 +162,7 @@ export class Migration20250316135701 extends Migration {
 
     this.addSql(`alter table "transactions" drop constraint "transactions_restaurant_id_foreign";`);
 
-    this.addSql(`alter table "reservations" drop constraint "reservations_restaurant_id_foreign";`);
+    this.addSql(`alter table "reservation_facility_reservation_configs" drop constraint "reservation_facility_reservation_configs_reserva_4c639_foreign";`);
 
     this.addSql(`alter table "menu_category_menus" drop constraint "menu_category_menus_food_menu_entity_id_foreign";`);
 
@@ -174,26 +180,23 @@ export class Migration20250316135701 extends Migration {
 
     this.addSql(`alter table "transactions" drop constraint "transactions_customer_id_foreign";`);
 
-    this.addSql(`alter table "reservations" drop constraint "reservations_customer_id_foreign";`);
-
     this.addSql(`alter table "transaction_reviews" drop constraint "transaction_reviews_transaction_id_foreign";`);
 
     this.addSql(`alter table "transaction_messages" drop constraint "transaction_messages_transaction_id_foreign";`);
 
-    this.addSql(`alter table "food_orders" drop constraint "food_orders_transaction_id_foreign";`);
-
     this.addSql(`alter table "reservations" drop constraint "reservations_transaction_id_foreign";`);
 
-    this.addSql(`alter table "menu_items" drop constraint "menu_items_food_order_id_foreign";`);
+    this.addSql(`alter table "food_orders" drop constraint "food_orders_transaction_id_foreign";`);
 
     this.addSql(`alter table "menu_items" drop constraint "menu_items_reservation_id_foreign";`);
 
-    this.addSql(`create table "food_order_menu_items" ("id" uuid not null, "created_at" timestamptz(6) not null, "updated_at" timestamptz(6) not null, "deleted_at" timestamptz(6) null, "quantity" int4 not null, "price" int4 not null, "total_price" int4 not null, "menu_id" uuid not null, "food_order_id" uuid not null, constraint "food_order_menu_items_pkey" primary key ("id"));`);
-    this.addSql(`create index "food_order_menu_items_menu_id_index" on "food_order_menu_items" ("menu_id");`);
+    this.addSql(`alter table "menu_items" drop constraint "menu_items_food_order_id_foreign";`);
 
     this.addSql(`drop table if exists "menu_category" cascade;`);
 
     this.addSql(`drop table if exists "post_hashtag" cascade;`);
+
+    this.addSql(`drop table if exists "reservation_facility" cascade;`);
 
     this.addSql(`drop table if exists "restaurant_theme" cascade;`);
 
@@ -204,6 +207,8 @@ export class Migration20250316135701 extends Migration {
     this.addSql(`drop table if exists "restaurant_theme_restaurants" cascade;`);
 
     this.addSql(`drop table if exists "reservation_configs" cascade;`);
+
+    this.addSql(`drop table if exists "reservation_facility_reservation_configs" cascade;`);
 
     this.addSql(`drop table if exists "food_menu" cascade;`);
 
@@ -233,9 +238,9 @@ export class Migration20250316135701 extends Migration {
 
     this.addSql(`drop table if exists "transaction_messages" cascade;`);
 
-    this.addSql(`drop table if exists "food_orders" cascade;`);
-
     this.addSql(`drop table if exists "reservations" cascade;`);
+
+    this.addSql(`drop table if exists "food_orders" cascade;`);
 
     this.addSql(`drop table if exists "menu_items" cascade;`);
   }

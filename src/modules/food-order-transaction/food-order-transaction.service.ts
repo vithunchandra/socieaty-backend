@@ -27,6 +27,8 @@ import { UpdateFoodOrderTransactionRequestDto } from './dto/update-food-order-tr
 import { UserEntity, UserRole } from '../user/persistance/User.entity'
 import { FoodMenuCartDto } from './persistence/dto/food-menu-cart.dto'
 import { MenuItemDaoService } from '../menu-items/persistence/menu-item.dao.service'
+import { TransactionService } from '../transaction/transaction.service'
+import { FoodOrderEntity } from './persistence/entity/food-order-transaction.entity'
 
 @Injectable()
 export class FoodOrderTransactionService {
@@ -35,7 +37,7 @@ export class FoodOrderTransactionService {
 		private readonly restaurantDaoService: RestaurantDaoService,
 		private readonly foodMenuDaoService: FoodMenuDaoService,
 		private readonly menuItemDaoService: MenuItemDaoService,
-		private readonly transactionDaoService: TransactionDaoService,
+		private readonly transactionService: TransactionService,
 		@Inject(forwardRef(() => FoodOrderTransactionGateway))
 		private readonly transactionGateway: FoodOrderTransactionGateway,
 		private readonly em: EntityManager
@@ -85,9 +87,11 @@ export class FoodOrderTransactionService {
 			throw new BadRequestException('Insufficient balance')
 		}
 
-		const transaction = this.transactionDaoService.createTransaction({
+		const transaction = this.transactionService.createTransaction({
 			restaurant: restaurant,
-			grossAmount: totalPrice,
+			grossAmount: totalPrice + SERVICE_FEE,
+			netAmount: totalPrice,
+			refundAmount: 0,
 			serviceFee: SERVICE_FEE,
 			customer: customer,
 			serviceType: TransactionServiceType.FOOD_ORDER,
@@ -141,12 +145,10 @@ export class FoodOrderTransactionService {
 			throw new BadRequestException('Transaction is not a food order')
 		}
 		if (dto.status === FoodOrderStatus.REJECTED) {
-			foodOrder.transaction.status = TransactionStatus.FAILED
-			foodOrder.transaction.finishedAt = new Date()
+			this.rejectFoodOrder(foodOrder)
 		}
 		if (dto.status === FoodOrderStatus.COMPLETED) {
-			foodOrder.transaction.status = TransactionStatus.SUCCESS
-			foodOrder.transaction.finishedAt = new Date()
+			this.completeFoodOrder(foodOrder)
 		}
 		foodOrder.status = dto.status
 		await this.em.flush()
@@ -155,6 +157,22 @@ export class FoodOrderTransactionService {
 		return {
 			transaction: foodOrderTransactionDomain
 		}
+	}
+
+	completeFoodOrder(foodOrder: FoodOrderEntity) {
+		if (foodOrder.status !== FoodOrderStatus.READY) {
+			throw new BadRequestException('Food order is not ready')
+		}
+		this.transactionService.finishTransaction(foodOrder.transaction)
+		return foodOrder
+	}
+
+	rejectFoodOrder(foodOrder: FoodOrderEntity) {
+		if (foodOrder.status !== FoodOrderStatus.PENDING) {
+			throw new BadRequestException('Food order is not pending')
+		}
+		this.transactionService.failTransaction(foodOrder.transaction)
+		return foodOrder
 	}
 
 	async findFoodOrderTransactionByOrderId(orderId: string, user: UserEntity) {

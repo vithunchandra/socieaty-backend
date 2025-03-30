@@ -21,7 +21,9 @@ export class TransactionDaoService {
 			customer: dto.customer,
 			serviceType: dto.serviceType,
 			grossAmount: dto.grossAmount,
+			netAmount: dto.netAmount,
 			serviceFee: dto.serviceFee,
+			refundAmount: dto.refundAmount,
 			note: dto.note,
 			status: dto.status
 		})

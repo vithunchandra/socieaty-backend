@@ -9,6 +9,8 @@ export class TransactionMapper {
 		transaction.serviceType = raw.serviceType
 		transaction.grossAmount = raw.grossAmount
 		transaction.serviceFee = raw.serviceFee
+		transaction.netAmount = raw.netAmount
+		transaction.refundAmount = raw.refundAmount
 		transaction.restaurant = UserMapper.fromRestaurantToDomain(raw.restaurant)
 		transaction.customer = UserMapper.fromCustomerToDomain(raw.customer)
 		transaction.status = raw.status
