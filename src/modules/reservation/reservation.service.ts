@@ -145,9 +145,10 @@ export class ReservationService {
 				timeoutReservation = await this.em.refresh(timeoutReservation)
 				const timeoutReservationDomain =
 					ReservationTransactionMapper.toDomain(timeoutReservation)
-				await this.reservationGateway.notifyTrackReservation(timeoutReservationDomain!)
+				this.reservationGateway.notifyTrackReservation(timeoutReservationDomain!)
+				this.reservationGateway.notifyReservationChanges(timeoutReservationDomain!)
 			},
-			1000 * 5
+			1000 * 30
 		)
 
 		return {

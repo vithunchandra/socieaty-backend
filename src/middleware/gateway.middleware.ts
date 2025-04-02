@@ -37,7 +37,6 @@ export const GatewayAuthMiddleware = (
 					return
 				}
 				client['user'] = user
-				console.log('hallo')
 				next()
 			} catch (error) {
 				next(new UnauthorizedException('Invalid token'))

@@ -68,7 +68,6 @@ export class RestaurantService {
 		restaurant.isReservationAvailable = true
 		await this.entityManager.flush()
 		const domainConfig = ReservationConfigMapper.toDomain(reservationConfig)
-		console.log(domainConfig)
 		return {
 			reservationConfig: domainConfig
 		}

@@ -47,7 +47,6 @@ export class FoodOrderTransactionController {
 		@Req() req: GuardedRequestDto,
 		@Query() query: GetRestaurantFoodTransactionQueryDto
 	) {
-		console.log('Test')
 		if (!req.user.restaurantData) {
 			throw new UnauthorizedException('Restaurant not found')
 		}
@@ -93,23 +92,25 @@ export class FoodOrderTransactionController {
 
 	@Get(':id')
 	@UseGuards(AuthGuard, RolesGuard)
-	@Roles(UserRole.CUSTOMER)
+	@Roles(UserRole.CUSTOMER, UserRole.RESTAURANT)
 	async findFoodOrderTransactionByOrderId(
 		@Param('id') id: string,
 		@Req() req: GuardedRequestDto
 	) {
-		if (!req.user.customerData) {
-			throw new UnauthorizedException('Customer not found')
-		}
 		return this.foodOrderTransactionService.findFoodOrderTransactionByOrderId(id, req.user)
 	}
-
-	
 
 	@Get(':id/track')
 	@UseGuards(AuthGuard, RolesGuard)
 	@Roles(UserRole.CUSTOMER)
 	async trackOrder(@Param('id') id: string, @Req() req: GuardedRequestDto) {
 		return this.foodOrderTransactionService.trackOrder(id, req.user)
+	}
+
+	@Get(':id/qr-code')
+	@UseGuards(AuthGuard, RolesGuard)
+	@Roles(UserRole.CUSTOMER)
+	async getQrCode(@Param('id') id: string, @Req() req: GuardedRequestDto) {
+		return this.foodOrderTransactionService.generateQRCode(req.user, id)
 	}
 }

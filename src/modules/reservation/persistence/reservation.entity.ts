@@ -22,7 +22,7 @@ export class ReservationEntity extends BaseEntity {
 
 	@OneToOne({
 		entity: () => TransactionEntity,
-		inversedBy: 'reservation',
+		inversedBy: 'reservation'
 	})
 	transaction: TransactionEntity
 

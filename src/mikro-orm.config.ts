@@ -74,6 +74,7 @@ export default defineConfig({
 	password: config().password ?? 'root',
 	debug: true,
 	logger: logger.log.bind(logger),
+	forceUtcTimezone: true,
 	seeder: {
 		path: '/dist/database/seeder', // path to the folder with seeders
 		pathTs: 'D:/Kuliah/Tugas_Akhir/Project/Backend/socieaty-backend/src/database/seeder', // path to the folder with TS seeders (if used, you should put path to compiled files in `path`)

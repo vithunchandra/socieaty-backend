@@ -241,7 +241,7 @@ export class DatabaseSeeder extends Seeder {
 			.slice(0, 3)
 			.map((theme) => theme)
 		const openTime = `${faker.number.int({ min: 0, max: 21 })}:${faker.number.int({ min: 0, max: 59 })}`
-		const closeTime = `${faker.number.int({ min: parseInt(openTime.split(':')[0] + 1), max: 23 })}:${faker.number.int({ min: 0, max: 59 })}`
+		const closeTime = `${faker.number.int({ min: parseInt(openTime.split(':')[0]) + 1, max: 23 })}:${faker.number.int({ min: 0, max: 59 })}`
 		const restaurantUserData = em.create(RestaurantEntity, {
 			userData: restaurantUser.id,
 			wallet: 0,
@@ -281,7 +281,7 @@ export class DatabaseSeeder extends Seeder {
 					.map((theme) => theme)
 
 				const openTime = `${faker.number.int({ min: 0, max: 21 })}:${faker.number.int({ min: 0, max: 59 })}`
-				const closeTime = `${faker.number.int({ min: parseInt(openTime.split(':')[0] + 1), max: 23 })}:${faker.number.int({ min: 0, max: 59 })}`
+				const closeTime = `${faker.number.int({ min: parseInt(openTime.split(':')[0]) + 1, max: 23 })}:${faker.number.int({ min: 0, max: 59 })}`
 				// Create Restaurant Entity
 				const restaurant = em.create(RestaurantEntity, {
 					userData: user.id,

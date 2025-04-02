@@ -18,10 +18,11 @@ import { UserEntity } from '../user/persistance/User.entity'
 export type ServerToClientTransactionEvents = {
 	'track-order': (order: FoodOrderTransaction) => void
 	'new-order': (order: FoodOrderTransaction) => void
+	'order-changes': (order: FoodOrderTransaction) => void
 }
 
 @Injectable()
-@WebSocketGateway({ namespace: 'food-order' })
+@WebSocketGateway({ namespace: '/food-order' })
 export class FoodOrderTransactionGateway
 	implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
@@ -37,22 +38,28 @@ export class FoodOrderTransactionGateway
 	}
 
 	handleConnection(client: GuardedSocketDto) {
+		console.log(`handleConnection: ${client.user.id}`)
 		client.emit('welcome', 'Welcome to the transaction gateway')
+		client.leave(`${client.user.id}`)
 		client.join(`${client.user.id}`)
 	}
 
-	async trackOrder(user: UserEntity, transaction: FoodOrderTransaction) {
+	trackOrder(user: UserEntity, transaction: FoodOrderTransaction) {
 		this.server.in(`${user.id}`).socketsJoin(`track-order-${transaction.transactionId}`)
-		await this.notifyTrackOrder(transaction)
+		this.notifyTrackOrder(transaction)
 	}
 
 	notifyNewOrder(order: FoodOrderTransaction) {
 		this.server.to(`${order.restaurant.id}`).emit('new-order', order)
 	}
 
-	async notifyTrackOrder(order: FoodOrderTransaction) {
-		console.log('notifyTrackOrder', order)
+	notifyTrackOrder(order: FoodOrderTransaction) {
+		console.log(`notifyTrackOrder: ${order.transactionId}`)
 		this.server.to(`track-order-${order.transactionId}`).emit('track-order', order)
+	}
+
+	notifyOrderChanges(order: FoodOrderTransaction) {
+		this.server.to(`${order.restaurant.id}`).emit('order-changes', order)
 	}
 
 	handleDisconnect(client: GuardedSocketDto) {

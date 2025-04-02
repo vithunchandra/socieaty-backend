@@ -25,8 +25,11 @@ export class ReservationTransactionMapper {
 		reservationTransaction.customer = UserMapper.fromCustomerToDomain(raw.transaction.customer)
 		reservationTransaction.reservationId = raw.id
 		reservationTransaction.reservationStatus = raw.status
+
+		// Dates now already include timezone information
 		reservationTransaction.reservationTime = raw.reservationTime
 		reservationTransaction.endTimeEstimation = raw.endTimeEstimation
+
 		reservationTransaction.peopleSize = raw.peopleSize
 		reservationTransaction.menuItems = raw.menuItems.map((item) =>
 			MenuItemMapper.toDomain(item)

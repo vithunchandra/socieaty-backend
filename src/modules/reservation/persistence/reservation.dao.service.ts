@@ -23,6 +23,10 @@ export class ReservationDaoService {
 	]
 
 	createReservation(data: CreateReservationDto) {
+		console.log(
+			'reservationTime: ',
+			data.reservationTime.getTimezoneOffset(),
+		)
 		const reservation = this.reservationRepository.create({
 			reservationTime: data.reservationTime,
 			endTimeEstimation: data.endTimeEstimation,
@@ -62,6 +66,14 @@ export class ReservationDaoService {
 				]
 			}
 		)
+		if (result?.reservationTime) {
+			console.log(
+				'Retrieved reservationTime (ISO/UTC):',
+				result.reservationTime.toISOString(),
+				'Local time:',
+				result.reservationTime.toString()
+			)
+		}
 		return result
 	}
 
@@ -92,23 +104,20 @@ export class ReservationDaoService {
 		const sortBy: OrderDefinition<ReservationEntity> = {
 			reservationTime: 'desc'
 		}
-		if(query.sortBy && query.sortOrder){
+		if (query.sortBy && query.sortOrder) {
 			sortBy[query.sortBy] = query.sortOrder
 		}
 
-		const result = await this.reservationRepository.find(
-			queryObject,
-			{
-				populate: [
-					'transaction',
-					'transaction.customer.userData',
-					'transaction.restaurant.userData',
-					'transaction.restaurant.themes',
-					'menuItems.menu.categories'
-				],
-				orderBy: sortBy
-			}
-		)
+		const result = await this.reservationRepository.find(queryObject, {
+			populate: [
+				'transaction',
+				'transaction.customer.userData',
+				'transaction.restaurant.userData',
+				'transaction.restaurant.themes',
+				'menuItems.menu.categories'
+			],
+			orderBy: sortBy
+		})
 		return result
 	}
 }

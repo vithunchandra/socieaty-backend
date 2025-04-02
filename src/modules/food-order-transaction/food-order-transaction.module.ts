@@ -8,6 +8,8 @@ import { FoodOrderTransactionService } from './food-order-transaction.service'
 import { FoodOrderTransactionGateway } from './food-order-transaction.gateway'
 import { MenuItemDaoModule } from '../menu-items/persistence/menu-item.dao.module'
 import { TransactionModule } from '../transaction/transaction.module'
+import { SchedulerModule } from '../scheduler/scheduler.module'
+import { QRCodeModule } from '../qr-code/qr-code.module'
 
 @Module({
 	imports: [
@@ -16,7 +18,9 @@ import { TransactionModule } from '../transaction/transaction.module'
 		RestaurantDaoModule,
 		FoodMenuDaoModule,
 		UserDaoModule,
-		MenuItemDaoModule
+		MenuItemDaoModule,
+		SchedulerModule,
+		QRCodeModule
 	],
 	controllers: [FoodOrderTransactionController],
 	providers: [FoodOrderTransactionService, FoodOrderTransactionGateway],

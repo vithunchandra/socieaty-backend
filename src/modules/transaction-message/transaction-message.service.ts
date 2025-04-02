@@ -37,7 +37,7 @@ export class TransactionMessageService {
 		})
         await this.entityManager.flush()
         const transactionMessageDomain = TransactionMessageMapper.toDomain(transactionMessage)!
-		await this.transactionMessageGateway.notifyNewTransactionMessage(
+		this.transactionMessageGateway.notifyNewTransactionMessage(
 			transactionMessage.transaction.id,
 			transactionMessageDomain
 		)
@@ -64,7 +64,7 @@ export class TransactionMessageService {
         }
 		
         const transactionMessages = await this.transactionMessageDaoService.getTransactionMessagesByTransactionId(transactionId)
-        await this.transactionMessageGateway.trackTransactionMessage(user, transactionId)
+        this.transactionMessageGateway.trackTransactionMessage(user, transactionId)
         return {
             transactionMessages: transactionMessages.map(TransactionMessageMapper.toDomain)
         }

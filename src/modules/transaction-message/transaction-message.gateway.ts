@@ -18,7 +18,7 @@ export type serverToClientTransactionMessageEvents = {
 }
 
 @Injectable()
-@WebSocketGateway({ namespace: 'food-order/message' })
+@WebSocketGateway({ namespace: '/transaction/message' })
 export class TransactionMessageGateway
 	implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
@@ -34,27 +34,24 @@ export class TransactionMessageGateway
 		currentServer.use(GatewayAuthMiddleware(this.jwtService, this.entityManager))
 	}
 
-	async trackTransactionMessage(user: UserEntity, transactionId: string) {
-		const sockets = await this.server.in(`${user.id}`).fetchSockets()
-		console.log(`sockets: ${sockets}`)
-		this.server.in(`${user.id}`).socketsJoin(`track-transaction-message-${transactionId}`)
-	}
-
-	async notifyNewTransactionMessage(transactionId: string, message: TransactionMessage) {
-		const sockets = await this.server.in(`track-transaction-message-${transactionId}`).fetchSockets()
-		console.log(`sockets: ${sockets}`)
-		this.server
-			.to(`track-transaction-message-${transactionId}`)
-			.emit('new-transaction-message', message)
-        
-	}
-
 	handleConnection(client: GuardedSocketDto) {
+		console.log(`client: ${client.user.id}`)
 		client.emit('welcome', 'Welcome to the transaction gateway')
+		this.server.socketsLeave(`${client.user.id}`)
 		client.join(`${client.user.id}`)
 	}
 
 	handleDisconnect(client: GuardedSocketDto) {
 		client.leave(`${client.user.id}`)
+	}
+
+	trackTransactionMessage(user: UserEntity, transactionId: string) {
+		this.server.in(`${user.id}`).socketsJoin(`track-transaction-message-${transactionId}`)
+	}
+
+	notifyNewTransactionMessage(transactionId: string, message: TransactionMessage) {
+		this.server
+			.to(`track-transaction-message-${transactionId}`)
+			.emit('new-transaction-message', message)
 	}
 }

@@ -3,7 +3,8 @@ import {
 	forwardRef,
 	Inject,
 	Injectable,
-	NotFoundException
+	NotFoundException,
+	StreamableFile
 } from '@nestjs/common'
 import { FoodOrderTransactionDaoService } from './persistence/food-order-transaction.dao.service'
 import { CreateFoodOrderTransactionDto } from './persistence/dto/create-food-order-transaction.dto'
@@ -29,6 +30,8 @@ import { FoodMenuCartDto } from './persistence/dto/food-menu-cart.dto'
 import { MenuItemDaoService } from '../menu-items/persistence/menu-item.dao.service'
 import { TransactionService } from '../transaction/transaction.service'
 import { FoodOrderEntity } from './persistence/entity/food-order-transaction.entity'
+import { SchedulerService } from '../scheduler/scheduler.service'
+import { QRCodeService } from '../qr-code/qr-code.service'
 
 @Injectable()
 export class FoodOrderTransactionService {
@@ -40,6 +43,8 @@ export class FoodOrderTransactionService {
 		private readonly transactionService: TransactionService,
 		@Inject(forwardRef(() => FoodOrderTransactionGateway))
 		private readonly transactionGateway: FoodOrderTransactionGateway,
+		private readonly schedulerService: SchedulerService,
+		private readonly qrCodeService: QRCodeService,
 		private readonly em: EntityManager
 	) {}
 
@@ -124,6 +129,32 @@ export class FoodOrderTransactionService {
 		const foodOrderTransactionDomain = FoodOrderTransactionMapper.toDomain(foodOrderTransaction)
 
 		this.transactionGateway.notifyNewOrder(foodOrderTransactionDomain!)
+
+		this.schedulerService.addTimeout(
+			`autoRejectFoodOrder-${foodOrder.id}`,
+			async () => {
+				let timeoutFoodOrder =
+					await this.foodOrderTransactionDaoService.findFoodOrderTransactionById(
+						foodOrder.id
+					)
+				if (!timeoutFoodOrder) {
+					return
+				}
+				if (timeoutFoodOrder.status !== FoodOrderStatus.PENDING) {
+					return
+				}
+				this.rejectFoodOrder(timeoutFoodOrder)
+				timeoutFoodOrder.status = FoodOrderStatus.REJECTED
+				await this.em.flush()
+				timeoutFoodOrder = await this.em.refresh(timeoutFoodOrder)
+				const foodOrderTransactionDomain =
+					FoodOrderTransactionMapper.toDomain(timeoutFoodOrder)
+				this.transactionGateway.notifyTrackOrder(foodOrderTransactionDomain!)
+				this.transactionGateway.notifyOrderChanges(foodOrderTransactionDomain!)
+			},
+			1000 * 30
+		)
+
 		return {
 			transaction: foodOrderTransactionDomain
 		}
@@ -144,12 +175,26 @@ export class FoodOrderTransactionService {
 		if (foodOrder.transaction.serviceType !== TransactionServiceType.FOOD_ORDER) {
 			throw new BadRequestException('Transaction is not a food order')
 		}
+
+		if (dto.status === FoodOrderStatus.PREPARING) {
+			if (foodOrder.status !== FoodOrderStatus.PENDING) {
+				throw new BadRequestException('Food order is not pending')
+			}
+			this.schedulerService.deleteTimeout(`autoRejectFoodOrder-${foodOrder.id}`)
+		}
 		if (dto.status === FoodOrderStatus.REJECTED) {
+			if (foodOrder.status !== FoodOrderStatus.PENDING) {
+				throw new BadRequestException('Food order is not pending')
+			}
 			this.rejectFoodOrder(foodOrder)
 		}
 		if (dto.status === FoodOrderStatus.COMPLETED) {
+			if (foodOrder.status !== FoodOrderStatus.READY) {
+				throw new BadRequestException('Food order is not ready')
+			}
 			this.completeFoodOrder(foodOrder)
 		}
+
 		foodOrder.status = dto.status
 		await this.em.flush()
 		const foodOrderTransactionDomain = FoodOrderTransactionMapper.toDomain(foodOrder)
@@ -173,6 +218,13 @@ export class FoodOrderTransactionService {
 		}
 		this.transactionService.failTransaction(foodOrder.transaction)
 		return foodOrder
+	}
+
+	async cancelFoodOrder(foodOrder: FoodOrderEntity) {
+		if (foodOrder.status !== FoodOrderStatus.PENDING) {
+			throw new BadRequestException('Food order is not pending')
+		}
+		this.transactionService.failTransaction(foodOrder.transaction)
 	}
 
 	async findFoodOrderTransactionByOrderId(orderId: string, user: UserEntity) {
@@ -232,5 +284,16 @@ export class FoodOrderTransactionService {
 		return {
 			message: 'Order is being tracked'
 		}
+	}
+
+	async generateQRCode(user: UserEntity, id: string) {
+		const { transaction } = await this.findFoodOrderTransactionByOrderId(id, user)
+		if (!transaction) {
+			throw new NotFoundException('Food order not found')
+		}
+		const qrCode = await this.qrCodeService.generateQrCodeBuffer(transaction.orderId)
+		return new StreamableFile(qrCode, {
+			type: 'image/png'
+		})
 	}
 }
