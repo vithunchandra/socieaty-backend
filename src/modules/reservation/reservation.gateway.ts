@@ -36,6 +36,7 @@ export class ReservationGateway implements OnGatewayInit, OnGatewayConnection, O
 
 	handleConnection(client: GuardedSocketDto) {
 		client.emit('welcome', 'Welcome to the transaction gateway')
+		this.server.socketsLeave(`${client.user.id}`)
 		client.join(`${client.user.id}`)
 	}
 

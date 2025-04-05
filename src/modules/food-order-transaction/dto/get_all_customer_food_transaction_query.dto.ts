@@ -1,4 +1,4 @@
-import { FoodOrderStatus } from "../../../enums/transaction.enum";
+import { FoodOrderStatus } from "../../../enums/food-order.enum";
 
 export class GetAllCustomerFoodTransactionQueryDto {
 	status: FoodOrderStatus[]

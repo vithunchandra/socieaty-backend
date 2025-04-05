@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer'
-import { IsArray, IsNumber, IsOptional, IsString } from 'class-validator'
+import { IsArray, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator'
+import { PaginationQueryDto } from '../../../dto/pagination-query.dto'
 
 export class PaginateRestaurantRequestDto {
 	@IsString()
@@ -23,11 +24,7 @@ export class PaginateRestaurantRequestDto {
 	@Type(() => Number)
 	categoryIds?: number[]
 
-	@IsNumber()
-	@Type(() => Number)
-	offset: number
-
-	@IsNumber()
-	@Type(() => Number)
-	limit: number
+	@ValidateNested()
+	@Type(() => PaginationQueryDto)
+	paginationQuery: PaginationQueryDto
 }

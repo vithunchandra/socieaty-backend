@@ -1,9 +1,9 @@
 import { Collection, Entity, Enum, OneToMany, OneToOne, Property } from '@mikro-orm/core'
 import { BaseEntity } from '../../../../database/model/base/Base.entity'
 import { MenuItemEntity } from '../../../menu-items/persistence/menu-item.entity'
-import { FoodOrderStatus } from '../../../../enums/transaction.enum'
 import { TransactionEntity } from '../../../transaction/persistence/transaction.entity'
 import { CreateFoodOrderTransactionDto } from '../dto/create-food-order-transaction.dto'
+import { FoodOrderStatus } from '../../../../enums/food-order.enum'
 
 @Entity({ tableName: 'food_orders' })
 export class FoodOrderEntity extends BaseEntity {

@@ -1,4 +1,4 @@
-import { FoodOrderStatus } from '../../../enums/transaction.enum'
+import { FoodOrderStatus } from '../../../enums/food-order.enum'
 import { BaseTransaction } from '../../transaction/domain/transaction'
 import { MenuItem } from '../../menu-items/domain/food-order-menu-item'
 

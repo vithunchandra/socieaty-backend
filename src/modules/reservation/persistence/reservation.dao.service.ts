@@ -7,6 +7,9 @@ import { RestaurantEntity } from '../../restaurant/persistence/entity/Restaurant
 import { ReservationStatus } from '../../../enums/reservation.enum'
 import { CustomerEntity } from '../../customer/persistence/Customer.entity'
 import { GetCustomerReservationsDto } from '../dto/get_customer_reservations.dto'
+import { GetReservationsDto } from './dto/get-reservations.dto'
+import { retry } from 'rxjs'
+import { PaginateReservationsDto } from './dto/paginate-reservations.dto'
 
 @Injectable()
 export class ReservationDaoService {
@@ -22,11 +25,46 @@ export class ReservationDaoService {
 		'menuItems.menu.categories'
 	]
 
+	createReservationsQueryObject(query: GetReservationsDto) {
+		const queryObject: FilterQuery<ReservationEntity> = {}
+		const sortByObject: OrderDefinition<ReservationEntity> = {}
+
+		if (query.customerId) {
+			queryObject.transaction = { customer: { id: query.customerId } }
+		}
+		if (query.restaurantId) {
+			queryObject.transaction = { restaurant: { id: query.restaurantId } }
+		}
+		if (query.createdAt) {
+			queryObject.transaction = { createdAt: { $gte: query.createdAt } }
+		}
+		if (query.finishedAt) {
+			queryObject.transaction = { finishedAt: { $lte: query.finishedAt } }
+		}
+		if (query.reservationTime) {
+			const startOfDay = new Date(query.reservationTime)
+			startOfDay.setHours(0, 0, 0, 0)
+
+			const endOfDay = new Date(query.reservationTime)
+			endOfDay.setHours(23, 59, 59, 999)
+
+			queryObject.reservationTime = { $gte: startOfDay, $lte: endOfDay }
+		}
+		if (query.status) {
+			queryObject.status = { $in: query.status }
+		}
+		if (query.sortBy && query.sortOrder) {
+			if (query.sortBy === 'reservationTime') {
+				sortByObject.reservationTime = query.sortOrder
+			} else if (query.sortBy === 'createdAt' || query.sortBy === 'finishedAt') {
+				sortByObject.transaction = { [query.sortBy]: query.sortOrder }
+			}
+		}
+
+		return { queryObject, sortByObject }
+	}
+
 	createReservation(data: CreateReservationDto) {
-		console.log(
-			'reservationTime: ',
-			data.reservationTime.getTimezoneOffset(),
-		)
 		const reservation = this.reservationRepository.create({
 			reservationTime: data.reservationTime,
 			endTimeEstimation: data.endTimeEstimation,
@@ -75,6 +113,44 @@ export class ReservationDaoService {
 			)
 		}
 		return result
+	}
+
+	async findReservations(query: GetReservationsDto) {
+		const { queryObject, sortByObject } = this.createReservationsQueryObject(query)
+		const result = await this.reservationRepository.find(queryObject, {
+			populate: [
+				'transaction',
+				'transaction.customer.userData',
+				'transaction.restaurant.userData',
+				'transaction.restaurant.themes',
+				'menuItems.menu.categories'
+			],
+			orderBy: sortByObject
+		})
+
+		return result
+	}
+
+	async paginateReservations(query: PaginateReservationsDto) {
+		const { limit, offset } = query.paginationQuery
+		const { queryObject, sortByObject } = this.createReservationsQueryObject(query)
+		const [items, count] = await this.reservationRepository.findAndCount(queryObject, {
+			populate: [
+				'transaction',
+				'transaction.customer.userData',
+				'transaction.restaurant.userData',
+				'transaction.restaurant.themes',
+				'menuItems.menu.categories'
+			],
+			orderBy: sortByObject,
+			limit,
+			offset
+		})
+
+		return {
+			items,
+			count
+		}
 	}
 
 	async findReservationsByRestaurant(restaurant: RestaurantEntity, status: ReservationStatus[]) {

@@ -116,8 +116,8 @@ export class RestaurantService {
 	async paginateRestaurant(query: PaginateRestaurantRequestDto) {
 		const { items, count } = await this.restaurantDao.paginateRestaurant(query)
 		const pagination = new PaginationDto()
-		pagination.nextOffset = items.length + query.offset
-		pagination.previousOffset = query.offset - query.limit
+		pagination.nextOffset = items.length + query.paginationQuery.offset
+		pagination.previousOffset = query.paginationQuery.offset - query.paginationQuery.limit
 		pagination.hasNext = pagination.nextOffset < count
 		pagination.hasPrevious = pagination.previousOffset >= 0
 		pagination.count = count

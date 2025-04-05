@@ -22,6 +22,9 @@ import { QRCodeService } from '../qr-code/qr-code.service'
 import { TransactionService } from '../transaction/transaction.service'
 import { ReservationEntity } from './persistence/reservation.entity'
 import { SchedulerService } from '../scheduler/scheduler.service'
+import { GetReservationsRequestQueryDto } from './dto/get-reservations-request-query.dto'
+import { PaginationDto } from '../../dto/pagination.dto'
+import { PaginateOrdersRequestQueryDto } from './dto/paginate-reservation-request-query.dto'
 
 @Injectable()
 export class ReservationService {
@@ -257,6 +260,54 @@ export class ReservationService {
 
 		return {
 			reservation: reservationDomain
+		}
+	}
+
+	async getReservations(user: UserEntity, query: GetReservationsRequestQueryDto) {
+		if (user.role !== UserRole.ADMIN) {
+			if (user.role === UserRole.CUSTOMER && user.customerData?.id !== query.customerId) {
+				throw new BadRequestException('Customer does not have access to this reservation')
+			}
+			if (
+				user.role === UserRole.RESTAURANT &&
+				user.restaurantData?.id !== query.restaurantId
+			) {
+				throw new BadRequestException('Transaction does not belong to the restaurant')
+			}
+		}
+		const reservations = await this.reservationDaoService.findReservations({
+			...query
+		})
+		return {
+			reservations: reservations.map((reservation) =>
+				ReservationTransactionMapper.toDomain(reservation)
+			)
+		}
+	}
+
+	async paginateReservations(user: UserEntity, query: PaginateOrdersRequestQueryDto) {
+		if (user.role !== UserRole.ADMIN) {
+			if (user.role === UserRole.CUSTOMER && user.customerData?.id !== query.customerId) {
+				throw new BadRequestException('Customer does not have access to this reservation')
+			}
+			if (
+				user.role === UserRole.RESTAURANT &&
+				user.restaurantData?.id !== query.restaurantId
+			) {
+				throw new BadRequestException('Transaction does not belong to the restaurant')
+			}
+		}
+		const { items, count } = await this.reservationDaoService.paginateReservations({
+			...query
+		})
+		const pagination = PaginationDto.createPaginationDto(
+			count,
+			query.paginationQuery.limit,
+			query.paginationQuery.offset
+		)
+		return {
+			items: items.map((reservation) => ReservationTransactionMapper.toDomain(reservation)),
+			pagination
 		}
 	}
 

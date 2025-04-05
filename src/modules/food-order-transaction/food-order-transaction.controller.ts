@@ -20,6 +20,8 @@ import { GuardedRequestDto } from '../../module/AuthGuard/dto/guarded-request.dt
 import { GetRestaurantFoodTransactionQueryDto } from './dto/get_restaurant_food_transaction_query.dto'
 import { UpdateFoodOrderTransactionRequestDto } from './dto/update-food-order-transaction-request.dto'
 import { GetAllCustomerFoodTransactionQueryDto } from './dto/get_all_customer_food_transaction_query.dto'
+import { PaginateOrdersRequestQueryDto } from './dto/paginate-orders-request-query.dto'
+import { GetOrdersRequestQueryDto } from './dto/get-orders-request-query.dto'
 
 @Controller('food-orders')
 export class FoodOrderTransactionController {
@@ -38,6 +40,21 @@ export class FoodOrderTransactionController {
 				dto
 			)
 		return foodOrderTransaction
+	}
+
+	@Get('')
+	@UseGuards(AuthGuard, RolesGuard)
+	async findOrders(@Req() req: GuardedRequestDto, @Query() query: GetOrdersRequestQueryDto) {
+		return this.foodOrderTransactionService.findOrders(req.user, query)
+	}
+
+	@Get('/paginate')
+	@UseGuards(AuthGuard, RolesGuard)
+	async paginateOrders(
+		@Req() req: GuardedRequestDto,
+		@Query() query: PaginateOrdersRequestQueryDto
+	) {
+		return this.foodOrderTransactionService.paginateFoodOrders(req.user, query)
 	}
 
 	@Get('/restaurant')

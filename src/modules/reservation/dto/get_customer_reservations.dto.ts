@@ -1,12 +1,6 @@
-import { IsArray, IsEnum, IsOptional, IsString } from 'class-validator'
-import { ReservationStatus } from '../../../enums/reservation.enum'
+import { IsArray, IsEnum, IsOptional } from 'class-validator'
+import { ReservationSortBy, ReservationStatus } from '../../../enums/reservation.enum'
 import { SortOrder } from '../../../enums/sort-order.enum'
-
-export enum ReservationSortBy {
-	reservationTime = 'reservationTime',
-	createdAt = 'createdAt',
-	updatedAt = 'updatedAt'
-}
 
 export class GetCustomerReservationsDto {
 	@IsArray()

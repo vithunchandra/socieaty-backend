@@ -21,14 +21,14 @@ import { FoodOrderTransactionModule } from './modules/food-order-transaction/foo
 import { TransactionReviewModule } from './modules/transaction-review/transaction-review.module'
 import { ReservationModule } from './modules/reservation/reservation.module'
 import { ScheduleModule } from '@nestjs/schedule'
+import { PaymentModule } from './modules/payment/payment.module'
 
 @Module({
 	imports: [
 		OrmModule,
 		MikroOrmModule.forFeature([UserEntity]),
 		ConfigModule.forRoot({
-			isGlobal: true,
-			load: [config]
+			isGlobal: true
 		}),
 		ScheduleModule.forRoot(),
 		JwtModule.register({
@@ -48,7 +48,8 @@ import { ScheduleModule } from '@nestjs/schedule'
 		TransactionMessageModule,
 		FoodOrderTransactionModule,
 		TransactionReviewModule,
-		ReservationModule
+		ReservationModule,
+		PaymentModule
 	],
 	controllers: [AppController],
 	providers: [AppService]

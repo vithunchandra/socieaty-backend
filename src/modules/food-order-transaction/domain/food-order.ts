@@ -1,8 +1,8 @@
-import { FoodOrderStatus } from '../../../enums/transaction.enum'
+import { FoodOrderStatus } from '../../../enums/food-order.enum'
 import { MenuItem } from '../../menu-items/domain/food-order-menu-item'
 
 export class FoodOrder {
 	id: string
-	status: FoodOrderStatus
+	status: FoodOrderStatus	
 	menuItems: MenuItem[]
 }

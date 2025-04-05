@@ -1,10 +1,4 @@
-export enum FoodOrderStatus {
-	PENDING = 'pending',
-	REJECTED = 'rejected',
-	PREPARING = 'preparing',
-	READY = 'ready',
-	COMPLETED = 'completed'
-}
+
 
 export enum TransactionStatus {
 	SUCCESS = 'success',

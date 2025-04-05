@@ -17,11 +17,7 @@ import { EntityManager } from '@mikro-orm/postgresql'
 import { SERVICE_FEE } from '../../constants'
 import { MenuItemEntity } from '../menu-items/persistence/menu-item.entity'
 import { TransactionDaoService } from '../transaction/persistence/transaction.dao.service'
-import {
-	FoodOrderStatus,
-	TransactionServiceType,
-	TransactionStatus
-} from '../../enums/transaction.enum'
+import { TransactionServiceType, TransactionStatus } from '../../enums/transaction.enum'
 import { FoodOrderTransactionMapper } from './domain/food-order-transaction.mapper'
 import { RestaurantEntity } from '../restaurant/persistence/entity/Restaurant.entity'
 import { UpdateFoodOrderTransactionRequestDto } from './dto/update-food-order-transaction-request.dto'
@@ -32,6 +28,10 @@ import { TransactionService } from '../transaction/transaction.service'
 import { FoodOrderEntity } from './persistence/entity/food-order-transaction.entity'
 import { SchedulerService } from '../scheduler/scheduler.service'
 import { QRCodeService } from '../qr-code/qr-code.service'
+import { FoodOrderStatus } from '../../enums/food-order.enum'
+import { PaginateOrdersRequestQueryDto } from './dto/paginate-orders-request-query.dto'
+import { PaginationDto } from '../../dto/pagination.dto'
+import { GetOrdersRequestQueryDto } from './dto/get-orders-request-query.dto'
 
 @Injectable()
 export class FoodOrderTransactionService {
@@ -225,6 +225,44 @@ export class FoodOrderTransactionService {
 			throw new BadRequestException('Food order is not pending')
 		}
 		this.transactionService.failTransaction(foodOrder.transaction)
+	}
+
+	async paginateFoodOrders(user: UserEntity, dto: PaginateOrdersRequestQueryDto) {
+		console.log(dto)
+		console.log(user)
+		if (user.role !== UserRole.ADMIN) {
+			if (user.role === UserRole.CUSTOMER && dto.customerId !== user.customerData?.id) {
+				throw new BadRequestException('Customer does not have access to this order')
+			}
+			if (user.role === UserRole.RESTAURANT && dto.restaurantId !== user.restaurantData?.id) {
+				throw new BadRequestException('Restaurant does not have access to this order')
+			}
+		}
+		const { items, count } = await this.foodOrderTransactionDaoService.paginateFoodOrders(dto)
+		const pagination = PaginationDto.createPaginationDto(
+			count,
+			dto.paginationQuery.limit,
+			dto.paginationQuery.offset
+		)
+		return {
+			items: items.map((item) => FoodOrderTransactionMapper.toDomain(item)),
+			pagination
+		}
+	}
+
+	async findOrders(user: UserEntity, dto: GetOrdersRequestQueryDto) {
+		if (user.role !== UserRole.ADMIN) {
+			if (user.role === UserRole.CUSTOMER && dto.customerId !== user.customerData?.id) {
+				throw new BadRequestException('Customer does not have access to this order')
+			}
+			if (user.role === UserRole.RESTAURANT && dto.restaurantId !== user.restaurantData?.id) {
+				throw new BadRequestException('Restaurant does not have access to this order')
+			}
+		}
+		const orders = await this.foodOrderTransactionDaoService.findFoodOrders(dto)
+		return {
+			orders: orders.map((order) => FoodOrderTransactionMapper.toDomain(order))
+		}
 	}
 
 	async findFoodOrderTransactionByOrderId(orderId: string, user: UserEntity) {

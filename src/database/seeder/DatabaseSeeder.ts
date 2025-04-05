@@ -27,6 +27,110 @@ class Medias {
 	thumbnail?: string
 }
 
+const surabayaCoordinates = [
+	{ latitude: -7.2575, longitude: 112.7521 }, // Surabaya City Center
+	{ latitude: -7.2764, longitude: 112.7911 }, // Surabaya East
+	{ latitude: -7.2133, longitude: 112.7297 }, // Surabaya North
+	{ latitude: -7.3196, longitude: 112.7272 }, // Surabaya South
+	{ latitude: -7.2744, longitude: 112.6812 }, // Surabaya West
+	{ latitude: -7.2662, longitude: 112.7455 }, // Tunjungan Plaza
+	{ latitude: -7.2756, longitude: 112.7536 }, // Grand City Mall
+	{ latitude: -7.2653, longitude: 112.7378 }, // Surabaya Town Square
+	{ latitude: -7.2901, longitude: 112.7682 }, // Royal Plaza
+	{ latitude: -7.2883, longitude: 112.7239 }, // Ciputra World
+	{ latitude: -7.2628, longitude: 112.7315 }, // Pasar Turi Station
+	{ latitude: -7.2651, longitude: 112.7513 }, // Gubeng Station
+	{ latitude: -7.312, longitude: 112.7321 }, // Wonokromo Station
+	{ latitude: -7.2393, longitude: 112.7432 }, // Kenjeran Beach
+	{ latitude: -7.2134, longitude: 112.7466 }, // Suramadu Bridge
+	{ latitude: -7.226, longitude: 112.7175 }, // Port of Tanjung Perak
+	{ latitude: -7.3244, longitude: 112.7685 }, // Juanda International Airport
+	{ latitude: -7.3055, longitude: 112.7381 }, // Surabaya Zoo
+	{ latitude: -7.2646, longitude: 112.7458 }, // Siola Building
+	{ latitude: -7.2568, longitude: 112.7511 }, // Majapahit Hotel
+	{ latitude: -7.2943, longitude: 112.7199 }, // Pakuwon Mall
+	{ latitude: -7.2611, longitude: 112.7298 }, // Red Bridge (Jembatan Merah)
+	{ latitude: -7.2501, longitude: 112.7682 }, // Kya Kya Kembang Jepun
+	{ latitude: -7.2651, longitude: 112.7422 }, // Submarine Monument
+	{ latitude: -7.2714, longitude: 112.7331 }, // House of Sampoerna
+	{ latitude: -7.2324, longitude: 112.7418 }, // Suramadu National Bridge
+	{ latitude: -7.268, longitude: 112.7414 }, // Grahadi Building
+	{ latitude: -7.2647, longitude: 112.7467 }, // Tugu Pahlawan
+	{ latitude: -7.2589, longitude: 112.7522 }, // Balai Pemuda
+	{ latitude: -7.2601, longitude: 112.7382 }, // Chinese Temple Hok An Kiong
+	{ latitude: -7.2863, longitude: 112.6851 }, // Citraland
+	{ latitude: -7.2752, longitude: 112.724 }, // Taman Bungkul
+	{ latitude: -7.2639, longitude: 112.7452 }, // Genteng Market
+	{ latitude: -7.2637, longitude: 112.7483 }, // Santa Maria Catholic Church
+	{ latitude: -7.2436, longitude: 112.7374 }, // Al Akbar Mosque
+	{ latitude: -7.2897, longitude: 112.765 }, // DBL Arena
+	{ latitude: -7.2656, longitude: 112.7501 }, // Surabaya Grand Mosque
+	{ latitude: -7.2592, longitude: 112.7526 }, // Surabaya Central Post Office
+	{ latitude: -7.264, longitude: 112.7449 }, // Siola Museum
+	{ latitude: -7.2912, longitude: 112.7276 }, // City of Tomorrow Mall
+	{ latitude: -7.2654, longitude: 112.7378 }, // BG Junction Mall
+	{ latitude: -7.2433, longitude: 112.7384 }, // Kenjeran Park
+	{ latitude: -7.2689, longitude: 112.7523 }, // Surabaya Plaza Shopping Center
+	{ latitude: -7.275, longitude: 112.7422 }, // Surabaya Contemporary Art Gallery
+	{ latitude: -7.2663, longitude: 112.7163 }, // Pasar Atom Shopping Center
+	{ latitude: -7.3071, longitude: 112.7676 }, // East Coast Center
+	{ latitude: -7.2933, longitude: 112.7063 }, // University of Airlangga
+	{ latitude: -7.276, longitude: 112.7933 }, // Manyar District
+	{ latitude: -7.3215, longitude: 112.7682 }, // Waru District
+	{ latitude: -7.3128, longitude: 112.779 }, // Gayungan District
+	{ latitude: -7.2393, longitude: 112.785 }, // Mulyorejo District
+	{ latitude: -7.229, longitude: 112.7612 }, // Kenjeran District
+	{ latitude: -7.2548, longitude: 112.7681 }, // Tambaksari District
+	{ latitude: -7.2631, longitude: 112.7516 }, // Gubeng District
+	{ latitude: -7.2474, longitude: 112.7326 }, // Simokerto District
+	{ latitude: -7.24, longitude: 112.7158 }, // Pabean Cantian District
+	{ latitude: -7.2574, longitude: 112.7397 }, // Genteng District
+	{ latitude: -7.2708, longitude: 112.7214 }, // Sawahan District
+	{ latitude: -7.2897, longitude: 112.7155 }, // Dukuh Pakis District
+	{ latitude: -7.299, longitude: 112.7384 }, // Wonokromo District
+	{ latitude: -7.326, longitude: 112.7193 }, // Karang Pilang District
+	{ latitude: -7.3392, longitude: 112.7005 }, // Gunung Anyar District
+	{ latitude: -7.325, longitude: 112.6865 }, // Jambangan District
+	{ latitude: -7.2826, longitude: 112.6793 }, // Sukomanunggal District
+	{ latitude: -7.258, longitude: 112.6855 }, // Tandes District
+	{ latitude: -7.2343, longitude: 112.6954 }, // Asemrowo District
+	{ latitude: -7.2447, longitude: 112.7208 }, // Krembangan District
+	{ latitude: -7.2516, longitude: 112.7108 }, // Semampir District
+	{ latitude: -7.2187, longitude: 112.7219 }, // Bulak District
+	{ latitude: -7.2682, longitude: 112.7778 }, // Sukolilo District
+	{ latitude: -7.3015, longitude: 112.7675 }, // Tenggilis Mejoyo District
+	{ latitude: -7.2912, longitude: 112.8055 }, // Rungkut District
+	{ latitude: -7.2534, longitude: 112.798 }, // Surabaya Industrial Estate Rungkut
+	{ latitude: -7.2648, longitude: 112.7399 }, // Jalan Tunjungan
+	{ latitude: -7.256, longitude: 112.751 }, // Jalan Basuki Rahmat
+	{ latitude: -7.2649, longitude: 112.7473 }, // Jalan Pemuda
+	{ latitude: -7.2663, longitude: 112.753 }, // Jalan Panglima Sudirman
+	{ latitude: -7.2774, longitude: 112.79 }, // Galaxy Mall
+	{ latitude: -7.2754, longitude: 112.7841 }, // Marvell City
+	{ latitude: -7.286, longitude: 112.7603 }, // ITC Surabaya
+	{ latitude: -7.2748, longitude: 112.7321 }, // Hi-Tech Mall
+	{ latitude: -7.2584, longitude: 112.7517 }, // World Trade Center Surabaya
+	{ latitude: -7.2885, longitude: 112.7384 }, // Darmo Hospital
+	{ latitude: -7.2641, longitude: 112.7494 }, // Dr. Soetomo Hospital
+	{ latitude: -7.2721, longitude: 112.765 }, // Siloam Hospital
+	{ latitude: -7.2659, longitude: 112.7425 }, // Surabaya City Hall
+	{ latitude: -7.2667, longitude: 112.7432 }, // Surabaya Provincial Government Office
+	{ latitude: -7.2765, longitude: 112.7943 }, // SCTV Studio
+	{ latitude: -7.2645, longitude: 112.7453 }, // Bank Indonesia Building
+	{ latitude: -7.2645, longitude: 112.7459 }, // Mandiri Bank Building
+	{ latitude: -7.2932, longitude: 112.7056 }, // Institut Teknologi Sepuluh Nopember
+	{ latitude: -7.2668, longitude: 112.7479 }, // Surabaya State University
+	{ latitude: -7.2641, longitude: 112.7465 }, // Balai Kota Park
+	{ latitude: -7.2646, longitude: 112.7474 }, // Apsari Park
+	{ latitude: -7.2947, longitude: 112.7374 }, // Flora Park
+	{ latitude: -7.2735, longitude: 112.7374 }, // Prestasi Park
+	{ latitude: -7.2767, longitude: 112.7264 }, // Kayoon Flower Market
+	{ latitude: -7.2656, longitude: 112.7456 }, // Surabaya Cathedral
+	{ latitude: -7.2492, longitude: 112.739 }, // Cheng Ho Mosque
+	{ latitude: -7.2593, longitude: 112.7361 }, // Ampel Mosque
+	{ latitude: -7.2696, longitude: 112.7385 } // Surabaya Theatre Building
+]
+
 const themeName: string[] = [
 	'Casual',
 	'Fine Dining',
@@ -245,7 +349,10 @@ export class DatabaseSeeder extends Seeder {
 		const restaurantUserData = em.create(RestaurantEntity, {
 			userData: restaurantUser.id,
 			wallet: 0,
-			location: new Point(faker.location.latitude(), faker.location.longitude()),
+			location: new Point(
+				faker.helpers.arrayElement(surabayaCoordinates).latitude,
+				faker.helpers.arrayElement(surabayaCoordinates).longitude
+			),
 			restaurantBannerUrl: `files/user/restaurant_banner/dummy/${faker.helpers.arrayElement(dummyRestaurantBanner)}`,
 			payoutBank: faker.helpers.arrayElement(bank) as BankEnum,
 			accountNumber: faker.number.int({ min: 10000000, max: 99999999 }).toString(),
@@ -286,7 +393,10 @@ export class DatabaseSeeder extends Seeder {
 				const restaurant = em.create(RestaurantEntity, {
 					userData: user.id,
 					wallet: 0,
-					location: new Point(faker.location.latitude(), faker.location.longitude()),
+					location: new Point(
+						faker.helpers.arrayElement(surabayaCoordinates).latitude,
+						faker.helpers.arrayElement(surabayaCoordinates).longitude
+					),
 					restaurantBannerUrl: `files/user/restaurant_banner/dummy/${faker.helpers.arrayElement(dummyRestaurantBanner)}`,
 					payoutBank: faker.helpers.arrayElement(bank) as BankEnum,
 					accountNumber: faker.number.int({ min: 10000000, max: 99999999 }).toString(),
@@ -329,7 +439,10 @@ export class DatabaseSeeder extends Seeder {
 					title: faker.lorem.sentence({ min: 1, max: 5 }),
 					caption: faker.lorem.paragraph(),
 					location: faker.datatype.boolean()
-						? new Point(faker.location.latitude(), faker.location.longitude())
+						? new Point(
+								faker.helpers.arrayElement(surabayaCoordinates).latitude,
+								faker.helpers.arrayElement(surabayaCoordinates).longitude
+							)
 						: null,
 					hashtags: randomHashtags
 				})

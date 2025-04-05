@@ -22,7 +22,7 @@ export type ServerToClientTransactionEvents = {
 }
 
 @Injectable()
-@WebSocketGateway({ namespace: '/food-order' })
+@WebSocketGateway({namespace: '/food-order'})
 export class FoodOrderTransactionGateway
 	implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
@@ -40,7 +40,7 @@ export class FoodOrderTransactionGateway
 	handleConnection(client: GuardedSocketDto) {
 		console.log(`handleConnection: ${client.user.id}`)
 		client.emit('welcome', 'Welcome to the transaction gateway')
-		client.leave(`${client.user.id}`)
+		this.server.socketsLeave(`${client.user.id}`)
 		client.join(`${client.user.id}`)
 	}
 

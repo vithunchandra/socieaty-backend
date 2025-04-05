@@ -1,12 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { FoodOrderEntity } from './entity/food-order-transaction.entity'
-import { EntityRepository } from '@mikro-orm/postgresql'
+import { EntityRepository, FilterQuery, OrderDefinition } from '@mikro-orm/postgresql'
 import { InjectRepository } from '@mikro-orm/nestjs'
 import { CreateFoodOrderTransactionDto } from './dto/create-food-order-transaction.dto'
 import { UpdateFoodOrderTransactionDto } from './dto/update-food-order-transaction'
 import { RestaurantEntity } from '../../restaurant/persistence/entity/Restaurant.entity'
-import { FoodOrderStatus } from '../../../enums/transaction.enum'
+import { FoodOrderStatus } from '../../../enums/food-order.enum'
 import { CustomerEntity } from '../../customer/persistence/Customer.entity'
+import { GetPaginatedOrdersDto } from './dto/get-paginated-orders.dto'
+import { GetOrdersDto } from './dto/get-orders.dto'
 
 @Injectable()
 export class FoodOrderTransactionDaoService {
@@ -54,6 +56,66 @@ export class FoodOrderTransactionDaoService {
 				]
 			}
 		)
+		return result
+	}
+
+	createFoodOrdersQueryObject(dto: GetOrdersDto) {
+		const queryObject: FilterQuery<FoodOrderEntity> = {}
+		const sortObject: OrderDefinition<FoodOrderEntity> = {}
+		if (dto.customerId) {
+			queryObject.transaction = { customer: { id: dto.customerId } }
+		}
+		if (dto.restaurantId) {
+			queryObject.transaction = { restaurant: { id: dto.restaurantId } }
+		}
+		if (dto.status) {
+			queryObject.status = { $in: dto.status }
+		}
+		if (dto.createdAt) {
+			queryObject.transaction = { createdAt: { $gte: dto.createdAt } }
+		}
+		if (dto.finishedAt) {
+			queryObject.transaction = { finishedAt: { $lte: dto.finishedAt } }
+		}
+		if (dto.sortBy && dto.sortOrder) {
+			sortObject[dto.sortBy] = dto.sortOrder
+		}
+		return { queryObject, sortObject }
+	}
+
+	async paginateFoodOrders(dto: GetPaginatedOrdersDto) {
+		const { queryObject, sortObject } = this.createFoodOrdersQueryObject(dto)
+		const { limit, offset } = dto.paginationQuery
+		const [items, count] = await this.foodOrderTransactionRepository.findAndCount(queryObject, {
+			populate: [
+				'transaction',
+				'transaction.customer.userData',
+				'transaction.restaurant.userData',
+				'transaction.restaurant.themes',
+				'menuItems.menu.categories'
+			],
+			orderBy: sortObject,
+			limit,
+			offset
+		})
+		return {
+			items,
+			count
+		}
+	}
+
+	async findFoodOrders(dto: GetOrdersDto){
+		const {queryObject, sortObject} = this.createFoodOrdersQueryObject(dto)
+		const result = await this.foodOrderTransactionRepository.find(queryObject, {
+			populate: [
+				'transaction',
+				'transaction.customer.userData',
+				'transaction.restaurant.userData',
+				'transaction.restaurant.themes',
+				'menuItems.menu.categories'
+			],
+			orderBy: sortObject
+		})
 		return result
 	}
 

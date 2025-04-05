@@ -1,6 +1,5 @@
 import {
 	TransactionServiceType,
-	FoodOrderStatus,
 	TransactionStatus
 } from '../../../enums/transaction.enum'
 import { User } from '../../user/domain/User'

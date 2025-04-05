@@ -22,6 +22,8 @@ import { GuardedRequestDto } from '../../module/AuthGuard/dto/guarded-request.dt
 import { UpdateReservationRequestDto } from './dto/update-reservation-request.dto'
 import { GetRestaurantReservationsQueryDto } from './dto/get_restaurant_reservations.dto'
 import { GetCustomerReservationsDto } from './dto/get_customer_reservations.dto'
+import { GetReservationsRequestQueryDto } from './dto/get-reservations-request-query.dto'
+import { PaginateOrdersRequestQueryDto } from './dto/paginate-reservation-request-query.dto'
 
 @Controller('reservation')
 export class ReservationController {
@@ -38,6 +40,18 @@ export class ReservationController {
 			throw new UnauthorizedException('Customer data not found')
 		}
 		return this.reservationService.createReservation(req.user.customerData, dto)
+	}
+
+	@Get()
+	@UseGuards(AuthGuard, RolesGuard)
+	async getReservations(@Request() req: GuardedRequestDto, @Query() query: GetReservationsRequestQueryDto) {
+		return this.reservationService.getReservations(req.user, query)
+	}
+
+	@Get('/paginate')
+	@UseGuards(AuthGuard, RolesGuard)
+	async paginateReservations(@Request() req: GuardedRequestDto, @Query() query: PaginateOrdersRequestQueryDto) {
+		return this.reservationService.paginateReservations(req.user, query)
 	}
 
 	@Get('/restaurant')
