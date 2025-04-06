@@ -6,6 +6,7 @@ import {
 } from '../enums/reservation.enum'
 import { SortOrder, sortOrderMap } from '../enums/sort-order.enum'
 import { foodOrderSortByMap, foodOrderStatusMap } from '../enums/food-order.enum'
+import { fraudStatusMap, paymentStatusMap } from '../enums/topup.enum'
 
 function fieldToDate(data: TransformFnParams) {
 	if (data.value === null || (data.value as String) === '') return undefined
@@ -47,6 +48,16 @@ function fieldToFoodOrderSortBy(data: TransformFnParams) {
 	return foodOrderSortByMap[data.value]
 }
 
+function fieldToPaymentStatus(data: TransformFnParams) {
+	if (data.value === null || (data.value as String) === '') return undefined
+	return paymentStatusMap[data.value]
+}
+
+function fieldToFraudStatus(data: TransformFnParams) {
+	if (data.value === null || (data.value as String) === '') return undefined
+	return fraudStatusMap[data.value]
+}
+
 export {
 	fieldToDate,
 	fieldToString,
@@ -55,5 +66,7 @@ export {
 	fieldToReservationSortBy,
 	fieldToSortOrder,
 	fieldToFoodOrderStatus,
-	fieldToFoodOrderSortBy
+	fieldToFoodOrderSortBy,
+	fieldToPaymentStatus,
+	fieldToFraudStatus
 }

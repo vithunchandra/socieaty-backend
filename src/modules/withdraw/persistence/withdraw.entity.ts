@@ -1,6 +1,7 @@
-import { BaseEntity, Entity, Enum, ManyToOne, Property } from "@mikro-orm/core";
+import { Entity, Enum, ManyToOne, Property } from "@mikro-orm/core";
 import { BankEnum } from "../../../enums/bank.enum";
 import { RestaurantEntity } from "../../restaurant/persistence/entity/Restaurant.entity";
+import { BaseEntity } from "../../../database/model/base/Base.entity";
 
 @Entity({ tableName: 'withdraws' })
 export class WithdrawEntity extends BaseEntity {

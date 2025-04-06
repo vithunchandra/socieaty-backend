@@ -22,6 +22,7 @@ import { TransactionReviewModule } from './modules/transaction-review/transactio
 import { ReservationModule } from './modules/reservation/reservation.module'
 import { ScheduleModule } from '@nestjs/schedule'
 import { PaymentModule } from './modules/payment/payment.module'
+import { TopupModule } from './modules/topup/topup.module'
 
 @Module({
 	imports: [
@@ -49,6 +50,7 @@ import { PaymentModule } from './modules/payment/payment.module'
 		FoodOrderTransactionModule,
 		TransactionReviewModule,
 		ReservationModule,
+		TopupModule,
 		PaymentModule
 	],
 	controllers: [AppController],

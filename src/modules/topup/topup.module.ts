@@ -3,10 +3,12 @@ import { TopupDaoModule } from './persistence/topup.dao.module'
 import { TopupController } from './topup.controller'
 import { TopupService } from './topup.service'
 import { MidtransModule } from '../midtrans/midtrans.module'
+import { UserDaoModule } from '../user/persistance/User.dao.module'
+import { TopupGateway } from './topup.gateway'
 
 @Module({
-	imports: [TopupDaoModule, MidtransModule],
+	imports: [TopupDaoModule, MidtransModule, UserDaoModule],
 	controllers: [TopupController],
-	providers: [TopupService]
+	providers: [TopupService, TopupGateway]
 })
 export class TopupModule {}
