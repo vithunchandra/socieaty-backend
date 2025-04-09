@@ -20,4 +20,8 @@ export class MediaDaoService{
         }
         return mediaInstances
     }
+
+    async deleteMedia(mediaIds: string[]){
+        await this.mediaRepository.nativeDelete({id: {$in: mediaIds}})
+    }
 }

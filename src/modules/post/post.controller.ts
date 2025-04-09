@@ -21,6 +21,7 @@ import { fileDestination, fileNameEditor, mediaFileFilter } from 'src/utils/imag
 import { AuthGuard } from 'src/module/AuthGuard/AuthGuard.service'
 import { LikePostRequestDto } from './dto/like-post-request.dto'
 import { GetPaginatedPostQueryRequestDto } from './dto/get-paginated-post-query.request.dto'
+import { UpdatePostRequestDto } from './dto/update-post-request.dto'
 
 @Controller('post')
 export class PostController {
@@ -60,6 +61,28 @@ export class PostController {
 		return await this.postService.getPaginatedPosts(query)
 	}
 
+	@Put(':postId')
+	@UseGuards(AuthGuard)
+	@UseInterceptors(
+		FilesInterceptor('medias', 5, {
+			storage: diskStorage({
+				destination: fileDestination,
+				filename: fileNameEditor
+			}),
+			fileFilter: mediaFileFilter,
+			limits: {
+				fieldSize: 1024 * 1024 * 10
+			}
+		})
+	)
+	async updatePost(
+		@Param('postId') postId: string,
+		@Body() data: UpdatePostRequestDto,
+		@UploadedFiles() medias: Express.Multer.File[]
+	) {
+		return await this.postService.updatePost(postId, data, medias)
+	}
+
 	@Get('/:postId')
 	@UseGuards(AuthGuard)
 	async getPostById(@Param('postId') postId: string) {
@@ -74,7 +97,5 @@ export class PostController {
 		@Body() data: LikePostRequestDto
 	) {
 		return await this.postService.likePost(postId, req.user.id, data.isLiked)
-	}
-
-	
+	}	
 }

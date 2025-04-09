@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import { PostDaoService } from './persistence/post.dao.service'
 import { CreatePostRequestDto } from './dto/create-post-request.dto'
 import { UserEntity } from '../user/persistance/User.entity'
@@ -14,6 +14,8 @@ import { PaginationDirection } from '../../enums/pagination-direction.enum'
 import { PaginationDto } from '../../dto/pagination.dto'
 import Ffmpeg from 'fluent-ffmpeg'
 import { generateVideoThumbnail } from '../../utils/image.utils'
+import { UpdatePostRequestDto } from './dto/update-post-request.dto'
+import { unlink } from 'fs'
 
 @Injectable()
 export class PostService {
@@ -39,27 +41,30 @@ export class PostService {
 		})
 		const postMedias = this.mediaDaoService.createMedia(
 			await Promise.all(
-                medias.map(async (media) => {
-                    const extension = media.originalname.substring(
-                        media.originalname.lastIndexOf('.') + 1
-                    )
-                    let type = 'image'
-                    if (extension.match(/(mp4|webm|ogg|mp3|wav|flac|aac)$/i)) {
-                        type = 'video'
-                    }
-                    let videoThumbnailUrl: string | undefined = undefined
-                    if (type === 'video') {
-                        videoThumbnailUrl = await generateVideoThumbnail(media.path, media.originalname)
-                    }
-                    return {
-                        url: `files/post/${type}s/${media.filename}`,
-                        type: type,
-                        post: post.id,
-                        extension: extension,
-                        videoThumbnailUrl: videoThumbnailUrl
-                    }
-                })
-            )
+				medias.map(async (media) => {
+					const extension = media.originalname.substring(
+						media.originalname.lastIndexOf('.') + 1
+					)
+					let type = 'image'
+					if (extension.match(/(mp4|webm|ogg|mp3|wav|flac|aac)$/i)) {
+						type = 'video'
+					}
+					let videoThumbnailUrl: string | undefined = undefined
+					if (type === 'video') {
+						videoThumbnailUrl = await generateVideoThumbnail(
+							media.path,
+							media.originalname
+						)
+					}
+					return {
+						url: `files/post/${type}s/${media.filename}`,
+						type: type,
+						post: post.id,
+						extension: extension,
+						videoThumbnailUrl: videoThumbnailUrl
+					}
+				})
+			)
 		)
 		const postHashTags = await this.postHashtagDaoService.createPostHastag({
 			tags: data.hashtags
@@ -70,6 +75,76 @@ export class PostService {
 		const postInstance = await this.postDaoService.findOneById(post.id)
 		const postDomain = PostMapper.toDomain(postInstance)
 		return { post: postDomain }
+	}
+
+	async updatePost(postId: string, data: UpdatePostRequestDto, medias: Express.Multer.File[]) {
+		const post = await this.postDaoService.findOneById(postId)
+		if (!post) {
+			throw new NotFoundException('Post not found')
+		}
+		let location: Point | undefined = undefined
+		for (const media of post.medias) {
+			if (data.deleteMediaIds.includes(media.id)) {
+				if (media) {
+					if (!media.url.includes('dummy')) {
+						unlink(`src/${media.url}`, (err) => {
+							console.log(err)
+						})
+					}
+					if (media.type === 'video') {
+						unlink(`src/${media.videoThumbnailUrl}`, (err) => {
+							console.log(err)
+						})
+					}
+				}
+			}
+		}
+		await this.mediaDaoService.deleteMedia(data.deleteMediaIds)
+		const postMedias = this.mediaDaoService.createMedia(
+			await Promise.all(
+				medias.map(async (media) => {
+					const extension = media.originalname.substring(
+						media.originalname.lastIndexOf('.') + 1
+					)
+					let type = 'image'
+					if (extension.match(/(mp4|webm|ogg|mp3|wav|flac|aac)$/i)) {
+						type = 'video'
+					}
+					let videoThumbnailUrl: string | undefined = undefined
+					if (type === 'video') {
+						videoThumbnailUrl = await generateVideoThumbnail(
+							media.path,
+							media.originalname
+						)
+					}
+					return {
+						url: `files/post/${type}s/${media.filename}`,
+						type: type,
+						post: post.id,
+						extension: extension,
+						videoThumbnailUrl: videoThumbnailUrl
+					}
+				})
+			)
+		)
+		if (data.location?.latitude === 0 && data.location?.longitude === 0) {
+			location = undefined
+		} else {
+			location = data.location
+		}
+		post.hashtags.removeAll()
+		const postHashTags = await this.postHashtagDaoService.createPostHastag({
+			tags: data.hashtags
+		})
+		post.hashtags.add(postHashTags)
+		post.title = data.title
+		post.caption = data.caption
+		post.location = location
+		await this.em.flush()
+
+		const updatedPost = await this.em.refresh(post)
+		const updatedPostDomain = PostMapper.toDomain(updatedPost)
+		return { post: updatedPostDomain }
 	}
 
 	async likePost(postId: string, userId: string, isLiked: boolean) {
@@ -104,12 +179,11 @@ export class PostService {
 
 	async getPaginatedPosts(query: GetPaginatedPostQueryRequestDto) {
 		const { items, count } = await this.postDaoService.paginatePosts(query)
-		const pagination = new PaginationDto()
-		pagination.nextOffset = items.length + query.offset
-		pagination.previousOffset = query.offset - query.limit
-		pagination.hasNext = pagination.nextOffset < count
-		pagination.hasPrevious = pagination.previousOffset >= 0
-		pagination.count = count
+		const pagination = PaginationDto.createPaginationDto(
+			count, 
+			query.paginationQuery.limit,
+			query.paginationQuery.offset
+		)
 		return {
 			posts: items.map((post) => PostMapper.toDomain(post)).filter((post) => post !== null),
 			pagination: pagination

@@ -1,8 +1,8 @@
-import { Cursor } from '@mikro-orm/core'
-import { PostEntity } from '../post.entity'
+import { UserRole } from '../../../user/persistance/User.entity'
+import { PaginationQueryDto } from '../../../../dto/pagination-query.dto'
 
 export class GetPaginatedPostQueryDto {
-    offset: number
-    limit: number
+    paginationQuery: PaginationQueryDto
     authorId?: string
+    role?: UserRole
 }

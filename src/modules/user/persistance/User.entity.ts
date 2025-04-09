@@ -106,3 +106,9 @@ export enum UserRole {
 	CUSTOMER = 'Customer',
 	RESTAURANT = 'Restaurant'
 }
+
+export const userRoleMap = {
+	'Admin': UserRole.ADMIN,
+	'Customer': UserRole.CUSTOMER,
+	'Restaurant': UserRole.RESTAURANT
+}

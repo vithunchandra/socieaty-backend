@@ -5,6 +5,7 @@ import { PostMedia } from "./post-media";
 export class PostMediaMapper{
     static toDomain(raw: PostMediaEntity): PostMedia {    
         const postMedia = new PostMedia()
+        postMedia.id = raw.id
         postMedia.url = `${BASE_URL}${raw.url.replaceAll('\\', '/')}`
         postMedia.type = raw.type
         postMedia.postId = raw.post.id

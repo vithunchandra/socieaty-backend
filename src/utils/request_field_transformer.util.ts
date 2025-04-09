@@ -7,6 +7,7 @@ import {
 import { SortOrder, sortOrderMap } from '../enums/sort-order.enum'
 import { foodOrderSortByMap, foodOrderStatusMap } from '../enums/food-order.enum'
 import { fraudStatusMap, paymentStatusMap } from '../enums/topup.enum'
+import { userRoleMap } from '../modules/user/persistance/User.entity'
 
 function fieldToDate(data: TransformFnParams) {
 	if (data.value === null || (data.value as String) === '') return undefined
@@ -58,6 +59,11 @@ function fieldToFraudStatus(data: TransformFnParams) {
 	return fraudStatusMap[data.value]
 }
 
+function fieldToUserRole(data: TransformFnParams) {
+	if (data.value === null || (data.value as String) === '') return undefined
+	return userRoleMap[data.value]
+}
+
 export {
 	fieldToDate,
 	fieldToString,
@@ -68,5 +74,6 @@ export {
 	fieldToFoodOrderStatus,
 	fieldToFoodOrderSortBy,
 	fieldToPaymentStatus,
-	fieldToFraudStatus
+	fieldToFraudStatus,
+	fieldToUserRole
 }

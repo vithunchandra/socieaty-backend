@@ -61,16 +61,16 @@ const fileDestination = (
 
 async function generateVideoThumbnail(videoPath: string, filename: string) {
 	return new Promise<string>((resolve, reject) => {
-		const videoThumbnailFilename = `thumbnail_${filename.split('.')[0]}.jpg`
+		const videoThumbnailFilename = `thumbnail_${filename.split('.')[0]}_${Date.now()}.jpg`
 		Ffmpeg(videoPath)
 			.screenshots({
 				count: 1,
 				timestamps: [0], // Capture a thumbnail at 1 second into the video
-				filename: `thumbnail_${videoThumbnailFilename}.jpg`, // Generate a unique filename
+				filename: videoThumbnailFilename, // Generate a unique filename
 				folder: `${POST_MEDIA_UPLOADS_DIR}/thumbnails`
 			})
 			.on('end', () => {
-				resolve(`${POST_MEDIA_UPLOADS_DIR}/thumbnails/thumbnail_${videoThumbnailFilename}.jpg`)
+				resolve(`files/post/thumbnails/${videoThumbnailFilename}`)
 			})
 			.on('error', (err) => {
 				reject(new BadRequestException('Error generating thumbnail'))

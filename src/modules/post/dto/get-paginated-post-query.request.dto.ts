@@ -1,18 +1,20 @@
 
-import { Type } from 'class-transformer'
+import { Transform, Type } from 'class-transformer'
 import { IsBoolean, IsNumber, IsOptional, IsString} from 'class-validator'
 import { PaginationDirection } from '../../../enums/pagination-direction.enum'
+import { UserRole } from '../../user/persistance/User.entity'
+import { fieldToUserRole } from '../../../utils/request_field_transformer.util'
+import { PaginationQueryDto } from '../../../dto/pagination-query.dto'
 
 export class GetPaginatedPostQueryRequestDto {
-	@IsNumber()
-	@Type(() => Number)
-	offset: number
-
-	@IsNumber()
-	@Type(() => Number)
-	limit: number
+	@Type(() => PaginationQueryDto)
+	paginationQuery: PaginationQueryDto
 
 	@IsOptional()
 	@IsString()
 	authorId?: string
+
+	@IsOptional()
+	@Transform((value) => fieldToUserRole(value))
+	role?: UserRole
 }

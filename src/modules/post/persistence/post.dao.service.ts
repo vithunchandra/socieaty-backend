@@ -70,10 +70,14 @@ export class PostDaoService {
 	}
 
 	async paginatePosts(query: GetPaginatedPostQueryDto): Promise<PostPaginatedResultDto> {
-		const { offset, limit, authorId } = query
+		const { paginationQuery, authorId, role } = query
+		const { offset, limit } = paginationQuery
 		let where: FilterQuery<PostEntity> = {}
 		if (authorId && authorId.trim().length > 0) {
 			where.user = { id: authorId }
+		}
+		if (role) {
+			where.user = { role: role }
 		}
 		const count = await this.postRepository.count(where)
 
