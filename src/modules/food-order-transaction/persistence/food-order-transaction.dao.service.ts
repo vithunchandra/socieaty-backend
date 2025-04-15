@@ -85,7 +85,7 @@ export class FoodOrderTransactionDaoService {
 
 	async paginateFoodOrders(dto: GetPaginatedOrdersDto) {
 		const { queryObject, sortObject } = this.createFoodOrdersQueryObject(dto)
-		const { limit, offset } = dto.paginationQuery
+		const { pageSize, page } = dto.paginationQuery
 		const [items, count] = await this.foodOrderTransactionRepository.findAndCount(queryObject, {
 			populate: [
 				'transaction',
@@ -95,8 +95,8 @@ export class FoodOrderTransactionDaoService {
 				'menuItems.menu.categories'
 			],
 			orderBy: sortObject,
-			limit,
-			offset
+			limit: pageSize,
+			offset: page * pageSize
 		})
 		return {
 			items,
@@ -104,8 +104,8 @@ export class FoodOrderTransactionDaoService {
 		}
 	}
 
-	async findFoodOrders(dto: GetOrdersDto){
-		const {queryObject, sortObject} = this.createFoodOrdersQueryObject(dto)
+	async findFoodOrders(dto: GetOrdersDto) {
+		const { queryObject, sortObject } = this.createFoodOrdersQueryObject(dto)
 		const result = await this.foodOrderTransactionRepository.find(queryObject, {
 			populate: [
 				'transaction',

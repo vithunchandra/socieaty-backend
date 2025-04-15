@@ -241,8 +241,8 @@ export class FoodOrderTransactionService {
 		const { items, count } = await this.foodOrderTransactionDaoService.paginateFoodOrders(dto)
 		const pagination = PaginationDto.createPaginationDto(
 			count,
-			dto.paginationQuery.limit,
-			dto.paginationQuery.offset
+			dto.paginationQuery.pageSize,
+			dto.paginationQuery.page
 		)
 		return {
 			items: items.map((item) => FoodOrderTransactionMapper.toDomain(item)),

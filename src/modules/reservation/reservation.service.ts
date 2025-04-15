@@ -302,8 +302,8 @@ export class ReservationService {
 		})
 		const pagination = PaginationDto.createPaginationDto(
 			count,
-			query.paginationQuery.limit,
-			query.paginationQuery.offset
+			query.paginationQuery.pageSize,
+			query.paginationQuery.page
 		)
 		return {
 			items: items.map((reservation) => ReservationTransactionMapper.toDomain(reservation)),

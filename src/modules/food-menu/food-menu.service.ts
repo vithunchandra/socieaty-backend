@@ -162,10 +162,10 @@ export class FoodMenuService {
 	async paginateMenu(query: PaginateMenuDto) {
 		const { items, count } = await this.foodMenuDaoService.paginateMenu(query)
 		const pagination = new PaginationDto()
-		pagination.nextOffset = items.length + query.offset
-		pagination.previousOffset = query.offset - query.limit
-		pagination.hasNext = pagination.nextOffset < count
-		pagination.hasPrevious = pagination.previousOffset >= 0
+		pagination.nextPage = items.length + query.offset
+		pagination.previousPage = query.offset - query.limit
+		pagination.hasNext = pagination.nextPage < count
+		pagination.hasPrevious = pagination.previousPage >= 0
 		pagination.count = count
 		return {
 			menus: items.map((menu) => FoodMenuMapper.toDomain(menu)),

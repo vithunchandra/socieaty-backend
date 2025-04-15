@@ -180,9 +180,9 @@ export class PostService {
 	async getPaginatedPosts(query: GetPaginatedPostQueryRequestDto) {
 		const { items, count } = await this.postDaoService.paginatePosts(query)
 		const pagination = PaginationDto.createPaginationDto(
-			count, 
-			query.paginationQuery.limit,
-			query.paginationQuery.offset
+			count,
+			query.paginationQuery.pageSize,
+			query.paginationQuery.page
 		)
 		return {
 			posts: items.map((post) => PostMapper.toDomain(post)).filter((post) => post !== null),

@@ -7,7 +7,7 @@ export class PostCommentMapper {
 		const postComment = new PostComment()
 		postComment.id = raw.id
 		postComment.postId = raw.post.id
-		postComment.userName = raw.user.name ?? ''
+		postComment.author = UserMapper.toDomain(raw.user)
 		postComment.userId = raw.user.id
 		postComment.text = raw.text
 		postComment.likes = raw.commentLikes.map((user) =>

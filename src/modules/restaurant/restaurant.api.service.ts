@@ -116,10 +116,10 @@ export class RestaurantService {
 	async paginateRestaurant(query: PaginateRestaurantRequestDto) {
 		const { items, count } = await this.restaurantDao.paginateRestaurant(query)
 		const pagination = new PaginationDto()
-		pagination.nextOffset = items.length + query.paginationQuery.offset
-		pagination.previousOffset = query.paginationQuery.offset - query.paginationQuery.limit
-		pagination.hasNext = pagination.nextOffset < count
-		pagination.hasPrevious = pagination.previousOffset >= 0
+		pagination.nextPage = items.length + query.paginationQuery.page
+		pagination.previousPage = query.paginationQuery.page - query.paginationQuery.pageSize
+		pagination.hasNext = pagination.nextPage < count
+		pagination.hasPrevious = pagination.previousPage >= 0
 		pagination.count = count
 		return {
 			restaurants: items.map((item) => UserMapper.fromRestaurantToDomain(item)),

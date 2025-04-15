@@ -132,7 +132,7 @@ export class ReservationDaoService {
 	}
 
 	async paginateReservations(query: PaginateReservationsDto) {
-		const { limit, offset } = query.paginationQuery
+		const { pageSize, page } = query.paginationQuery
 		const { queryObject, sortByObject } = this.createReservationsQueryObject(query)
 		const [items, count] = await this.reservationRepository.findAndCount(queryObject, {
 			populate: [
@@ -143,8 +143,8 @@ export class ReservationDaoService {
 				'menuItems.menu.categories'
 			],
 			orderBy: sortByObject,
-			limit,
-			offset
+			limit: pageSize,
+			offset: page * pageSize
 		})
 
 		return {

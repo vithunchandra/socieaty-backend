@@ -57,13 +57,7 @@ export class PostDaoService {
 
 	async findAll() {
 		const posts = await this.postRepository.findAll({
-			populate: [
-				'medias',
-				'comments:ref',
-				'postLikes',
-				'hashtags',
-				'user'
-			],
+			populate: ['medias', 'comments:ref', 'postLikes', 'hashtags', 'user'],
 			orderBy: { createdAt: 'ASC' }
 		})
 		return posts
@@ -71,7 +65,8 @@ export class PostDaoService {
 
 	async paginatePosts(query: GetPaginatedPostQueryDto): Promise<PostPaginatedResultDto> {
 		const { paginationQuery, authorId, role } = query
-		const { offset, limit } = paginationQuery
+		const { page, pageSize } = paginationQuery
+		console.log(query)
 		let where: FilterQuery<PostEntity> = {}
 		if (authorId && authorId.trim().length > 0) {
 			where.user = { id: authorId }
@@ -84,8 +79,8 @@ export class PostDaoService {
 		const posts = await this.postRepository.find(where, {
 			populate: ['medias', 'postLikes', 'comments:ref', 'hashtags', 'user'],
 			orderBy: { createdAt: 'ASC' },
-			offset: offset,
-			limit: limit
+			offset: page * pageSize,
+			limit: pageSize
 		})
 		return {
 			items: posts,

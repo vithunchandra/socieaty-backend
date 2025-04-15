@@ -119,8 +119,8 @@ export class RestaurantDaoService {
 		}
 		const [items, count] = await this.restaurantRepository.findAndCount(filter, {
 			populate: ['userData.restaurantData', 'themes'],
-			offset: paginationQuery.offset,
-			limit: paginationQuery.limit
+			offset: paginationQuery.page,
+			limit: paginationQuery.pageSize
 		})
 
 		return {
@@ -139,11 +139,14 @@ export class RestaurantDaoService {
 	}
 
 	async getReservationConfig(restaurantId: string) {
-		return await this.reservationConfigRepository.findOne({
-			restaurant: { id: restaurantId },
-		}, {
-			populate: ['facilities', 'restaurant']
-		})
+		return await this.reservationConfigRepository.findOne(
+			{
+				restaurant: { id: restaurantId }
+			},
+			{
+				populate: ['facilities', 'restaurant']
+			}
+		)
 	}
 
 	async getRestaurantThemes(themeIds: number[]): Promise<RestaurantThemeEntity[]> {
