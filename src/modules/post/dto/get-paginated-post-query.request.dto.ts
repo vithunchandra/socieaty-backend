@@ -12,6 +12,14 @@ export class GetPaginatedPostQueryRequestDto {
 
 	@IsOptional()
 	@IsString()
+	postId?: string
+
+	@IsOptional()
+	@IsString()
+	title?: string
+
+	@IsOptional()
+	@IsString()
 	authorId?: string
 
 	@IsOptional()

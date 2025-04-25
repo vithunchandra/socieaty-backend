@@ -11,6 +11,8 @@ import { RestaurantEntity } from './persistence/entity/Restaurant.entity'
 import { EntityManager, wrap } from '@mikro-orm/postgresql'
 import { UpdateReservationConfigRequestDto } from './dto/update-reservation-config-request.dto'
 import { ReservationConfigMapper } from './domain/reservation-config.mapper'
+import { Point } from './persistence/custom-type/PointType'
+import { GetNearestRestaurantRequestDto } from './dto/get-nearest-restaurant-request.dto'
 
 @Injectable()
 export class RestaurantService {
@@ -143,6 +145,17 @@ export class RestaurantService {
 		restaurantMapped.password = undefined
 		return {
 			restaurant: restaurantMapped
+		}
+	}
+
+	async getNearestRestaurant(query: GetNearestRestaurantRequestDto) {
+		const point = new Point(query.latitude, query.longitude)
+		const restaurants = await this.restaurantDao.getNearestRestaurant(point, query.radius)
+		console.log(restaurants.length)
+		return {
+			restaurants: restaurants.map((restaurant) =>
+				UserMapper.fromRestaurantToDomain(restaurant)
+			)
 		}
 	}
 

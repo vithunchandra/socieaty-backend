@@ -1,8 +1,9 @@
 import { join } from 'path'
 
-// export const BASE_URL = 'http://192.168.200.205:3000/'
+// export const BASE_URL = 'http://192.168.200.194:3000/'
 // export const BASE_URL = 'http://192.168.247.142:3000/'
-export const BASE_URL = 'https://massive-dominant-grubworm.ngrok-free.app/'
+// export const BASE_URL = 'https://massive-dominant-grubworm.ngrok-free.app/'
+export const BASE_URL = 'https://socieaty.share.zrok.io/'
 
 export const FILE_UPLOADS_DIR = join(process.cwd(), 'src', 'files')
 
@@ -31,3 +32,6 @@ export const RESTAURANT_MENU_UPLOADS_DIR = join(process.cwd(), 'src', 'files', '
 export const RESTAURANT_MENU_RELATIVE_DIR = 'files/menu'
 
 export const SERVICE_FEE = 5000
+
+export const ADMIN_EMAIL = 'admin@socieaty.com'
+export const ADMIN_PASSWORD = 'admin'

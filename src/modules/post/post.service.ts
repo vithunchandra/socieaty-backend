@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import { PostDaoService } from './persistence/post.dao.service'
 import { CreatePostRequestDto } from './dto/create-post-request.dto'
-import { UserEntity } from '../user/persistance/User.entity'
+import { UserEntity, UserRole } from '../user/persistance/User.entity'
 import { EntityManager } from '@mikro-orm/postgresql'
 import { MediaDaoService } from '../post-media/persistence/post-media.dao.service'
 import { PostMapper } from './domain/post.mapper'
@@ -204,6 +204,23 @@ export class PostService {
 		const posts = await this.postDaoService.findOneById(post_id)
 		return {
 			likes: PostMapper.ToPostLikesDomain(posts)
+		}
+	}
+
+	async deletePost(postId: string, user: UserEntity) {
+		const post = await this.postDaoService.findOneById(postId)
+		if (!post) {
+			throw new NotFoundException('Post not found')
+		}
+
+		if (user.role === UserRole.ADMIN || user.id !== post.user.id) {
+			throw new BadRequestException('You are not allowed to delete this post')
+		}
+
+		post.deletedAt = new Date()
+		await this.em.flush()
+		return {
+			message: 'Post deleted successfully'
 		}
 	}
 }

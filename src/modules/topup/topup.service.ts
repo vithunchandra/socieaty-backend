@@ -80,17 +80,21 @@ export class TopupService {
 			throw new BadRequestException('Topup already processed')
 		}
 		console.log('hallo')
+		
 		if (
 			topupNotificationRequestDto.transaction_status === PaymentStatus.SETTLEMENT &&
 			topupNotificationRequestDto.fraud_status === FraudStatus.DENY
 		) {
 			throw new BadRequestException('Fraud transaction')
 		}
+		
+		let customer = topupEntity.customer
 		if (topupNotificationRequestDto.transaction_status === PaymentStatus.SETTLEMENT) {
 			topupEntity.status = TopupStatus.SUCCESS
 			topupEntity.transactionId = topupNotificationRequestDto.transaction_id
 			topupEntity.settlementTime = topupNotificationRequestDto.settlement_time
 			topupEntity.paymentType = topupNotificationRequestDto.payment_type
+			customer.wallet += topupEntity.amount
 		} else if (topupNotificationRequestDto.transaction_status === PaymentStatus.PENDING) {
 			topupEntity.status = TopupStatus.PENDING
 		} else if (topupNotificationRequestDto.transaction_status === PaymentStatus.EXPIRE) {
@@ -99,8 +103,6 @@ export class TopupService {
 			topupEntity.status = TopupStatus.FAILED
 		}
 
-		let customer = topupEntity.customer
-		customer.wallet += topupEntity.amount
 		await this.em.flush()
 
 		const newCustomerData = await this.em.refresh(customer)

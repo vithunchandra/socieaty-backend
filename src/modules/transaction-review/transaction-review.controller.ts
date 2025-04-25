@@ -47,7 +47,7 @@ export class TransactionReviewController {
 	async getCustomerTransactionReviews(@Param('customerId') customerId: string) {
 		return this.transactionReviewService.getAllReviewByCustomerId(customerId)
 	}
-
+	
 	@Get('transactions/:transactionId')
 	async getTransactionReview(@Param('transactionId') transactionId: string) {
 		return this.transactionReviewService.getReviewByTransactionId(transactionId)

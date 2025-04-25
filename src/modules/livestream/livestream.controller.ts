@@ -98,7 +98,7 @@ export class LiveStreamController {
 		@Request() req: GuardedRequestDto,
 		@Param('roomname') roomName: string
 	) {
-		return this.liveStreamService.deleteRoom(roomName)
+		return this.liveStreamService.deleteRoom(roomName, req.user)
 	}
 
 	@Post('/webhook-endpoint')

@@ -1,6 +1,7 @@
 import {
 	Body,
 	Controller,
+	Delete,
 	Get,
 	Param,
 	Post,
@@ -22,6 +23,7 @@ import { AuthGuard } from 'src/module/AuthGuard/AuthGuard.service'
 import { LikePostRequestDto } from './dto/like-post-request.dto'
 import { GetPaginatedPostQueryRequestDto } from './dto/get-paginated-post-query.request.dto'
 import { UpdatePostRequestDto } from './dto/update-post-request.dto'
+import { GuardedRequestDto } from '../../module/AuthGuard/dto/guarded-request.dto'
 
 @Controller('post')
 export class PostController {
@@ -97,5 +99,11 @@ export class PostController {
 		@Body() data: LikePostRequestDto
 	) {
 		return await this.postService.likePost(postId, req.user.id, data.isLiked)
-	}	
+	}
+
+	@Delete(':postId')
+	@UseGuards(AuthGuard)
+	async deletePost(@Param('postId') postId: string, @Request() req: GuardedRequestDto) {
+		return await this.postService.deletePost(postId, req.user)
+	}
 }

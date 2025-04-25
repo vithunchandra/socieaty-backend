@@ -19,6 +19,7 @@ import { PaginateRestaurantRequestDto } from './dto/paginate-restaurant-request.
 import { CreateReservationConfigRequestDto } from './dto/create-reservation-config_request.dto'
 import { GuardedRequestDto } from '../../module/AuthGuard/dto/guarded-request.dto'
 import { UpdateReservationConfigRequestDto } from './dto/update-reservation-config-request.dto'
+import { GetNearestRestaurantRequestDto } from './dto/get-nearest-restaurant-request.dto'
 
 @Controller('restaurant')
 export class RestaurantController {
@@ -61,6 +62,11 @@ export class RestaurantController {
 	@Get('reservation-config/:restaurantId')
 	async getReservationConfig(@Param('restaurantId') restaurantId: string) {
 		return await this.restaurantService.getReservationConfig(restaurantId)
+	}
+
+	@Get('nearest')
+	async getNearestRestaurant(@Query() query: GetNearestRestaurantRequestDto) {
+		return await this.restaurantService.getNearestRestaurant(query)
 	}
 
 	@Get('themes')

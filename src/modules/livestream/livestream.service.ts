@@ -1,5 +1,5 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
-import { UserEntity } from '../user/persistance/User.entity'
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
+import { UserEntity, UserRole } from '../user/persistance/User.entity'
 import { LivestreamRepository } from './livestream.repository'
 import { LiveRoomMapper } from './domain/live-room.mapper'
 import { LivestreamDaoService } from './persistence/livestream.dao.service'
@@ -8,6 +8,7 @@ import { WebhookEvent } from 'livekit-server-sdk'
 import { UserDaoService } from '../user/persistance/User.dao.service'
 import { LiveRoomMetadata } from './domain/live-room-metadata'
 import { LivestreamRoomCommentMapper } from './domain/livestream-room-comment.mapper'
+import { LiveRoomMetaDataMapper } from './domain/live-room-meta-data.mapper'
 
 @Injectable()
 export class LiveStreamService {
@@ -142,7 +143,15 @@ export class LiveStreamService {
 		}
 	}
 
-	async deleteRoom(roomName: string) {
+	async deleteRoom(roomName: string, user: UserEntity) {
+		const room = await this.livestreamRepository.getRoomByName(roomName)
+		if (!room) {
+			throw new NotFoundException('Livestream room not found')
+		}
+		const metadata = LiveRoomMetaDataMapper.toDomain(room.metadata)
+		if (user.role !== UserRole.ADMIN && metadata.ownerId !== user.id) {
+			throw new BadRequestException('You are not allowed to delete this livestream room')
+		}
 		const result = await this.livestreamRepository.deleteRoom(roomName)
 		return {
 			isDeleted: result

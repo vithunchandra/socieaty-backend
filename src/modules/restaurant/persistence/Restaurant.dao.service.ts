@@ -11,6 +11,7 @@ import { CreateReservationConfigDto } from './dto/create-reservation-config.dto'
 import { ReservationConfigEntity } from './entity/reservation-config.entity'
 import { UpdateReservationConfigRequestDto } from '../dto/update-reservation-config-request.dto'
 import { ReservationFacilityEntity } from './entity/reservation-facility.entity'
+import { Point } from './custom-type/PointType'
 
 @Injectable()
 export class RestaurantDaoService {
@@ -134,8 +135,26 @@ export class RestaurantDaoService {
 			{
 				id: restaurantId
 			},
-			{ populate: ['userData', 'userData.restaurantData', 'userData.restaurantData.themes'] }
+			{ populate: ['userData', 'userData.restaurantData', 'themes'] }
 		)
+	}
+
+	async getNearestRestaurant(point: Point, radius: number) {
+		const query = this.restaurantRepository
+			.getEntityManager()
+			.createQueryBuilder(RestaurantEntity, 'restaurant')
+		const result = await query
+			.select('*')
+			.where(
+				`ST_DWithin(
+				ST_MakePoint(restaurant.location[0], restaurant.location[1])::geography,
+				ST_MakePoint(${point.longitude}, ${point.latitude})::geography, ${radius})`
+			)
+			.leftJoinAndSelect('restaurant.userData', 'userData')
+			.leftJoinAndSelect('userData.restaurantData', 'restaurantData')
+			.leftJoinAndSelect('restaurant.themes', 'themes')
+			.getResultList()
+		return result
 	}
 
 	async getReservationConfig(restaurantId: string) {

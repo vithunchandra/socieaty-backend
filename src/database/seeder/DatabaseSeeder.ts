@@ -8,6 +8,8 @@ import { CustomerEntity } from '../../modules/customer/persistence/Customer.enti
 import { BankEnum } from '../../enums/bank.enum'
 import { RestaurantThemeEntity } from '../../modules/restaurant/persistence/entity/restaurant-theme.entity'
 import {
+	ADMIN_EMAIL,
+	ADMIN_PASSWORD,
 	PROFILE_PICTURE_UPLOADS_DIR,
 	RESTAURANT_BANNER_UPLOADS_DIR,
 	RESTAURANT_MENU_UPLOADS_DIR
@@ -316,6 +318,15 @@ export class DatabaseSeeder extends Seeder {
 		}
 
 		await em.flush()
+
+		const adminUser = em.create(UserEntity, {
+			name: 'admin',
+			email: ADMIN_EMAIL,
+			password: ADMIN_PASSWORD,
+			phoneNumber: '081234567890',
+			profilePictureUrl: `files/user/profile_picture/dummy/${faker.helpers.arrayElement(dummyProfilePicture)}`,
+			role: UserRole.ADMIN
+		})
 
 		// Create Custom Customer and Restaurant User
 		const customerUser = em.create(UserEntity, {

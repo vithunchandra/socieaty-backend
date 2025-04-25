@@ -25,10 +25,6 @@ export class GetOrdersRequestQueryDto{
 	@Transform((data) => fieldToDate(data))
 	finishedAt?: Date
 
-	@IsOptional()
-	@Transform((data) => fieldToDate(data))
-	reservationTime?: Date
-
 	@IsArray()
 	@IsEnum(FoodOrderStatus, { each: true })
 	status: FoodOrderStatus[]
