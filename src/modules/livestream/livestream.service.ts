@@ -65,7 +65,7 @@ export class LiveStreamService {
 			rooms.map(async (room) => {
 				if (room.metadata != '') {
 					const metadata = JSON.parse(room.metadata) as LiveRoomMetadata
-					const owner = await this.UserDaoService.findOneById(metadata.ownerId)
+					const owner = await this.UserDaoService.findOneById(metadata.ownerId, false)
 					return LiveRoomMapper.toDomain(room, owner!)
 				}
 				return null

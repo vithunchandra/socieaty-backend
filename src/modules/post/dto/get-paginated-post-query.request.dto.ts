@@ -10,13 +10,17 @@ export class GetPaginatedPostQueryRequestDto {
 	@Type(() => PaginationQueryDto)
 	paginationQuery: PaginationQueryDto
 
-	@IsOptional()
-	@IsString()
-	postId?: string
+	// @IsOptional()
+	// @IsString()
+	// postId?: string
+
+	// @IsOptional()
+	// @IsString()
+	// title?: string
 
 	@IsOptional()
 	@IsString()
-	title?: string
+	searchQuery?: string
 
 	@IsOptional()
 	@IsString()

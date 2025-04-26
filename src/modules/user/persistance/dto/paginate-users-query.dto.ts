@@ -3,8 +3,7 @@ import { UserRole } from '../User.entity'
 
 export class PaginateUsersQueryDto {
 	paginationQuery: PaginationQueryDto
-	name?: string
-	email?: string
+	searchQuery?: string
 	role?: UserRole
 	includeDeleted?: boolean
 }

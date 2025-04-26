@@ -5,6 +5,7 @@ export class GetPaginatedPostQueryDto {
 	paginationQuery: PaginationQueryDto
 	authorId?: string
 	role?: UserRole
-	postId?: string
-	title?: string
+	// postId?: string
+	// title?: string
+	searchQuery?: string
 }

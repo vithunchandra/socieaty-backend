@@ -8,10 +8,10 @@ import { UserRole } from './persistance/User.entity'
 import { Roles } from '../../module/RoleGuard/roles.decorator'
 
 @Controller('users')
-class UserController {
+export class UserController {
 	constructor(private readonly userService: UserService) {}
 
-	@Get('users')
+	@Get('')
 	@UseGuards(AuthGuard)
 	async paginateUsers(
 		@Query() query: PaginateUsersRequestQueryDto,
@@ -21,7 +21,9 @@ class UserController {
 	}
 
 	@Delete(':id')
-	async deleteUser(@Param('id') id: string) {
+	@UseGuards(AuthGuard, RolesGuard)
+	@Roles(UserRole.ADMIN)
+	async deleteUser(@Param('id') id: string, @Req() req: GuardedRequestDto) {
 		return await this.userService.deleteUser(id)
 	}
 
@@ -30,5 +32,11 @@ class UserController {
 	@Roles(UserRole.ADMIN)
 	async undeleteUser(@Param('id') id: string) {
 		return await this.userService.undeleteUser(id)
+	}
+
+	@Get(':id')
+	@UseGuards(AuthGuard)
+	async getUserById(@Param('id') id: string, @Req() req: GuardedRequestDto) {
+		return this.userService.getUserData(id, req.user)
 	}
 }

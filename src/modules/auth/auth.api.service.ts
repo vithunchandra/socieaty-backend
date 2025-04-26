@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import { UserDaoService } from 'src/modules/user/persistance/User.dao.service'
 import { UserSigninDto } from './dto/user-signin.dto'
 import { JwtService } from '@nestjs/jwt'
@@ -95,9 +95,9 @@ export class AuthService {
 	}
 
 	async getData(user_id: string) {
-		const user = await this.userDao.findOneById(user_id)
+		const user = await this.userDao.findOneById(user_id, true)
 		if (!user) {
-			return new BadRequestException('User not found')
+			return new NotFoundException('User not found')
 		}
 
 		return UserMapper.toDomain(user)

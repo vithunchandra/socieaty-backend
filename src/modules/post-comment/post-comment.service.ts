@@ -32,7 +32,7 @@ export class PostCommentService{
 
     async likePostComment(commentId: string, userId: string, isLiked: boolean){
         const comment = await this.postCommentDaoService.findOneById(commentId)
-        const user = await this.userDaoService.findOneById(userId)
+        const user = await this.userDaoService.findOneById(userId, true)
         if(!comment){
             throw new NotFoundException('Comment or User not found')
         }

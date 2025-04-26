@@ -213,7 +213,7 @@ export class PostService {
 			throw new NotFoundException('Post not found')
 		}
 
-		if (user.role === UserRole.ADMIN || user.id !== post.user.id) {
+		if (user.role !== UserRole.ADMIN && user.id !== post.user.id) {
 			throw new BadRequestException('You are not allowed to delete this post')
 		}
 

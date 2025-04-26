@@ -109,9 +109,4 @@ export class AuthController {
 	async getData(@Request() req) {
 		return this.authService.getData(req.user.id)
 	}
-
-	@Get(':id')
-	async getDataById(@Param('id') id: string) {
-		return this.authService.getData(id)
-	}
 }

@@ -376,7 +376,7 @@ export class DatabaseSeeder extends Seeder {
 		customers.push(customerUserData)
 		restaurants.push(restaurantUserData)
 
-		for (let i = 0; i < 20; i++) {
+		for (let i = 0; i < 100; i++) {
 			let role = UserRole.CUSTOMER
 			if (faker.number.binary() === '1') {
 				role = UserRole.RESTAURANT

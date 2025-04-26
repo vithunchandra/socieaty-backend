@@ -13,6 +13,10 @@ export class UserMapper {
 		if (raw.profilePictureUrl) {
 			profilePictureUrl = `${BASE_URL}${raw.profilePictureUrl}`
 		}
+		let isDeleted = false
+		if (raw.deletedAt) {
+			isDeleted = true
+		}
 		const user = new User()
 		user.id = raw.id
 		user.name = raw.name
@@ -23,6 +27,7 @@ export class UserMapper {
 		user.role = raw.role
 		user.customerData = CustomerMapper.toDomain(raw.customerData)
 		user.restaurantData = RestaurantMapper.toDomain(raw.restaurantData)
+		user.isDeleted = isDeleted
 		return user
 	}
 
@@ -32,7 +37,13 @@ export class UserMapper {
 		if (raw.userData.profilePictureUrl) {
 			profilePictureUrl = `${BASE_URL}${raw.userData.profilePictureUrl}`
 		}
+
 		const userData = raw.userData
+
+		let isDeleted = false
+		if (userData.deletedAt) {
+			isDeleted = true
+		}
 		user.id = userData.id
 		user.email = userData.email
 		user.name = userData.name
@@ -40,6 +51,7 @@ export class UserMapper {
 		user.phoneNumber = userData.phoneNumber
 		user.profilePictureUrl = profilePictureUrl
 		user.role = userData.role
+		user.isDeleted = isDeleted
 		user.customerData = CustomerMapper.toDomain(raw)
 		user.restaurantData = null
 
@@ -54,13 +66,20 @@ export class UserMapper {
 
 		const user = new User()
 		const userData = raw.userData
+
+		let isDeleted = false
+		if (userData.deletedAt) {
+			isDeleted = true
+		}
+
 		user.id = userData.id
 		user.email = userData.email
 		user.name = userData.name
 		user.password = userData.password
 		user.phoneNumber = userData.phoneNumber
-		user.profilePictureUrl = profilePictureUrl	
+		user.profilePictureUrl = profilePictureUrl
 		user.role = userData.role
+		user.isDeleted = isDeleted
 		user.customerData = null
 		user.restaurantData = RestaurantMapper.toDomain(raw)
 

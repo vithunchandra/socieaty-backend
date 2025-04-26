@@ -44,7 +44,7 @@ export class CustomerService {
 		data: UpdateCustomerProfileRequestDto,
 		profilePicture?: Express.Multer.File
 	) {
-		const user = await this.userDao.findOneById(data.profileUserId)
+		const user = await this.userDao.findOneById(data.profileUserId, true)
 		if (!user) {
 			return new NotFoundException('User tidak ditemukan')
 		}
@@ -76,7 +76,7 @@ export class CustomerService {
 		})
 
 		await this.em.flush()
-        const updatedUser = await this.userDao.findOneById(user_id)
+        const updatedUser = await this.userDao.findOneById(user_id, true)
         return {
             updatedUser: UserMapper.toDomain(updatedUser!)
         }

@@ -25,7 +25,7 @@ export class AuthGuard implements CanActivate {
       );
       // 💡 We're assigning the payload to the request object here
       // so that we can access it in our route handlers
-      const user = await this.userDaoService.findOneById(payload.id);
+      const user = await this.userDaoService.findOneById(payload.id, false);
       if(!user){
         throw new NotFoundException('User not found');
       }

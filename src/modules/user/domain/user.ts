@@ -12,6 +12,7 @@ export class User{
     phoneNumber: string
     profilePictureUrl: string | null
     role: UserRole
+    isDeleted: boolean
     restaurantData: Restaurant | null
     customerData: Customer | null
 }

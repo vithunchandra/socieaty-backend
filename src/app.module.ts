@@ -23,6 +23,7 @@ import { ReservationModule } from './modules/reservation/reservation.module'
 import { ScheduleModule } from '@nestjs/schedule'
 import { PaymentModule } from './modules/payment/payment.module'
 import { TopupModule } from './modules/topup/topup.module'
+import { UserModule } from './modules/user/user.module'
 
 @Module({
 	imports: [
@@ -38,6 +39,7 @@ import { TopupModule } from './modules/topup/topup.module'
 			signOptions: { expiresIn: '1d' }
 		}),
 		AuthModule,
+		UserModule,
 		RestaurantModule,
 		PostModule,
 		PostCommentModule,
