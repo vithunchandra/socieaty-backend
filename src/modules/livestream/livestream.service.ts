@@ -9,6 +9,7 @@ import { UserDaoService } from '../user/persistance/User.dao.service'
 import { LiveRoomMetadata } from './domain/live-room-metadata'
 import { LivestreamRoomCommentMapper } from './domain/livestream-room-comment.mapper'
 import { LiveRoomMetaDataMapper } from './domain/live-room-meta-data.mapper'
+import { GetAllLivestreamsRequestQueryDto } from './dto/get-all-livestream-request-query.dto'
 
 @Injectable()
 export class LiveStreamService {
@@ -59,14 +60,64 @@ export class LiveStreamService {
 		}
 	}
 
-	async getAllLivestreams(user: UserEntity) {
+	// async getAllLivestreams(user: UserEntity) {
+	// 	const rooms = await this.livestreamRepository.getAllRoom()
+	// 	const mapped = await Promise.all(
+	// 		rooms.map(async (room) => {
+	// 			if (room.metadata != '') {
+	// 				const metadata = JSON.parse(room.metadata) as LiveRoomMetadata
+	// 				const owner = await this.UserDaoService.findOneById(metadata.ownerId, false)
+	// 				const commentsCount = await this.livestreamDaoService.getAllCommentByRoomName(
+	// 					room.name
+	// 				)
+	// 				const likesCount = await this.livestreamDaoService.getAllLikesByRoomName(
+	// 					room.name
+	// 				)
+	// 				return LiveRoomMapper.toDomain(
+	// 					room,
+	// 					owner!,
+	// 					commentsCount.length,
+	// 					likesCount.length
+	// 				)
+	// 			}
+	// 			return null
+	// 		})
+	// 	)
+	// 	const filteredMapped = mapped.filter((room) => {
+	// 		return room !== null && room.metadata.ownerId != user.id
+	// 	})
+	// 	return {
+	// 		rooms: filteredMapped
+	// 	}
+	// }
+
+	async getAllLivestreams(query: GetAllLivestreamsRequestQueryDto, user: UserEntity) {
+		const { role, searchQuery } = query
 		const rooms = await this.livestreamRepository.getAllRoom()
 		const mapped = await Promise.all(
 			rooms.map(async (room) => {
-				if (room.metadata != '') {
+				if (room.metadata != '' && room.numParticipants > 0) {
 					const metadata = JSON.parse(room.metadata) as LiveRoomMetadata
 					const owner = await this.UserDaoService.findOneById(metadata.ownerId, false)
-					return LiveRoomMapper.toDomain(room, owner!)
+					const isSearchQueryMatch = searchQuery
+						? (owner && owner?.name.includes(searchQuery)) ||
+							metadata.roomTitle.includes(searchQuery)
+						: true
+					const isRoleMatch = role ? owner?.role == role : true
+
+					if (isSearchQueryMatch && isRoleMatch) {
+						const commentsCount =
+							await this.livestreamDaoService.getAllCommentByRoomName(room.name)
+						const likesCount = await this.livestreamDaoService.getAllLikesByRoomName(
+							room.name
+						)
+						return LiveRoomMapper.toDomain(
+							room,
+							owner!,
+							commentsCount.length,
+							likesCount.length
+						)
+					}
 				}
 				return null
 			})

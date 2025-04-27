@@ -53,6 +53,12 @@ export class LivestreamRepository {
 		return null
 	}
 
+	// async getAllRoomBySearchQuery(query: string) {
+	// 	const rooms = await this.roomService.listRooms()
+	// 	const filteredRooms = rooms.filter((room) => room.name.includes(query))
+	// 	return filteredRooms
+	// }
+
 	async deleteRoom(roomName: string): Promise<boolean> {
 		await this.roomService.deleteRoom(roomName)
 		const rooms = await this.roomService.listRooms()

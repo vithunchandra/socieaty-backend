@@ -5,5 +5,8 @@ export class LiveRoom {
 	roomName: string;
 	metadata: LiveRoomMetadata;
 	owner: User;
+	views: number;
+	commentsCount: number;
+	likesCount: number;
 	createdAt: Date;
 }

@@ -7,6 +7,7 @@ import {
 	Headers,
 	Param,
 	Post,
+	Query,
 	Request,
 	UseGuards
 } from '@nestjs/common'
@@ -19,6 +20,7 @@ import { LikeLivestreamRequestDto } from './dto/like-livestream-request.dto'
 import { WebhookReceiver } from 'livekit-server-sdk'
 import { Request as ExpressRequest } from 'express'
 import { RawBodyMiddleware } from '../../module/RawBodyMiddleware/raw-body-middleware'
+import { GetAllLivestreamsRequestQueryDto } from './dto/get-all-livestream-request-query.dto'
 
 @Controller('livestream')
 export class LiveStreamController {
@@ -51,8 +53,8 @@ export class LiveStreamController {
 
 	@Get('')
 	@UseGuards(AuthGuard)
-	async getAllLivestreams(@Request() req: GuardedRequestDto) {
-		return this.liveStreamService.getAllLivestreams(req.user)
+	async getAllLivestreams(@Request() req: GuardedRequestDto, @Query() query: GetAllLivestreamsRequestQueryDto) {
+		return this.liveStreamService.getAllLivestreams(query, req.user)
 	}
 
 	@Get('create-token')
