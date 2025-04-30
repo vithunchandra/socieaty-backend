@@ -41,7 +41,7 @@ export class ReservationService {
 	) {}
 
 	async createReservation(customer: CustomerEntity, dto: CreateReservationRequestDto) {
-		const restaurant = await this.restaurantDaoService.getRestaurantById(dto.restaurantId)
+		const restaurant = await this.restaurantDaoService.findRestaurantById(dto.restaurantId)
 		if (!restaurant) {
 			throw new NotFoundException('Restaurant tidak ditemukan')
 		}

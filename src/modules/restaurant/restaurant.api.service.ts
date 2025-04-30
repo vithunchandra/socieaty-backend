@@ -13,6 +13,8 @@ import { UpdateReservationConfigRequestDto } from './dto/update-reservation-conf
 import { ReservationConfigMapper } from './domain/reservation-config.mapper'
 import { Point } from './persistence/custom-type/PointType'
 import { GetNearestRestaurantRequestDto } from './dto/get-nearest-restaurant-request.dto'
+import { GetAllUnverifiedRestaurantRequestQueryDto } from './dto/get-all-unverified-restaurant-request-query.dto'
+import { UpdateRestaurantVerificationStatusRequestDto } from './dto/update-restaurant-verification-status-request.dto'
 
 @Injectable()
 export class RestaurantService {
@@ -137,7 +139,7 @@ export class RestaurantService {
 	}
 
 	async getRestaurantById(restaurantId: string) {
-		const restaurant = await this.restaurantDao.getRestaurantById(restaurantId)
+		const restaurant = await this.restaurantDao.findRestaurantById(restaurantId)
 		if (!restaurant) {
 			return new BadRequestException('Restaurant tidak ditemukan')
 		}
@@ -145,6 +147,15 @@ export class RestaurantService {
 		restaurantMapped.password = undefined
 		return {
 			restaurant: restaurantMapped
+		}
+	}
+
+	async getAllUnverifiedRestaurant(query: GetAllUnverifiedRestaurantRequestQueryDto) {
+		const restaurants = await this.restaurantDao.findAllUnverifiedRestaurant(query)
+		return {
+			restaurants: restaurants.map((restaurant) =>
+				UserMapper.fromRestaurantToDomain(restaurant)
+			)
 		}
 	}
 
@@ -163,6 +174,21 @@ export class RestaurantService {
 		const themes = await this.restaurantDao.getAllRestaurantThemes()
 		return {
 			themes: themes.map((theme) => RestaurantThemeMapper.toDomain(theme))
+		}
+	}
+
+	async updateRestaurantVerificationStatus(
+		restaurantId: string,
+		data: UpdateRestaurantVerificationStatusRequestDto
+	) {
+		const restaurant = await this.restaurantDao.findRestaurantById(restaurantId)
+		if (!restaurant) {
+			return new BadRequestException('Restaurant tidak ditemukan')
+		}
+		restaurant.isAccountVerified = data.status
+		await this.entityManager.flush()
+		return {
+			message: 'Status verifikasi berhasil diubah'
 		}
 	}
 }

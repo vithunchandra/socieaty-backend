@@ -22,6 +22,7 @@ import { PostHashtagEntity } from '../../modules/post-hashtag/persistence/post-h
 import { PostCommentEntity } from '../../modules/post-comment/persistence/post-comment.entity'
 import { FoodMenuEntity } from '../../modules/food-menu/persistence/food-menu.entity'
 import { ReservationFacilityEntity } from '../../modules/restaurant/persistence/entity/reservation-facility.entity'
+import { RestaurantVerificationStatus } from '../../enums/restaurant-verification-status.enum'
 
 const bank: BankEnum[] = [BankEnum.BNI, BankEnum.BCA, BankEnum.BRI, BankEnum.MANDIRI]
 class Medias {
@@ -370,7 +371,8 @@ export class DatabaseSeeder extends Seeder {
 			openTime: openTime,
 			closeTime: closeTime,
 			themes: restaurantRandomThemes,
-			isReservationAvailable: false
+			isReservationAvailable: false,
+			isAccountVerified: RestaurantVerificationStatus.VERIFIED
 		})
 		users.push(customerUser, restaurantUser)
 		customers.push(customerUserData)
@@ -414,7 +416,8 @@ export class DatabaseSeeder extends Seeder {
 					openTime: openTime,
 					closeTime: closeTime,
 					themes: randomThemes,
-					isReservationAvailable: false
+					isReservationAvailable: false,
+					isAccountVerified: RestaurantVerificationStatus.VERIFIED
 				})
 				restaurants.push(restaurant)
 			} else {

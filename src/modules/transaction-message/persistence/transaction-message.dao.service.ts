@@ -21,7 +21,7 @@ export class TransactionMessageDaoService {
 		return transactionMessage
 	}
 
-	async getTransactionMessagesByTransactionId(transactionId: string) {
+	async findTransactionMessagesByTransactionId(transactionId: string) {
 		return this.transactionMessageRepository.find(
 			{
 				transaction: transactionId

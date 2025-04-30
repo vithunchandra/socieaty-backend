@@ -8,6 +8,8 @@ import { SortOrder, sortOrderMap } from '../enums/sort-order.enum'
 import { foodOrderSortByMap, foodOrderStatusMap } from '../enums/food-order.enum'
 import { fraudStatusMap, paymentStatusMap } from '../enums/topup.enum'
 import { userRoleMap } from '../modules/user/persistance/User.entity'
+import { supportTicketStatusMap } from '../enums/support-ticket.enum'
+import { restaurantVerificationStatusMap } from '../enums/restaurant-verification-status.enum'
 
 function fieldToDate(data: TransformFnParams) {
 	if (data.value === null || (data.value as String) === '') return undefined
@@ -64,6 +66,16 @@ function fieldToUserRole(data: TransformFnParams) {
 	return userRoleMap[data.value]
 }
 
+function fieldToSupportTicketStatus(data: TransformFnParams) {
+	if (data.value === null || (data.value as String) === '') return undefined
+	return supportTicketStatusMap[data.value]
+}
+
+function fieldToRestaurantVerificationStatus(data: TransformFnParams) {
+	if (data.value === null || (data.value as String) === '') return undefined
+	return restaurantVerificationStatusMap[data.value]
+}
+
 export {
 	fieldToDate,
 	fieldToString,
@@ -75,5 +87,7 @@ export {
 	fieldToFoodOrderSortBy,
 	fieldToPaymentStatus,
 	fieldToFraudStatus,
-	fieldToUserRole
+	fieldToUserRole,
+	fieldToSupportTicketStatus,
+	fieldToRestaurantVerificationStatus
 }

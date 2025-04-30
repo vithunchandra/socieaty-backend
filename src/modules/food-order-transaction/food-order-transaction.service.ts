@@ -52,7 +52,7 @@ export class FoodOrderTransactionService {
 		customer: CustomerEntity,
 		dto: CreateFoodOrderTransactionRequestDto
 	) {
-		const restaurant = await this.restaurantDaoService.getRestaurantById(dto.restaurantId)
+		const restaurant = await this.restaurantDaoService.findRestaurantById(dto.restaurantId)
 
 		if (!restaurant) {
 			throw new NotFoundException('Restaurant not found')

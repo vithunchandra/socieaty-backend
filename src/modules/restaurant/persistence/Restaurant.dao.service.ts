@@ -12,6 +12,7 @@ import { ReservationConfigEntity } from './entity/reservation-config.entity'
 import { UpdateReservationConfigRequestDto } from '../dto/update-reservation-config-request.dto'
 import { ReservationFacilityEntity } from './entity/reservation-facility.entity'
 import { Point } from './custom-type/PointType'
+import { RestaurantVerificationStatus } from '../../../enums/restaurant-verification-status.enum'
 
 @Injectable()
 export class RestaurantDaoService {
@@ -34,6 +35,7 @@ export class RestaurantDaoService {
 			restaurantBannerUrl: data.restaurantBannerUrl,
 			payoutBank: data.payoutBank,
 			accountNumber: data.accountNumber,
+			isAccountVerified: RestaurantVerificationStatus.UNVERIFIED,
 			openTime: data.openTime,
 			closeTime: data.closeTime,
 			isReservationAvailable: data.isReservationAvailable
@@ -130,11 +132,27 @@ export class RestaurantDaoService {
 		}
 	}
 
-	async getRestaurantById(restaurantId: string): Promise<RestaurantEntity | null> {
+	async findRestaurantById(restaurantId: string): Promise<RestaurantEntity | null> {
 		return await this.restaurantRepository.findOne(
 			{
 				id: restaurantId
 			},
+			{ populate: ['userData', 'userData.restaurantData', 'themes'] }
+		)
+	}
+
+	async findAllUnverifiedRestaurant(query: GetAllUnverifiedRestaurantQueryDto) {
+		const { name, themeIds } = query
+		const filter: FilterQuery<RestaurantEntity> = {}
+		if (name) {
+			filter.userData = { name: { $ilike: `%${name}%` } }
+		}
+		if (themeIds) {
+			filter.themes = { id: { $in: themeIds } }
+		}
+		filter.isAccountVerified = { $eq: RestaurantVerificationStatus.UNVERIFIED }
+		return await this.restaurantRepository.find(
+			filter,
 			{ populate: ['userData', 'userData.restaurantData', 'themes'] }
 		)
 	}

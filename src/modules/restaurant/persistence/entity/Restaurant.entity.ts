@@ -2,6 +2,7 @@ import {
 	Collection,
 	Entity,
 	Enum,
+	Filter,
 	ManyToMany,
 	OneToMany,
 	OneToOne,
@@ -14,7 +15,13 @@ import { RestaurantThemeEntity } from './restaurant-theme.entity'
 import { FoodMenuEntity } from '../../../food-menu/persistence/food-menu.entity'
 import { BankEnum } from '../../../../enums/bank.enum'
 import { TransactionReviewEntity } from '../../../transaction-review/persistence/transaction-review.entity'
+import { RestaurantVerificationStatus } from '../../../../enums/restaurant-verification-status.enum'
 
+@Filter({
+	name: 'isAccountVerified',
+	cond: { isAccountVerified: RestaurantVerificationStatus.VERIFIED },
+	default: true
+})
 @Entity({ tableName: 'restaurant' })
 export class RestaurantEntity extends BaseEntity {
 	@Property({ default: '', nullable: true })
@@ -40,6 +47,9 @@ export class RestaurantEntity extends BaseEntity {
 
 	@Property()
 	isReservationAvailable: boolean
+
+	@Enum(() => RestaurantVerificationStatus)
+	isAccountVerified: RestaurantVerificationStatus
 
 	@OneToOne({
 		entity: () => UserEntity,

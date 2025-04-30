@@ -20,6 +20,8 @@ import { CreateReservationConfigRequestDto } from './dto/create-reservation-conf
 import { GuardedRequestDto } from '../../module/AuthGuard/dto/guarded-request.dto'
 import { UpdateReservationConfigRequestDto } from './dto/update-reservation-config-request.dto'
 import { GetNearestRestaurantRequestDto } from './dto/get-nearest-restaurant-request.dto'
+import { GetAllUnverifiedRestaurantRequestQueryDto } from './dto/get-all-unverified-restaurant-request-query.dto'
+import { UpdateRestaurantVerificationStatusRequestDto } from './dto/update-restaurant-verification-status-request.dto'
 
 @Controller('restaurant')
 export class RestaurantController {
@@ -33,6 +35,13 @@ export class RestaurantController {
 		}
 	}
 
+	@Get('unverified')
+	@Roles(UserRole.ADMIN)
+	@UseGuards(AuthGuard, RolesGuard)
+	async getAllUnverifiedRestaurant(@Query() query: GetAllUnverifiedRestaurantRequestQueryDto) {
+		return await this.restaurantService.getAllUnverifiedRestaurant(query)
+	}
+
 	@Post('reservation-config')
 	@Roles(UserRole.RESTAURANT)
 	@UseGuards(AuthGuard, RolesGuard)
@@ -40,10 +49,7 @@ export class RestaurantController {
 		@Request() req: GuardedRequestDto,
 		@Body() data: CreateReservationConfigRequestDto
 	) {
-		return await this.restaurantService.createReservationConfig(
-			req.user.restaurantData!,
-			data
-		)
+		return await this.restaurantService.createReservationConfig(req.user.restaurantData!, data)
 	}
 
 	@Put('reservation-config')
@@ -53,10 +59,7 @@ export class RestaurantController {
 		@Request() req: GuardedRequestDto,
 		@Body() data: UpdateReservationConfigRequestDto
 	) {
-		return await this.restaurantService.updateReservationConfig(
-			req.user.restaurantData!,
-			data
-		)
+		return await this.restaurantService.updateReservationConfig(req.user.restaurantData!, data)
 	}
 
 	@Get('reservation-config/:restaurantId')
@@ -89,5 +92,15 @@ export class RestaurantController {
 		return {
 			data: await this.restaurantService.getRestaurantById(restaurantId)
 		}
+	}
+
+	@Put('verify/:restaurantId')
+	@Roles(UserRole.ADMIN)
+	@UseGuards(AuthGuard, RolesGuard)
+	async updateRestaurantVerificationStatus(
+		@Param('restaurantId') restaurantId: string,
+		@Body() data: UpdateRestaurantVerificationStatusRequestDto
+	) {
+		return await this.restaurantService.updateRestaurantVerificationStatus(restaurantId, data)
 	}
 }

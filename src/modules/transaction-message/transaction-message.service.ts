@@ -10,63 +10,76 @@ import { TransactionDaoService } from '../transaction/persistence/transaction.da
 export class TransactionMessageService {
 	constructor(
 		private readonly transactionMessageDaoService: TransactionMessageDaoService,
-        private readonly transactionDaoService: TransactionDaoService,
+		private readonly transactionDaoService: TransactionDaoService,
 		private readonly transactionMessageGateway: TransactionMessageGateway,
 		private readonly entityManager: EntityManager
 	) {}
 
 	async createTransactionMessage(user: UserEntity, transactionId: string, message: string) {
-        const transaction = await this.transactionDaoService.findTransactionById(transactionId)
-        if(!transaction) {
-            throw new NotFoundException('Transaction not found')
-        }
-        if(user.role == UserRole.CUSTOMER) {
-            if(user.customerData?.id != transaction.customer.id) {
-                throw new ForbiddenException('You are not allowed to send messages to this transaction')
-            }
-        }
-        if(user.role == UserRole.RESTAURANT) {
-            if(user.restaurantData?.id != transaction.restaurant.id) {
-                throw new ForbiddenException('You are not allowed to send messages to this transaction')
-            }
-        }
-		const transactionMessage = await this.transactionMessageDaoService.createTransactionMessage({
-            transactionId,
-            message,
-			userId: user.id
-		})
-        await this.entityManager.flush()
-        const transactionMessageDomain = TransactionMessageMapper.toDomain(transactionMessage)!
+		const transaction = await this.transactionDaoService.findTransactionById(transactionId)
+		if (!transaction) {
+			throw new NotFoundException('Transaction not found')
+		}
+		if (user.role == UserRole.CUSTOMER) {
+			if (user.customerData?.id != transaction.customer.id) {
+				throw new ForbiddenException(
+					'You are not allowed to send messages to this transaction'
+				)
+			}
+		}
+		if (user.role == UserRole.RESTAURANT) {
+			if (user.restaurantData?.id != transaction.restaurant.id) {
+				throw new ForbiddenException(
+					'You are not allowed to send messages to this transaction'
+				)
+			}
+		}
+		const transactionMessage = await this.transactionMessageDaoService.createTransactionMessage(
+			{
+				transactionId,
+				message,
+				userId: user.id
+			}
+		)
+		await this.entityManager.flush()
+		const transactionMessageDomain = TransactionMessageMapper.toDomain(transactionMessage)!
 		this.transactionMessageGateway.notifyNewTransactionMessage(
 			transactionMessage.transaction.id,
 			transactionMessageDomain
 		)
 
-        return {
-            transactionMessage: transactionMessageDomain
-        }
+		return {
+			transactionMessage: transactionMessageDomain
+		}
 	}
 
-    async trackTransactionMessage(user: UserEntity, transactionId: string) {
-        const transaction = await this.transactionDaoService.findTransactionById(transactionId)
-        if(!transaction) {
-            throw new NotFoundException('Transaction not found')
-        }
-        if(user.role == UserRole.CUSTOMER) {
-            if(user.customerData?.id != transaction.customer.id) {
-                throw new ForbiddenException('You are not allowed to send messages to this transaction')
-            }
-        }
-        if(user.role == UserRole.RESTAURANT) {
-            if(user.restaurantData?.id != transaction.restaurant.id) {
-                throw new ForbiddenException('You are not allowed to send messages to this transaction')
-            }
-        }
-		
-        const transactionMessages = await this.transactionMessageDaoService.getTransactionMessagesByTransactionId(transactionId)
-        this.transactionMessageGateway.trackTransactionMessage(user, transactionId)
-        return {
-            transactionMessages: transactionMessages.map(TransactionMessageMapper.toDomain)
-        }
-    }
+	async trackTransactionMessage(user: UserEntity, transactionId: string) {
+		const transaction = await this.transactionDaoService.findTransactionById(transactionId)
+		if (!transaction) {
+			throw new NotFoundException('Transaction not found')
+		}
+		if (user.role == UserRole.CUSTOMER) {
+			if (user.customerData?.id != transaction.customer.id) {
+				throw new ForbiddenException(
+					'You are not allowed to send messages to this transaction'
+				)
+			}
+		}
+		if (user.role == UserRole.RESTAURANT) {
+			if (user.restaurantData?.id != transaction.restaurant.id) {
+				throw new ForbiddenException(
+					'You are not allowed to send messages to this transaction'
+				)
+			}
+		}
+
+		const transactionMessages =
+			await this.transactionMessageDaoService.findTransactionMessagesByTransactionId(
+				transactionId
+			)
+		this.transactionMessageGateway.trackTransactionMessage(user, transactionId)
+		return {
+			transactionMessages: transactionMessages.map(TransactionMessageMapper.toDomain)
+		}
+	}
 }

@@ -1,6 +1,6 @@
 import { Migration } from '@mikro-orm/migrations';
 
-export class Migration20250401095238 extends Migration {
+export class Migration20250428093526 extends Migration {
 
   override async up(): Promise<void> {
     this.addSql(`create table "menu_category" ("id" serial primary key, "name" varchar(255) not null);`);
@@ -14,6 +14,13 @@ export class Migration20250401095238 extends Migration {
 
     this.addSql(`create table "user" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "name" varchar(255) not null, "email" varchar(255) not null, "password" varchar(255) not null, "phone_number" varchar(255) not null, "profile_picture_url" varchar(255) null, "role" text check ("role" in ('Admin', 'Customer', 'Restaurant')) not null, constraint "user_pkey" primary key ("id"));`);
     this.addSql(`alter table "user" add constraint "user_email_unique" unique ("email");`);
+
+    this.addSql(`create table "support_tickets" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "title" varchar(255) not null, "description" varchar(255) not null, "status" text check ("status" in ('open', 'closed')) not null, "user_id" uuid not null, constraint "support_tickets_pkey" primary key ("id"));`);
+    this.addSql(`create index "support_tickets_user_id_index" on "support_tickets" ("user_id");`);
+
+    this.addSql(`create table "support-ticket-messages" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "message" varchar(255) not null, "user_id" uuid not null, "support_ticket_id" uuid not null, constraint "support-ticket-messages_pkey" primary key ("id"));`);
+    this.addSql(`create index "support-ticket-messages_user_id_index" on "support-ticket-messages" ("user_id");`);
+    this.addSql(`create index "support-ticket-messages_support_ticket_id_index" on "support-ticket-messages" ("support_ticket_id");`);
 
     this.addSql(`create table "restaurant" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "restaurant_banner_url" varchar(255) null default '', "wallet" int not null, "location" point not null, "open_time" varchar(255) not null, "close_time" varchar(255) not null, "payout_bank" text check ("payout_bank" in ('bni', 'bri', 'bca', 'mandiri')) not null, "account_number" varchar(255) not null, "is_reservation_available" boolean not null, "user_id" uuid not null, constraint "restaurant_pkey" primary key ("id"));`);
     this.addSql(`create index "restaurant_user_id_index" on "restaurant" ("user_id");`);
@@ -73,6 +80,13 @@ export class Migration20250401095238 extends Migration {
     this.addSql(`create table "menu_items" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "quantity" int not null, "price" int not null, "total_price" int not null, "menu_id" uuid not null, "food_order_id" uuid null, "reservation_id" uuid null, constraint "menu_items_pkey" primary key ("id"));`);
     this.addSql(`create index "menu_items_menu_id_index" on "menu_items" ("menu_id");`);
 
+    this.addSql(`create table "topups" ("id" uuid not null, "created_at" timestamptz not null, "updated_at" timestamptz not null, "deleted_at" timestamptz null, "transaction_id" varchar(255) null, "amount" int not null, "status" text check ("status" in ('pending', 'success', 'failed', 'expired')) not null, "payment_type" varchar(255) null, "settlement_time" timestamptz null, "snap_token" varchar(255) null, "snap_redirect_url" varchar(255) null, "customer_id" uuid not null, constraint "topups_pkey" primary key ("id"));`);
+
+    this.addSql(`alter table "support_tickets" add constraint "support_tickets_user_id_foreign" foreign key ("user_id") references "user" ("id") on update cascade;`);
+
+    this.addSql(`alter table "support-ticket-messages" add constraint "support-ticket-messages_user_id_foreign" foreign key ("user_id") references "user" ("id") on update cascade;`);
+    this.addSql(`alter table "support-ticket-messages" add constraint "support-ticket-messages_support_ticket_id_foreign" foreign key ("support_ticket_id") references "support_tickets" ("id") on update cascade;`);
+
     this.addSql(`alter table "restaurant" add constraint "restaurant_user_id_foreign" foreign key ("user_id") references "user" ("id") on update cascade;`);
 
     this.addSql(`alter table "restaurant_theme_restaurants" add constraint "restaurant_theme_restaurants_restaurant_theme_entity_id_foreign" foreign key ("restaurant_theme_entity_id") references "restaurant_theme" ("id") on update cascade on delete cascade;`);
@@ -125,6 +139,8 @@ export class Migration20250401095238 extends Migration {
     this.addSql(`alter table "menu_items" add constraint "menu_items_menu_id_foreign" foreign key ("menu_id") references "food_menu" ("id") on update cascade;`);
     this.addSql(`alter table "menu_items" add constraint "menu_items_food_order_id_foreign" foreign key ("food_order_id") references "food_orders" ("id") on update cascade on delete set null;`);
     this.addSql(`alter table "menu_items" add constraint "menu_items_reservation_id_foreign" foreign key ("reservation_id") references "reservations" ("id") on update cascade on delete set null;`);
+
+    this.addSql(`alter table "topups" add constraint "topups_customer_id_foreign" foreign key ("customer_id") references "customer" ("id") on update cascade;`);
   }
 
   override async down(): Promise<void> {
@@ -135,6 +151,10 @@ export class Migration20250401095238 extends Migration {
     this.addSql(`alter table "reservation_facility_reservation_configs" drop constraint "reservation_facility_reservation_configs_reserva_01a26_foreign";`);
 
     this.addSql(`alter table "restaurant_theme_restaurants" drop constraint "restaurant_theme_restaurants_restaurant_theme_entity_id_foreign";`);
+
+    this.addSql(`alter table "support_tickets" drop constraint "support_tickets_user_id_foreign";`);
+
+    this.addSql(`alter table "support-ticket-messages" drop constraint "support-ticket-messages_user_id_foreign";`);
 
     this.addSql(`alter table "restaurant" drop constraint "restaurant_user_id_foreign";`);
 
@@ -153,6 +173,8 @@ export class Migration20250401095238 extends Migration {
     this.addSql(`alter table "customer" drop constraint "customer_user_id_foreign";`);
 
     this.addSql(`alter table "transaction_messages" drop constraint "transaction_messages_user_id_foreign";`);
+
+    this.addSql(`alter table "support-ticket-messages" drop constraint "support-ticket-messages_support_ticket_id_foreign";`);
 
     this.addSql(`alter table "restaurant_theme_restaurants" drop constraint "restaurant_theme_restaurants_restaurant_entity_id_foreign";`);
 
@@ -180,6 +202,8 @@ export class Migration20250401095238 extends Migration {
 
     this.addSql(`alter table "transactions" drop constraint "transactions_customer_id_foreign";`);
 
+    this.addSql(`alter table "topups" drop constraint "topups_customer_id_foreign";`);
+
     this.addSql(`alter table "transaction_reviews" drop constraint "transaction_reviews_transaction_id_foreign";`);
 
     this.addSql(`alter table "transaction_messages" drop constraint "transaction_messages_transaction_id_foreign";`);
@@ -201,6 +225,10 @@ export class Migration20250401095238 extends Migration {
     this.addSql(`drop table if exists "restaurant_theme" cascade;`);
 
     this.addSql(`drop table if exists "user" cascade;`);
+
+    this.addSql(`drop table if exists "support_tickets" cascade;`);
+
+    this.addSql(`drop table if exists "support-ticket-messages" cascade;`);
 
     this.addSql(`drop table if exists "restaurant" cascade;`);
 
@@ -243,6 +271,8 @@ export class Migration20250401095238 extends Migration {
     this.addSql(`drop table if exists "food_orders" cascade;`);
 
     this.addSql(`drop table if exists "menu_items" cascade;`);
+
+    this.addSql(`drop table if exists "topups" cascade;`);
   }
 
 }

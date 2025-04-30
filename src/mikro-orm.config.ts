@@ -23,6 +23,8 @@ import { ReservationEntity } from './modules/reservation/persistence/reservation
 import { ReservationConfigEntity } from './modules/restaurant/persistence/entity/reservation-config.entity'
 import { ReservationFacilityEntity } from './modules/restaurant/persistence/entity/reservation-facility.entity'
 import { TopupEntity } from './modules/topup/persistence/topup.entity'
+import { SupportTicketEntity } from './modules/support-ticket/persistence/support-ticket.entity'
+import { SupportTicketMessageEntity } from './modules/support-ticket/persistence/support-ticket-message.entity'
 const logger = new Logger('MikroORM')
 
 export default defineConfig({
@@ -46,7 +48,9 @@ export default defineConfig({
 		ReservationEntity,
 		ReservationConfigEntity,
 		ReservationFacilityEntity,
-		TopupEntity
+		TopupEntity,
+		SupportTicketEntity,
+		SupportTicketMessageEntity,
 	],
 	entitiesTs: [
 		UserEntity,
@@ -68,7 +72,9 @@ export default defineConfig({
 		ReservationEntity,
 		ReservationConfigEntity,
 		ReservationFacilityEntity,
-		TopupEntity
+		TopupEntity,
+		SupportTicketEntity,
+		SupportTicketMessageEntity
 	],
 	dbName: config().dbName ?? 'socieaty_database',
 	driver: PostgreSqlDriver,
@@ -109,6 +115,8 @@ export default defineConfig({
 				'ReservationEntity',
 				'ReservationConfigEntity',
 				'ReservationFacilityEntity',
+				'SupportTicketEntity',
+				'SupportTicketMessageEntity'
 			]
 		},
 		[MikroOrmFilter.DELETED]: {
@@ -132,7 +140,9 @@ export default defineConfig({
 				'TransactionMenuItemEntity',
 				'ReservationEntity',
 				'ReservationConfigEntity',
-				'ReservationFacilityEntity'
+				'ReservationFacilityEntity',
+				'SupportTicketEntity',
+				'SupportTicketMessageEntity'
 			]
 		}
 	},

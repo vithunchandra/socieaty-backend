@@ -24,6 +24,7 @@ import { ScheduleModule } from '@nestjs/schedule'
 import { PaymentModule } from './modules/payment/payment.module'
 import { TopupModule } from './modules/topup/topup.module'
 import { UserModule } from './modules/user/user.module'
+import { SupportTicketModule } from './modules/support-ticket/support-ticket.module'
 
 @Module({
 	imports: [
@@ -53,7 +54,8 @@ import { UserModule } from './modules/user/user.module'
 		TransactionReviewModule,
 		ReservationModule,
 		TopupModule,
-		PaymentModule
+		PaymentModule,
+		SupportTicketModule
 	],
 	controllers: [AppController],
 	providers: [AppService]
