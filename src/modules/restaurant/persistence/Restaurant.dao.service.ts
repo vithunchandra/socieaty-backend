@@ -13,6 +13,8 @@ import { UpdateReservationConfigRequestDto } from '../dto/update-reservation-con
 import { ReservationFacilityEntity } from './entity/reservation-facility.entity'
 import { Point } from './custom-type/PointType'
 import { RestaurantVerificationStatus } from '../../../enums/restaurant-verification-status.enum'
+import { UpdateRestaurantDataRequestDto } from '../dto/update-restaurant-data-request.dto'
+import { UpdateRestaurantDataDto } from './dto/update-restaurant-data.dto'
 
 @Injectable()
 export class RestaurantDaoService {
@@ -35,7 +37,7 @@ export class RestaurantDaoService {
 			restaurantBannerUrl: data.restaurantBannerUrl,
 			payoutBank: data.payoutBank,
 			accountNumber: data.accountNumber,
-			isAccountVerified: RestaurantVerificationStatus.UNVERIFIED,
+			verificationStatus: RestaurantVerificationStatus.UNVERIFIED,
 			openTime: data.openTime,
 			closeTime: data.closeTime,
 			isReservationAvailable: data.isReservationAvailable
@@ -53,6 +55,20 @@ export class RestaurantDaoService {
 			timeLimit: data.timeLimit
 		})
 		return reservationConfig
+	}
+
+	async updateRestaurantData(restaurant: RestaurantEntity, data: UpdateRestaurantDataDto) {
+		restaurant.location = data.restaurantAddress
+		restaurant.restaurantBannerUrl = data.restaurantBannerUrl
+		restaurant.payoutBank = data.payoutBank
+		restaurant.accountNumber = data.accountNumber
+		restaurant.openTime = data.openTime
+		restaurant.closeTime = data.closeTime
+		restaurant.verificationStatus = data.verificationStatus
+		restaurant.themes.removeAll()
+		const themes = await this.getRestaurantThemes(data.themes)
+		restaurant.themes.add(themes)
+		return restaurant
 	}
 
 	async updateReservationConfig(
@@ -132,12 +148,18 @@ export class RestaurantDaoService {
 		}
 	}
 
-	async findRestaurantById(restaurantId: string): Promise<RestaurantEntity | null> {
+	async findRestaurantById(
+		restaurantId: string,
+		includeUnverified: boolean = false
+	): Promise<RestaurantEntity | null> {
 		return await this.restaurantRepository.findOne(
 			{
 				id: restaurantId
 			},
-			{ populate: ['userData', 'userData.restaurantData', 'themes'] }
+			{
+				populate: ['userData', 'userData.restaurantData', 'themes'],
+				filters: { isAccountVerified: !includeUnverified }
+			}
 		)
 	}
 
@@ -150,11 +172,11 @@ export class RestaurantDaoService {
 		if (themeIds) {
 			filter.themes = { id: { $in: themeIds } }
 		}
-		filter.isAccountVerified = { $eq: RestaurantVerificationStatus.UNVERIFIED }
-		return await this.restaurantRepository.find(
-			filter,
-			{ populate: ['userData', 'userData.restaurantData', 'themes'] }
-		)
+		filter.verificationStatus = { $eq: RestaurantVerificationStatus.UNVERIFIED }
+		return await this.restaurantRepository.find(filter, {
+			populate: ['userData', 'userData.restaurantData', 'themes'],
+			filters: { isAccountVerified: false }
+		})
 	}
 
 	async getNearestRestaurant(point: Point, radius: number) {

@@ -372,7 +372,7 @@ export class DatabaseSeeder extends Seeder {
 			closeTime: closeTime,
 			themes: restaurantRandomThemes,
 			isReservationAvailable: false,
-			isAccountVerified: RestaurantVerificationStatus.VERIFIED
+			verificationStatus: RestaurantVerificationStatus.VERIFIED
 		})
 		users.push(customerUser, restaurantUser)
 		customers.push(customerUserData)
@@ -417,7 +417,7 @@ export class DatabaseSeeder extends Seeder {
 					closeTime: closeTime,
 					themes: randomThemes,
 					isReservationAvailable: false,
-					isAccountVerified: RestaurantVerificationStatus.VERIFIED
+					verificationStatus: RestaurantVerificationStatus.VERIFIED
 				})
 				restaurants.push(restaurant)
 			} else {

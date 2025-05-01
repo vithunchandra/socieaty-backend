@@ -14,5 +14,5 @@ export class Restaurant {
 	payoutBank: BankEnum
 	accountNumber: string
 	isReservationAvailable: boolean
-	isAccountVerified: RestaurantVerificationStatus
+	verificationStatus: RestaurantVerificationStatus
 }

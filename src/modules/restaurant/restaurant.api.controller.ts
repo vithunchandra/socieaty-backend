@@ -8,7 +8,9 @@ import {
 	Put,
 	Query,
 	Request,
-	UseGuards
+	UploadedFiles,
+	UseGuards,
+	UseInterceptors
 } from '@nestjs/common'
 import { UserRole } from 'src/modules/user/persistance/User.entity'
 import { Roles } from 'src/module/RoleGuard/roles.decorator'
@@ -22,10 +24,16 @@ import { UpdateReservationConfigRequestDto } from './dto/update-reservation-conf
 import { GetNearestRestaurantRequestDto } from './dto/get-nearest-restaurant-request.dto'
 import { GetAllUnverifiedRestaurantRequestQueryDto } from './dto/get-all-unverified-restaurant-request-query.dto'
 import { UpdateRestaurantVerificationStatusRequestDto } from './dto/update-restaurant-verification-status-request.dto'
+import { FileFieldsInterceptor } from '@nestjs/platform-express'
+import { diskStorage } from 'multer'
+import { PROFILE_PICTURE_UPLOADS_DIR, RESTAURANT_BANNER_UPLOADS_DIR } from '../../constants'
+import { fileNameEditor, imageFileFilter } from '../../utils/image.utils'
+import { UpdateRestaurantDataRequestDto } from './dto/update-restaurant-data-request.dto'
 
 @Controller('restaurant')
 export class RestaurantController {
 	constructor(private restaurantService: RestaurantService) {}
+
 	@Get('profile')
 	@Roles(UserRole.RESTAURANT)
 	@UseGuards(AuthGuard, RolesGuard)
@@ -92,6 +100,52 @@ export class RestaurantController {
 		return {
 			data: await this.restaurantService.getRestaurantById(restaurantId)
 		}
+	}
+
+	@Put(':restaurantId')
+	@UseGuards(AuthGuard, RolesGuard)
+	@Roles(UserRole.RESTAURANT)
+	@UseInterceptors(
+		FileFieldsInterceptor(
+			[
+				{ name: 'profilePicture', maxCount: 1 },
+				{ name: 'restaurantBanner', maxCount: 1 }
+			],
+			{
+				storage: diskStorage({
+					destination: (req, file, cb) => {
+						if (file.fieldname === 'profilePicture') {
+							cb(null, PROFILE_PICTURE_UPLOADS_DIR)
+						} else {
+							cb(null, RESTAURANT_BANNER_UPLOADS_DIR)
+						}
+					},
+					filename: fileNameEditor
+				}),
+				fileFilter: imageFileFilter,
+				limits: {
+					fieldSize: 1000 * 1000 * 10
+				}
+			}
+		)
+	)
+	async updateRestaurantData(
+		@Request() req: GuardedRequestDto,
+		@Param('restaurantId') restaurantId: string,
+		@Body() data: UpdateRestaurantDataRequestDto,
+		@UploadedFiles()
+		files: {
+			profilePicture?: Express.Multer.File[]
+			restaurantBanner?: Express.Multer.File[]
+		}
+	) {
+		return await this.restaurantService.updateRestaurantData(
+			restaurantId,
+			req.user,
+			data,
+			files.profilePicture?.[0],
+			files.restaurantBanner?.[0]
+		)
 	}
 
 	@Put('verify/:restaurantId')

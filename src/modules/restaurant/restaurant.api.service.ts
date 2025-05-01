@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common'
+import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common'
 import { RestaurantDaoService } from 'src/modules/restaurant/persistence/Restaurant.dao.service'
 import { UserDaoService } from '../user/persistance/User.dao.service'
 import { RestaurantCreateDto } from '../auth/dto/RestaurantCreate.dto'
@@ -15,6 +15,11 @@ import { Point } from './persistence/custom-type/PointType'
 import { GetNearestRestaurantRequestDto } from './dto/get-nearest-restaurant-request.dto'
 import { GetAllUnverifiedRestaurantRequestQueryDto } from './dto/get-all-unverified-restaurant-request-query.dto'
 import { UpdateRestaurantVerificationStatusRequestDto } from './dto/update-restaurant-verification-status-request.dto'
+import { PROFILE_PICTURE_RELATIVE_DIR, RESTAURANT_BANNER_RELATIVE_DIR } from '../../constants'
+import { UpdateRestaurantDataRequestDto } from './dto/update-restaurant-data-request.dto'
+import { UserEntity } from '../user/persistance/User.entity'
+import { unlink } from 'fs'
+import { RestaurantVerificationStatus } from '../../enums/restaurant-verification-status.enum'
 
 @Injectable()
 export class RestaurantService {
@@ -34,13 +39,13 @@ export class RestaurantService {
 			email: data.email,
 			password: data.password,
 			phoneNumber: data.phoneNumber,
-			profilePictureUrl: `/files/user/profile_picture/${profilePicture.filename}`,
+			profilePictureUrl: `${PROFILE_PICTURE_RELATIVE_DIR}/${profilePicture.filename}`,
 			role: data.role
 		})
 		const restaurant = this.restaurantDao.create(user, {
 			userId: user.id,
 			restaurantAddress: data.address,
-			restaurantBannerUrl: `/files/user/restaurant_banner/${restaurantBanner.filename}`,
+			restaurantBannerUrl: `${RESTAURANT_BANNER_RELATIVE_DIR}/${restaurantBanner.filename}`,
 			restaurantThemes: data.themes,
 			payoutBank: data.payoutBank,
 			accountNumber: data.accountNumber,
@@ -49,6 +54,69 @@ export class RestaurantService {
 			isReservationAvailable: false
 		})
 		return restaurant
+	}
+
+	async updateRestaurantData(
+		restaurantId: string,
+		user: UserEntity,
+		data: UpdateRestaurantDataRequestDto,
+		profilePicture?: Express.Multer.File,
+		restaurantBanner?: Express.Multer.File
+	) {
+		if (user.restaurantData?.id !== restaurantId) {
+			throw new ForbiddenException('User tidak memiliki akses untuk mengupdate data ini')
+		}
+		if (
+			user.restaurantData?.verificationStatus === RestaurantVerificationStatus.VERIFIED &&
+			data.verificationStatus !== RestaurantVerificationStatus.VERIFIED
+		) {
+			throw new BadRequestException('Restaurant sudah diverifikasi')
+		}
+
+		if (profilePicture) {
+			if (!user.profilePictureUrl?.includes('dummy')) {
+				unlink(`src/${user.profilePictureUrl}`, (err) => {
+					if (err) throw new BadRequestException('Error saat mengupdate profile picture')
+				})
+			}
+		}
+		if (restaurantBanner) {
+			if (!user.restaurantData?.restaurantBannerUrl?.includes('dummy')) {
+				unlink(`src/${user.restaurantData?.restaurantBannerUrl}`, (err) => {
+					if (err)
+						throw new BadRequestException('Error saat mengupdate restaurant banner')
+				})
+			}
+		}
+
+		this.userDao.update(user, {
+			...data,
+			profilePictureUrl: profilePicture
+				? `${PROFILE_PICTURE_RELATIVE_DIR}/${profilePicture.filename}`
+				: (user.profilePictureUrl ?? undefined)
+		})
+
+		await this.restaurantDao.updateRestaurantData(user.restaurantData!, {
+			restaurantAddress: data.address,
+			restaurantBannerUrl: restaurantBanner
+				? `${RESTAURANT_BANNER_RELATIVE_DIR}/${restaurantBanner.filename}`
+				: (user.restaurantData?.restaurantBannerUrl ?? ''),
+			payoutBank: data.payoutBank,
+			accountNumber: data.accountNumber,
+			openTime: `${Math.trunc(data.openTime / 60)}:${data.openTime % 60}`,
+			closeTime: `${Math.trunc(data.closeTime / 60)}:${data.closeTime % 60}`,
+			verificationStatus: data.verificationStatus,
+			themes: data.themes
+		})
+
+		await this.entityManager.flush()
+		const updatedRestaurant = await this.restaurantDao.findRestaurantById(
+			user.restaurantData!.id,
+			true
+		)
+		return {
+			restaurant: UserMapper.fromRestaurantToDomain(updatedRestaurant!)
+		}
 	}
 
 	async createReservationConfig(
@@ -101,7 +169,7 @@ export class RestaurantService {
 	async getProfile(user_id: string) {
 		const user = await this.restaurantDao.getProfile(user_id)
 		if (!user) {
-			return new BadRequestException('User tidak ditemukan')
+			throw new BadRequestException('User tidak ditemukan')
 		}
 		const userMapped = UserMapper.fromRestaurantToDomain(user)
 		userMapped.password = undefined
@@ -141,7 +209,7 @@ export class RestaurantService {
 	async getRestaurantById(restaurantId: string) {
 		const restaurant = await this.restaurantDao.findRestaurantById(restaurantId)
 		if (!restaurant) {
-			return new BadRequestException('Restaurant tidak ditemukan')
+			throw new BadRequestException('Restaurant tidak ditemukan')
 		}
 		const restaurantMapped = UserMapper.fromRestaurantToDomain(restaurant)
 		restaurantMapped.password = undefined
@@ -181,12 +249,13 @@ export class RestaurantService {
 		restaurantId: string,
 		data: UpdateRestaurantVerificationStatusRequestDto
 	) {
-		const restaurant = await this.restaurantDao.findRestaurantById(restaurantId)
+		let restaurant = await this.restaurantDao.findRestaurantById(restaurantId, true)
 		if (!restaurant) {
-			return new BadRequestException('Restaurant tidak ditemukan')
+			throw new BadRequestException('Restaurant tidak ditemukan')
 		}
-		restaurant.isAccountVerified = data.status
+		restaurant.verificationStatus = data.status
 		await this.entityManager.flush()
+		restaurant = await this.entityManager.refresh(restaurant)
 		return {
 			message: 'Status verifikasi berhasil diubah'
 		}

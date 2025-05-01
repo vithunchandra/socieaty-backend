@@ -50,15 +50,12 @@ export class UserDaoService {
 		if (includeDeleted) {
 			isFilterActive = false
 		}
-		const [items, count] = await this.userRepository.findAndCount(
-			filterQuery,
-			{
-				offset: page * pageSize,
-				limit: pageSize,
-				filters: false,
-				populate: ['restaurantData.*', 'customerData.*']
-			}
-		)
+		const [items, count] = await this.userRepository.findAndCount(filterQuery, {
+			offset: page * pageSize,
+			limit: pageSize,
+			filters: false,
+			populate: ['restaurantData.*', 'customerData.*']
+		})
 		return {
 			items,
 			count
@@ -68,7 +65,10 @@ export class UserDaoService {
 	async findOneByEmail(email: string): Promise<UserEntity | null> {
 		const user = await this.userRepository.findOne(
 			{ email: email },
-			{ populate: ['restaurantData.*', 'customerData.*'] }
+			{
+				populate: ['restaurantData.*', 'customerData.*'],
+				filters: { isAccountVerified: false }
+			}
 		)
 
 		return user

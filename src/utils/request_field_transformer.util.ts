@@ -72,6 +72,7 @@ function fieldToSupportTicketStatus(data: TransformFnParams) {
 }
 
 function fieldToRestaurantVerificationStatus(data: TransformFnParams) {
+	console.log(data.value)
 	if (data.value === null || (data.value as String) === '') return undefined
 	return restaurantVerificationStatusMap[data.value]
 }

@@ -5,8 +5,8 @@ enum RestaurantVerificationStatus {
 }
 
 const restaurantVerificationStatusMap = {
-	reject: RestaurantVerificationStatus.REJECTED,
-	approve: RestaurantVerificationStatus.VERIFIED,
+	rejected: RestaurantVerificationStatus.REJECTED,
+	verified: RestaurantVerificationStatus.VERIFIED,
 	unverified: RestaurantVerificationStatus.UNVERIFIED
 }
 

@@ -750,14 +750,19 @@
           "nullable": false,
           "mappedType": "boolean"
         },
-        "is_account_verified": {
-          "name": "is_account_verified",
-          "type": "boolean",
+        "verification_status": {
+          "name": "verification_status",
+          "type": "text",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "mappedType": "boolean"
+          "enumItems": [
+            "unverified",
+            "verified",
+            "rejected"
+          ],
+          "mappedType": "enum"
         },
         "user_id": {
           "name": "user_id",

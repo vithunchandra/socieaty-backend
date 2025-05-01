@@ -19,7 +19,7 @@ import { RestaurantVerificationStatus } from '../../../../enums/restaurant-verif
 
 @Filter({
 	name: 'isAccountVerified',
-	cond: { isAccountVerified: RestaurantVerificationStatus.VERIFIED },
+	cond: { verificationStatus: RestaurantVerificationStatus.VERIFIED },
 	default: true
 })
 @Entity({ tableName: 'restaurant' })
@@ -49,7 +49,7 @@ export class RestaurantEntity extends BaseEntity {
 	isReservationAvailable: boolean
 
 	@Enum(() => RestaurantVerificationStatus)
-	isAccountVerified: RestaurantVerificationStatus
+	verificationStatus: RestaurantVerificationStatus
 
 	@OneToOne({
 		entity: () => UserEntity,

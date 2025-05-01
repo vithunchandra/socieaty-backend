@@ -22,7 +22,7 @@ export class RestaurantMapper {
 		restaurant.payoutBank = raw.payoutBank
 		restaurant.accountNumber = raw.accountNumber
 		restaurant.isReservationAvailable = raw.isReservationAvailable
-		restaurant.isAccountVerified = raw.isAccountVerified
+		restaurant.verificationStatus = raw.verificationStatus
 
 		return restaurant
 	}
