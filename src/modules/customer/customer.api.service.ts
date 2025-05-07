@@ -57,7 +57,7 @@ export class CustomerService {
 		}
 
 		if (profilePicture) {
-			if (!user.profilePictureUrl?.includes('dummy')) {
+			if (user.profilePictureUrl && !user.profilePictureUrl.includes('dummy')) {
 				unlink(`src/${user.profilePictureUrl}`, (err) => {
 					if (err) throw new BadRequestException('Error saat mengupdate profile picture')
 				})
@@ -76,9 +76,9 @@ export class CustomerService {
 		})
 
 		await this.em.flush()
-        const updatedUser = await this.userDao.findOneById(user_id, true)
-        return {
-            updatedUser: UserMapper.toDomain(updatedUser!)
-        }
+		const updatedUser = await this.userDao.findOneById(user_id, true)
+		return {
+			updatedUser: UserMapper.toDomain(updatedUser!)
+		}
 	}
 }

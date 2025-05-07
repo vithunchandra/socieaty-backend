@@ -77,10 +77,17 @@ export class TransactionReviewService {
 		}
 	}
 
-	async getAllReviewByRestaurantId(restaurantId: string, data: GetAllRestaurantTransactionReviewsRequestDto) {
-		const reviews = await this.transactionReviewDaoService.getReviewByRestaurantId(restaurantId, data.rating)
+	async getAllReviewByRestaurantId(
+		restaurantId: string,
+		data: GetAllRestaurantTransactionReviewsRequestDto
+	) {
+		const reviews = await this.transactionReviewDaoService.getReviewByRestaurantId(
+			restaurantId,
+			data.rating
+		)
 		let reviewCount = reviews.length
 		let totalRating = reviews.reduce((sum, review) => sum + review.rating, 0)
+		console.log(totalRating)
 		var averageRating = 0
 		if (reviews.length !== 0) {
 			averageRating = totalRating / reviewCount

@@ -10,6 +10,8 @@ import { fraudStatusMap, paymentStatusMap } from '../enums/topup.enum'
 import { userRoleMap } from '../modules/user/persistance/User.entity'
 import { supportTicketStatusMap } from '../enums/support-ticket.enum'
 import { restaurantVerificationStatusMap } from '../enums/restaurant-verification-status.enum'
+import { transactionServiceTypeMap, transactionSortByMap, transactionStatusMap } from '../enums/transaction.enum'
+import { timeScaleMap } from '../enums/time-scale.enum'
 
 function fieldToDate(data: TransformFnParams) {
 	if (data.value === null || (data.value as String) === '') return undefined
@@ -77,6 +79,26 @@ function fieldToRestaurantVerificationStatus(data: TransformFnParams) {
 	return restaurantVerificationStatusMap[data.value]
 }
 
+function fieldToTransactionStatus(data: TransformFnParams) {
+	if (data.value === null || (data.value as String) === '') return undefined
+	return transactionStatusMap[data.value]
+}
+
+function fieldToTransactionServiceType(data: TransformFnParams) {
+	if (data.value === null || (data.value as String) === '') return undefined
+	return transactionServiceTypeMap[data.value]
+}
+
+function fieldToTransactionSortBy(data: TransformFnParams) {
+	if (data.value === null || (data.value as String) === '') return undefined
+	return transactionSortByMap[data.value]
+}
+
+function fieldToTimeScale(data: TransformFnParams) {
+	if (data.value === null || (data.value as String) === '') return undefined
+	return timeScaleMap[data.value]
+}
+
 export {
 	fieldToDate,
 	fieldToString,
@@ -90,5 +112,9 @@ export {
 	fieldToFraudStatus,
 	fieldToUserRole,
 	fieldToSupportTicketStatus,
-	fieldToRestaurantVerificationStatus
+	fieldToRestaurantVerificationStatus,
+	fieldToTransactionStatus,
+	fieldToTransactionServiceType,
+	fieldToTransactionSortBy,
+	fieldToTimeScale
 }

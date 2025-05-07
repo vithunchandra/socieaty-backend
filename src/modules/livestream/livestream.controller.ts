@@ -39,6 +39,7 @@ export class LiveStreamController {
 		@Request() req: GuardedRequestDto,
 		@Body() body: StartLivestreamRequestDto
 	) {
+		console.log(req.user)
 		return this.liveStreamService.startLivestream(req.user, body.roomTitle)
 	}
 

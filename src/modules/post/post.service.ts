@@ -178,6 +178,7 @@ export class PostService {
 	}
 
 	async getPaginatedPosts(query: GetPaginatedPostQueryRequestDto) {
+		console.log(query)
 		const { items, count } = await this.postDaoService.paginatePosts(query)
 		const pagination = PaginationDto.createPaginationDto(
 			count,

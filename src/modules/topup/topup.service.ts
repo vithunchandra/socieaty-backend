@@ -47,6 +47,7 @@ export class TopupService {
 		topupEntity.snapRedirectUrl = snapTransactionResponse.redirectUrl
 		await this.em.flush()
 
+		console.log(topupEntity)
 		return {
 			topup: TopupMapper.toDomain(topupEntity)
 		}
@@ -80,14 +81,14 @@ export class TopupService {
 			throw new BadRequestException('Topup already processed')
 		}
 		console.log('hallo')
-		
+
 		if (
 			topupNotificationRequestDto.transaction_status === PaymentStatus.SETTLEMENT &&
 			topupNotificationRequestDto.fraud_status === FraudStatus.DENY
 		) {
 			throw new BadRequestException('Fraud transaction')
 		}
-		
+
 		let customer = topupEntity.customer
 		if (topupNotificationRequestDto.transaction_status === PaymentStatus.SETTLEMENT) {
 			topupEntity.status = TopupStatus.SUCCESS

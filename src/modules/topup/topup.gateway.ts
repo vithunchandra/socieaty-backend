@@ -6,12 +6,12 @@ import {
 	WebSocketGateway,
 	WebSocketServer
 } from '@nestjs/websockets'
-import { Injectable } from "@nestjs/common"
-import { JwtService } from "@nestjs/jwt"
-import { EntityManager } from "@mikro-orm/postgresql"
-import { GatewayAuthMiddleware, GuardedSocketDto } from "../../middleware/gateway.middleware"
-import { UserEntity } from "../user/persistance/User.entity"
-import { TopupNotificationResponseDto } from "./dto/topup-notification-response.dart.dto"
+import { Injectable } from '@nestjs/common'
+import { JwtService } from '@nestjs/jwt'
+import { EntityManager } from '@mikro-orm/postgresql'
+import { GatewayAuthMiddleware, GuardedSocketDto } from '../../middleware/gateway.middleware'
+import { UserEntity } from '../user/persistance/User.entity'
+import { TopupNotificationResponseDto } from './dto/topup-notification-response.dart.dto'
 
 export type serverToClientTopupNotification = {
 	'topup-notification': (message: TopupNotificationResponseDto) => void
@@ -19,9 +19,7 @@ export type serverToClientTopupNotification = {
 
 @Injectable()
 @WebSocketGateway({ namespace: '/topup' })
-export class TopupGateway
-	implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
-{
+export class TopupGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 	constructor(
 		private readonly jwtService: JwtService,
 		private readonly entityManager: EntityManager
@@ -50,8 +48,7 @@ export class TopupGateway
 	}
 
 	notifyTopupNotification(topupId: string, message: TopupNotificationResponseDto) {
-		this.server
-			.to(`track-topup-notification-${topupId}`)
-			.emit('topup-notification', message)
+		console.log('join')
+		this.server.to(`track-topup-notification-${topupId}`).emit('topup-notification', message)
 	}
 }
