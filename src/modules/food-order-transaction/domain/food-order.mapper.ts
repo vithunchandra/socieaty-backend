@@ -6,8 +6,8 @@ export class FoodOrderMapper {
 	static toDomain(raw: FoodOrderEntity | null): FoodOrder | null {
 		if (!raw) return null
 		const foodOrderTransaction = new FoodOrder()
-		foodOrderTransaction.id = raw.id
-		foodOrderTransaction.status = raw.status
+		foodOrderTransaction.orderId = raw.id
+		foodOrderTransaction.foodOrderStatus = raw.status
 		foodOrderTransaction.menuItems = raw.menuItems.map((item) => MenuItemMapper.toDomain(item))
 		return foodOrderTransaction
 	}

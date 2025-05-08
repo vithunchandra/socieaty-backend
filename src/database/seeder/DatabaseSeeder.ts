@@ -12,7 +12,8 @@ import {
 	ADMIN_PASSWORD,
 	PROFILE_PICTURE_UPLOADS_DIR,
 	RESTAURANT_BANNER_UPLOADS_DIR,
-	RESTAURANT_MENU_UPLOADS_DIR
+	RESTAURANT_MENU_UPLOADS_DIR,
+	SERVICE_FEE
 } from '../../constants'
 import { MenuCategoryEntity } from '../../modules/food-menu/persistence/menu-category.entity'
 import { PostEntity } from '../../modules/post/persistence/post.entity'
@@ -23,6 +24,15 @@ import { PostCommentEntity } from '../../modules/post-comment/persistence/post-c
 import { FoodMenuEntity } from '../../modules/food-menu/persistence/food-menu.entity'
 import { ReservationFacilityEntity } from '../../modules/restaurant/persistence/entity/reservation-facility.entity'
 import { RestaurantVerificationStatus } from '../../enums/restaurant-verification-status.enum'
+import { TransactionEntity } from '../../modules/transaction/persistence/transaction.entity'
+import { TransactionServiceType, TransactionStatus } from '../../enums/transaction.enum'
+import { ReservationEntity } from '../../modules/reservation/persistence/reservation.entity'
+import { ReservationStatus } from '../../enums/reservation.enum'
+import { ReservationConfigEntity } from '../../modules/restaurant/persistence/entity/reservation-config.entity'
+import { MenuItemEntity } from '../../modules/menu-items/persistence/menu-item.entity'
+import { FoodMenuCartDto } from '../../modules/food-order-transaction/persistence/dto/food-menu-cart.dto'
+import { FoodOrderEntity } from '../../modules/food-order-transaction/persistence/entity/food-order-transaction.entity'
+import { FoodOrderStatus } from '../../enums/food-order.enum'
 
 const bank: BankEnum[] = [BankEnum.BNI, BankEnum.BCA, BankEnum.BRI, BankEnum.MANDIRI]
 class Medias {
@@ -419,6 +429,23 @@ export class DatabaseSeeder extends Seeder {
 					isReservationAvailable: false,
 					verificationStatus: RestaurantVerificationStatus.VERIFIED
 				})
+
+				const isReservationAvailable = faker.datatype.boolean()
+				restaurant.isReservationAvailable = isReservationAvailable
+
+				if (isReservationAvailable) {
+					const reservationConfig = em.create(ReservationConfigEntity, {
+						restaurant: restaurant.id,
+						timeLimit: 120,
+						maxPerson: faker.number.int({ min: 10, max: 40 }),
+						minCostPerPerson: faker.number.int({ min: 15000, max: 100000 })
+					})
+
+					const reservationConfigFacilities =
+						faker.helpers.arrayElement(reservationFacilities)
+					reservationConfig.facilities.add(reservationConfigFacilities)
+				}
+
 				restaurants.push(restaurant)
 			} else {
 				// Create Customer Entity
@@ -523,6 +550,115 @@ export class DatabaseSeeder extends Seeder {
 						isStockAvailable: true
 					})
 					menuDummies.push(menuDummy)
+				}
+			}
+		}
+
+		for (const customer of customers) {
+			const numberOfTransactions = faker.number.int({ min: 1, max: 10 })
+			for (let i = 0; i < numberOfTransactions; i++) {
+				const restaurant = faker.helpers.arrayElement(restaurants)
+				const serviceType = faker.helpers.arrayElement(
+					Object.values(TransactionServiceType)
+				)
+
+				if (
+					serviceType === TransactionServiceType.RESERVATION &&
+					!restaurant.isReservationAvailable
+				) {
+					continue
+				}
+
+				const restaurantMenus = await em.find(FoodMenuEntity, {
+					restaurant: restaurant.id
+				})
+				const selectedMenuItems = faker.helpers
+					.arrayElements(restaurantMenus, faker.number.int({ min: 1, max: 3 }))
+					.map((menu) => new FoodMenuCartDto(menu, faker.number.int({ min: 1, max: 10 })))
+
+				const amount = selectedMenuItems.reduce(
+					(acc, curr) => acc + curr.menu.price * curr.quantity,
+					0
+				)
+				const transactionStatus = faker.helpers.arrayElement(
+					Object.values(TransactionStatus)
+				)
+
+				const transaction = em.create(TransactionEntity, {
+					customer: customer.id,
+					restaurant: restaurant.id,
+					grossAmount: amount + SERVICE_FEE,
+					netAmount: amount,
+					serviceFee: SERVICE_FEE,
+					refundAmount: 0,
+					note: faker.lorem.sentence(),
+					serviceType: serviceType,
+					status: transactionStatus
+				})
+
+				transaction.createdAt = faker.date.recent({ days: 90 })
+				if (
+					transactionStatus === TransactionStatus.SUCCESS ||
+					transactionStatus === TransactionStatus.FAILED
+				) {
+					transaction.finishedAt = faker.date.recent({ refDate: transaction.createdAt })
+				}
+
+				if (serviceType === TransactionServiceType.RESERVATION) {
+					const reservationTime = faker.date.recent({ refDate: transaction.createdAt })
+
+					let reservationStatus = ReservationStatus.PENDING
+					if (transactionStatus === TransactionStatus.SUCCESS) {
+						reservationStatus = ReservationStatus.COMPLETED
+					} else if (transactionStatus === TransactionStatus.FAILED) {
+						reservationStatus = ReservationStatus.REJECTED
+					} else if (transactionStatus === TransactionStatus.REFUNDED) {
+						reservationStatus = ReservationStatus.CANCELED
+					}
+
+					const reservation = em.create(ReservationEntity, {
+						transaction: transaction.id,
+						peopleSize: faker.number.int({ min: 1, max: 10 }),
+						reservationTime: reservationTime,
+						status: reservationStatus,
+						endTimeEstimation: new Date(
+							reservationTime.getTime() +
+								1000 * 60 * faker.number.int({ min: 30, max: 90 })
+						)
+					})
+					for (const menuItem of selectedMenuItems) {
+						em.create(MenuItemEntity, {
+							menu: menuItem.menu.id,
+							quantity: menuItem.quantity,
+							price: menuItem.menu.price,
+							totalPrice: menuItem.menu.price * menuItem.quantity,
+							reservation: reservation.id
+						})
+					}
+				} else {
+					let foodOrderStatus = FoodOrderStatus.PENDING
+					if (transactionStatus === TransactionStatus.SUCCESS) {
+						foodOrderStatus = FoodOrderStatus.COMPLETED
+					} else if (transactionStatus === TransactionStatus.FAILED) {
+						foodOrderStatus = FoodOrderStatus.REJECTED
+					} else if (transactionStatus === TransactionStatus.ONGOING) {
+						foodOrderStatus = FoodOrderStatus.PREPARING
+					}
+
+					const foodOrder = em.create(FoodOrderEntity, {
+						transaction: transaction.id,
+						status: foodOrderStatus
+					})
+
+					for (const menuItem of selectedMenuItems) {
+						em.create(MenuItemEntity, {
+							menu: menuItem.menu.id,
+							quantity: menuItem.quantity,
+							price: menuItem.menu.price,
+							totalPrice: menuItem.menu.price * menuItem.quantity,
+							foodOrder: foodOrder.id
+						})
+					}
 				}
 			}
 		}

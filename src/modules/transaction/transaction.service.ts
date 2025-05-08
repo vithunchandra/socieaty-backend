@@ -6,7 +6,11 @@ import {
 	UnauthorizedException
 } from '@nestjs/common'
 import { TransactionDaoService } from './persistence/transaction.dao.service'
-import { TransactionServiceType, TransactionStatus } from '../../enums/transaction.enum'
+import {
+	TransactionServiceType,
+	TransactionSortBy,
+	TransactionStatus
+} from '../../enums/transaction.enum'
 import { EntityManager } from '@mikro-orm/postgresql'
 import { FoodOrderTransactionGateway } from '../food-order-transaction/food-order-transaction.gateway'
 
@@ -17,6 +21,12 @@ import { UserEntity, UserRole } from '../user/persistance/User.entity'
 import { TransactionMapper } from './domain/transaction.mapper'
 import { PaginationDto } from '../../dto/pagination.dto'
 import { GetTransactionsInsightRequestQueryDto } from './dto/get-transactions-insight-request-query.dto'
+import { GetTransactionsChartDataRequestDto } from './dto/get-transactions-chart-data-request.dto'
+import { SortOrder } from '../../enums/sort-order.enum'
+import { TimeScale } from '../../enums/time-scale.enum'
+import { isDateInScaleRange, isSameDate, isSameWeek } from '../../utils/date.utils'
+import { TransactionChart } from './domain/transaction-chart'
+import { TransactionInsight } from './domain/transaction-insight'
 
 @Injectable()
 export class TransactionService {
@@ -74,7 +84,8 @@ export class TransactionService {
 	async paginateTransactions(user: UserEntity, query: PaginateTransactionsRequestQueryDto) {
 		if (
 			user.role !== UserRole.ADMIN &&
-			(user.id !== query.customerId || user.id !== query.restaurantId)
+			(user.customerData?.id !== query.customerId ||
+				user.restaurantData?.id !== query.restaurantId)
 		) {
 			throw new UnauthorizedException('You are not authorized to access this resource')
 		}
@@ -85,6 +96,7 @@ export class TransactionService {
 			query.paginationQuery.pageSize,
 			query.paginationQuery.page
 		)
+
 		return {
 			items: items.map((item) => TransactionMapper.toDomain(item)),
 			pagination
@@ -92,13 +104,18 @@ export class TransactionService {
 	}
 
 	async getTransactionsInsight(user: UserEntity, query: GetTransactionsInsightRequestQueryDto) {
-		if (user.role !== UserRole.ADMIN && (user.id !== query.restaurantId || user.id !== query.customerId)) {
+		if (user.role !== UserRole.ADMIN && user.restaurantData?.id !== query.restaurantId) {
 			throw new UnauthorizedException('You are not authorized to access this resource')
 		}
-		const transactions = await this.transactionDaoService.findAllTransactions(query)
 
+		console.log(query)
 
-		
+		const transactions = await this.transactionDaoService.findAllTransactions({
+			...query,
+			sortBy: TransactionSortBy.CREATED_AT,
+			sortOrder: SortOrder.ASC
+		})
+
 		let totalIncome = 0
 		let totalFailedTransactions = 0
 		let totalSuccessTransactions = 0
@@ -108,9 +125,9 @@ export class TransactionService {
 		for (const transaction of transactions) {
 			if (transaction.status === TransactionStatus.SUCCESS) {
 				totalSuccessTransactions++
-				if(user.role === UserRole.RESTAURANT) {
+				if (user.role === UserRole.RESTAURANT) {
 					totalIncome += transaction.netAmount
-				}else if(user.role === UserRole.ADMIN) {
+				} else if (user.role === UserRole.ADMIN) {
 					totalIncome += transaction.serviceFee
 				}
 			}
@@ -124,12 +141,119 @@ export class TransactionService {
 				totalReservationTransactions++
 			}
 		}
+
 		return {
-			totalIncome,
-			totalFailedTransactions,
-			totalSuccessTransactions,
-			totalFoodOrderTransactions,
-			totalReservationTransactions
+			transactionInsight: new TransactionInsight(
+				totalIncome,
+				totalFailedTransactions,
+				totalSuccessTransactions,
+				totalFoodOrderTransactions,
+				totalReservationTransactions
+			)
 		}
+	}
+
+	async getTransactionsChartData(user: UserEntity, query: GetTransactionsChartDataRequestDto) {
+		if (user.role !== UserRole.ADMIN && user.restaurantData?.id !== query.restaurantId) {
+			throw new UnauthorizedException('You are not authorized to access this resource')
+		}
+
+		const transactions = await this.transactionDaoService.findAllTransactions({
+			...query,
+			status: [TransactionStatus.SUCCESS],
+			sortBy: TransactionSortBy.CREATED_AT,
+			sortOrder: SortOrder.ASC
+		})
+
+		if (transactions.length === 0) {
+			return { chartData: [] }
+		}
+
+		const startDate = query.rangeStartDate
+			? new Date(query.rangeStartDate)
+			: transactions[0].createdAt
+		const endDate = query.rangeEndDate
+			? new Date(query.rangeEndDate)
+			: transactions[transactions.length - 1].createdAt
+
+		const allDates: Date[] = []
+		const current = new Date(startDate)
+
+		while (current <= endDate) {
+			allDates.push(new Date(current))
+
+			if (query.timeScale === TimeScale.DAY) {
+				current.setDate(current.getDate() + 1)
+			} else if (query.timeScale === TimeScale.WEEK) {
+				current.setDate(current.getDate() + 7)
+			} else if (query.timeScale === TimeScale.MONTH) {
+				current.setMonth(current.getMonth() + 1)
+			}
+		}
+
+		const dateMap = new Map<
+			string,
+			{ totalIncome: number; totalTransactions: number; date: Date }
+		>()
+
+		allDates.forEach((date) => {
+			let dateKey: string
+
+			if (query.timeScale === TimeScale.DAY) {
+				dateKey = date.toISOString().split('T')[0]
+			} else if (query.timeScale === TimeScale.WEEK) {
+				// Find the start of the week
+				const weekStart = new Date(date)
+				const day = weekStart.getUTCDay()
+				weekStart.setUTCDate(weekStart.getUTCDate() - day)
+				dateKey = weekStart.toISOString().split('T')[0]
+			} else {
+				// TimeScale.MONTH
+				dateKey = `${date.getUTCFullYear()}-${(date.getUTCMonth() + 1).toString().padStart(2, '0')}-01`
+			}
+
+			dateMap.set(dateKey, { totalIncome: 0, totalTransactions: 0, date: new Date(date) })
+		})
+
+		for (const transaction of transactions) {
+			const transactionDate = new Date(transaction.createdAt)
+			let dateKey: string
+
+			if (query.timeScale === TimeScale.DAY) {
+				dateKey = transactionDate.toISOString().split('T')[0]
+			} else if (query.timeScale === TimeScale.WEEK) {
+				const weekStart = new Date(transactionDate)
+				const day = weekStart.getUTCDay()
+				weekStart.setUTCDate(weekStart.getUTCDate() - day)
+				dateKey = weekStart.toISOString().split('T')[0]
+			} else {
+				dateKey = `${transactionDate.getUTCFullYear()}-${(transactionDate.getUTCMonth() + 1).toString().padStart(2, '0')}-01`
+			}
+
+			if (dateMap.has(dateKey)) {
+				const data = dateMap.get(dateKey)!
+				data.totalTransactions++
+
+				if (user.role === UserRole.ADMIN) {
+					data.totalIncome += transaction.serviceFee
+				} else {
+					data.totalIncome += transaction.netAmount
+				}
+			}
+		}
+
+		const chartData = Array.from(dateMap.values()).map(
+			(data) =>
+				new TransactionChart(
+					data.date,
+					data.totalIncome,
+					data.totalTransactions,
+					query.timeScale
+				)
+		)
+
+		chartData.sort((a, b) => a.date.getTime() - b.date.getTime())
+
+		return { chartData }
 	}
 }

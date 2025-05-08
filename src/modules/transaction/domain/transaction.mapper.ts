@@ -19,6 +19,8 @@ export class TransactionMapper {
 		transaction.customer = UserMapper.fromCustomerToDomain(raw.customer)
 		transaction.status = raw.status
 		transaction.note = raw.note
+		transaction.createdAt = raw.createdAt
+		transaction.updatedAt = raw.updatedAt
 		transaction.finishedAt = raw.finishedAt
 		transaction.reservationData = ReservationMapper.toDomain(raw.reservation)
 		transaction.foodOrderData = FoodOrderMapper.toDomain(raw.foodOrder)

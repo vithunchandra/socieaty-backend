@@ -44,10 +44,14 @@ export class TransactionDaoService {
 			queryObject.createdAt = { $gte: rangeStartDate }
 		}
 		if (rangeEndDate) {
-			queryObject.createdAt = { $lte: rangeEndDate }
+			queryObject.finishedAt = { $lte: rangeEndDate }
 		}
 		if (searchQuery) {
-			queryObject.note = { $like: `%${searchQuery}%` }
+			queryObject.$or = [
+				{ note: { $like: `%${searchQuery}%` } },
+				{ customer: { userData: { name: { $like: `%${searchQuery}%` } } } },
+				{ restaurant: { userData: { name: { $like: `%${searchQuery}%` } } } }
+			]
 		}
 
 		if (sortBy && sortOrder) {
@@ -111,7 +115,7 @@ export class TransactionDaoService {
 				'restaurant.userData',
 				'restaurant.themes'
 			],
-			orderBy: sortByObject,
+			orderBy: sortByObject
 		})
 
 		return result

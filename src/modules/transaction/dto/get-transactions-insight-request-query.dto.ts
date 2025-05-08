@@ -4,11 +4,6 @@ import { fieldToDate, fieldToString, fieldToTransactionServiceType } from "../..
 import { TransactionServiceType } from "../../../enums/transaction.enum"
 
 export class GetTransactionsInsightRequestQueryDto {
-    @IsString()
-	@IsOptional()
-	@Transform((data) => fieldToString(data))
-	customerId?: string
-
 	@IsString()
 	@IsOptional()
 	@Transform((data) => fieldToString(data))
