@@ -68,6 +68,7 @@ export class SupportTicketDaoService {
 		}
 
 		const [items, count] = await this.supportTicketRepository.findAndCount(filterQuery, {
+			orderBy: { createdAt: 'desc' },
 			offset: page * pageSize,
 			limit: pageSize,
 			populate: ['user']

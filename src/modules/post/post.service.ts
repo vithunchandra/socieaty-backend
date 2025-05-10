@@ -83,15 +83,16 @@ export class PostService {
 			throw new NotFoundException('Post not found')
 		}
 		let location: Point | undefined = undefined
+		const filteredDeleteMedias = data.deleteMediaIds.filter((id) => id.trim() !== '')
 		for (const media of post.medias) {
-			if (data.deleteMediaIds.includes(media.id)) {
+			if (filteredDeleteMedias.includes(media.id)) {
 				if (media) {
 					if (!media.url.includes('dummy')) {
 						unlink(`src/${media.url}`, (err) => {
 							console.log(err)
 						})
 					}
-					if (media.type === 'video') {
+					if (media.type === 'video' && !media.videoThumbnailUrl?.includes('dummy')) {
 						unlink(`src/${media.videoThumbnailUrl}`, (err) => {
 							console.log(err)
 						})
@@ -99,7 +100,9 @@ export class PostService {
 				}
 			}
 		}
-		await this.mediaDaoService.deleteMedia(data.deleteMediaIds)
+		if (filteredDeleteMedias.length > 0) {
+			await this.mediaDaoService.deleteMedia(filteredDeleteMedias)
+		}
 		const postMedias = this.mediaDaoService.createMedia(
 			await Promise.all(
 				medias.map(async (media) => {
@@ -142,7 +145,7 @@ export class PostService {
 		post.location = location
 		await this.em.flush()
 
-		const updatedPost = await this.em.refresh(post)
+		const updatedPost = await this.postDaoService.findOneById(postId)
 		const updatedPostDomain = PostMapper.toDomain(updatedPost)
 		return { post: updatedPostDomain }
 	}
@@ -185,6 +188,7 @@ export class PostService {
 			query.paginationQuery.pageSize,
 			query.paginationQuery.page
 		)
+		console.log(items)
 		return {
 			posts: items.map((post) => PostMapper.toDomain(post)).filter((post) => post !== null),
 			pagination: pagination
