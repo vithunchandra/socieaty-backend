@@ -1,6 +1,6 @@
 import { BankEnum } from '../../../../enums/bank.enum'
 import { RestaurantVerificationStatus } from '../../../../enums/restaurant-verification-status.enum'
-import { Point } from '../custom-type/PointType'
+import { Point } from '../custom-type/point-type'
 
 export class UpdateRestaurantDataDto {
 	restaurantAddress: Point

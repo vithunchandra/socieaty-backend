@@ -17,7 +17,7 @@ import { FoodOrderTransactionGateway } from '../food-order-transaction/food-orde
 import { TransactionEntity } from './persistence/transaction.entity'
 import { CreateTransactionDto } from './persistence/dto/create-transaction.dto'
 import { PaginateTransactionsRequestQueryDto } from './dto/paginate-transactions-request-query.dto'
-import { UserEntity, UserRole } from '../user/persistance/User.entity'
+import { UserEntity, UserRole } from '../user/persistance/user.entity'
 import { TransactionMapper } from './domain/transaction.mapper'
 import { PaginationDto } from '../../dto/pagination.dto'
 import { GetTransactionsInsightRequestQueryDto } from './dto/get-transactions-insight-request-query.dto'

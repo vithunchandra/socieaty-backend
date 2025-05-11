@@ -1,4 +1,4 @@
-import { UserRole } from '../../../user/persistance/User.entity'
+import { UserRole } from '../../../user/persistance/user.entity'
 import { PaginationQueryDto } from '../../../../dto/pagination-query.dto'
 
 export class GetPaginatedPostQueryDto {

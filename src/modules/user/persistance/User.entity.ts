@@ -8,11 +8,10 @@ import {
 	Property
 } from '@mikro-orm/core'
 import { BaseEntity } from '../../../database/model/base/Base.entity'
-import { RestaurantEntity } from '../../restaurant/persistence/entity/Restaurant.entity'
-import { CustomerEntity } from '../../customer/persistence/Customer.entity'
+import { RestaurantEntity } from '../../restaurant/persistence/entity/restaurant.entity'
+import { CustomerEntity } from '../../customer/persistence/customer.entity'
 import { PostEntity } from '../../post/persistence/post.entity'
 import { PostCommentEntity } from '../../post-comment/persistence/post-comment.entity'
-import { TransactionReviewEntity } from '../../transaction-review/persistence/transaction-review.entity'
 
 @Entity({ tableName: 'user' })
 export class UserEntity extends BaseEntity {
@@ -108,7 +107,7 @@ export enum UserRole {
 }
 
 export const userRoleMap = {
-	'Admin': UserRole.ADMIN,
-	'Customer': UserRole.CUSTOMER,
-	'Restaurant': UserRole.RESTAURANT
+	Admin: UserRole.ADMIN,
+	Customer: UserRole.CUSTOMER,
+	Restaurant: UserRole.RESTAURANT
 }

@@ -1,5 +1,5 @@
 import { IsOptional, IsString } from 'class-validator'
-import { UserRole } from '../../user/persistance/User.entity'
+import { UserRole } from '../../user/persistance/user.entity'
 import { Transform } from 'class-transformer'
 import { fieldToUserRole } from '../../../utils/request_field_transformer.util'
 

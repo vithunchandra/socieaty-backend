@@ -12,12 +12,9 @@ import {
 	UseInterceptors
 } from '@nestjs/common'
 import { UserSigninDto } from './dto/user-signin.dto'
-import { RestaurantCreateDto } from './dto/RestaurantCreate.dto'
-import { CustomerCreateDto } from './dto/CustomerCreate.dto'
-import {
-	FileFieldsInterceptor,
-	FileInterceptor
-} from '@nestjs/platform-express'
+import { RestaurantCreateDto } from './dto/restaurant-create-request.dto'
+import { CustomerCreateDto } from './dto/customer-create-request.dto'
+import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express'
 import { diskStorage } from 'multer'
 import {
 	FILE_UPLOADS_DIR,

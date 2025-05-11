@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common'
 import { CustomerService } from './customer.api.service'
 import { Roles } from 'src/module/RoleGuard/roles.decorator'
-import { UserRole } from '../user/persistance/User.entity'
+import { UserRole } from '../user/persistance/user.entity'
 import { RolesGuard } from 'src/module/RoleGuard/roles.guard'
 import { AuthGuard } from 'src/module/AuthGuard/AuthGuard.service'
 import { UpdateCustomerProfileRequestDto } from './dto/update-customer-profile-request.dto'

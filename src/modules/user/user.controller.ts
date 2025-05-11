@@ -4,7 +4,7 @@ import { PaginateUsersRequestQueryDto } from './dto/paginate-users-request-query
 import { AuthGuard } from '../../module/AuthGuard/AuthGuard.service'
 import { GuardedRequestDto } from '../../module/AuthGuard/dto/guarded-request.dto'
 import { RolesGuard } from '../../module/RoleGuard/roles.guard'
-import { UserRole } from './persistance/User.entity'
+import { UserRole } from './persistance/user.entity'
 import { Roles } from '../../module/RoleGuard/roles.decorator'
 
 @Controller('users')

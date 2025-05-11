@@ -1,13 +1,13 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
-import { CustomerDaoService } from './persistence/Customer.dao.service'
-import { UserDaoService } from '../user/persistance/User.dao.service'
-import { CustomerCreateDto } from '../auth/dto/CustomerCreate.dto'
+import { CustomerDaoService } from './persistence/customer.dao.service'
+import { UserDaoService } from '../user/persistance/user.dao.service'
+import { CustomerCreateDto } from '../auth/dto/customer-create-request.dto'
 import { UserMapper } from '../user/domain/user.mapper'
 import { UpdateCustomerProfileRequestDto } from './dto/update-customer-profile-request.dto'
 import { unlink } from 'fs'
 import { EntityManager } from '@mikro-orm/postgresql'
 import { PROFILE_PICTURE_RELATIVE_DIR } from '../../constants'
-import { UserRole } from '../user/persistance/User.entity'
+import { UserRole } from '../user/persistance/user.entity'
 
 @Injectable()
 export class CustomerService {

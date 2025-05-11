@@ -1,5 +1,5 @@
 import { IsEmail, IsNotEmpty, IsString } from "class-validator";
-import { UserRole } from "src/modules/user/persistance/User.entity";
+import { UserRole } from "src/modules/user/persistance/user.entity";
 
 export class CustomerCreateDto{
     @IsNotEmpty()

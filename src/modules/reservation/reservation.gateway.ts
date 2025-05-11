@@ -11,7 +11,7 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { GatewayAuthMiddleware, GuardedSocketDto } from '../../middleware/gateway.middleware'
 import { EntityManager } from '@mikro-orm/postgresql'
-import { UserEntity } from '../user/persistance/User.entity'
+import { UserEntity } from '../user/persistance/user.entity'
 import { ReservationTransaction } from './domain/reservation-transaction'
 
 export type ServerToClientTransactionEvents = {

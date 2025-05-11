@@ -1,5 +1,5 @@
 import { PaginationQueryDto } from '../../../../dto/pagination-query.dto'
-import { UserRole } from '../User.entity'
+import { UserRole } from '../user.entity'
 
 export class PaginateUsersQueryDto {
 	paginationQuery: PaginationQueryDto

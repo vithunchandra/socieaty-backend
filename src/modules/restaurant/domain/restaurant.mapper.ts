@@ -1,6 +1,6 @@
 import { BASE_URL } from '../../../constants'
-import { RestaurantEntity } from '../persistence/entity/Restaurant.entity'
-import { Restaurant } from './Restaurant'
+import { RestaurantEntity } from '../persistence/entity/restaurant.entity'
+import { Restaurant } from './restaurant'
 import { RestaurantThemeMapper } from './restaurant-theme.mapper'
 
 export class RestaurantMapper {

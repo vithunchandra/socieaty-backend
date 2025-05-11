@@ -13,7 +13,7 @@ import { CreateTransactionReviewRequestDto } from './dto/create-transaction-revi
 import { TransactionReviewService } from './transaction-review.service'
 import { AuthGuard } from '../../module/AuthGuard/AuthGuard.service'
 import { RolesGuard } from '../../module/RoleGuard/roles.guard'
-import { UserRole } from '../user/persistance/User.entity'
+import { UserRole } from '../user/persistance/user.entity'
 import { Roles } from '../../module/RoleGuard/roles.decorator'
 import { GuardedRequestDto } from '../../module/AuthGuard/dto/guarded-request.dto'
 import { GetAllRestaurantTransactionReviewsRequestDto } from './dto/get-all-restaurant-transaction-reviews-request.dto'

@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer'
 import { IsArray, IsNotEmpty, IsObject, IsString, ValidateNested } from 'class-validator'
-import { Point } from 'src/modules/restaurant/persistence/custom-type/PointType'
+import { Point } from 'src/modules/restaurant/persistence/custom-type/point-type'
 
 export class UpdatePostRequestDto {
 	@IsNotEmpty()

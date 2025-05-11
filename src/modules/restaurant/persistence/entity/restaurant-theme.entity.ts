@@ -1,6 +1,6 @@
 import { Collection, Entity, ManyToMany, PrimaryKey, Property } from '@mikro-orm/core'
 import { BaseEntity } from '../../../../database/model/base/Base.entity'
-import { RestaurantEntity } from './Restaurant.entity'
+import { RestaurantEntity } from './restaurant.entity'
 
 @Entity({ tableName: 'restaurant_theme' })
 export class RestaurantThemeEntity {

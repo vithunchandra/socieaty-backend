@@ -3,7 +3,7 @@ import { BadRequestException, Injectable, NotFoundException } from "@nestjs/comm
 import { PostCommentDaoService } from "./persistence/post-comment.dao.service";
 import { CreatePostCommentRequestDto } from "./dto/create-post-comment-request.dto";
 import { PostCommentMapper } from "./domain/post-comment.mapper";
-import { UserDaoService } from "../user/persistance/User.dao.service";
+import { UserDaoService } from "../user/persistance/user.dao.service";
 import { PostMapper } from "../post/domain/post.mapper";
 import { PostDaoService } from "../post/persistence/post.dao.service";
 

@@ -1,7 +1,7 @@
 import { Room } from "livekit-server-sdk";
 import { LiveRoom } from "./live-room";
 import { LiveRoomMetaDataMapper } from "./live-room-meta-data.mapper";
-import { UserEntity } from "src/modules/user/persistance/User.entity";
+import { UserEntity } from "src/modules/user/persistance/user.entity";
 import { UserMapper } from "src/modules/user/domain/user.mapper";
 
 export class LiveRoomMapper{

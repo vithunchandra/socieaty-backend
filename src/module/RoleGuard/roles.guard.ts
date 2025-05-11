@@ -1,6 +1,6 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { UserRole } from 'src/modules/user/persistance/User.entity';
+import { UserRole } from 'src/modules/user/persistance/user.entity';
 import { ROLES_KEY } from './roles.decorator';
 import { debug } from 'console';
 

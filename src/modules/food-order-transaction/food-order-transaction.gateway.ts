@@ -13,7 +13,7 @@ import { GatewayAuthMiddleware, GuardedSocketDto } from '../../middleware/gatewa
 import { EntityManager } from '@mikro-orm/postgresql'
 import { FoodOrderTransaction } from './domain/food-order-transaction'
 import { TransactionService } from '../transaction/transaction.service'
-import { UserEntity } from '../user/persistance/User.entity'
+import { UserEntity } from '../user/persistance/user.entity'
 
 export type ServerToClientTransactionEvents = {
 	'track-order': (order: FoodOrderTransaction) => void

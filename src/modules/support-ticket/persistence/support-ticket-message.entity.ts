@@ -1,6 +1,6 @@
 import { Entity, ManyToOne, Property } from "@mikro-orm/core"
 import { BaseEntity } from "../../../database/model/base/Base.entity"
-import { UserEntity } from "../../user/persistance/User.entity"
+import { UserEntity } from "../../user/persistance/user.entity"
 import { SupportTicketEntity } from "./support-ticket.entity"
 
 @Entity({ tableName: 'support-ticket-messages' })

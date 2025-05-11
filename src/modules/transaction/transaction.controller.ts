@@ -4,7 +4,7 @@ import { PaginateTransactionsRequestQueryDto } from './dto/paginate-transactions
 import { RolesGuard } from '../../module/RoleGuard/roles.guard'
 import { AuthGuard } from '../../module/AuthGuard/AuthGuard.service'
 import { Roles } from '../../module/RoleGuard/roles.decorator'
-import { UserRole } from '../user/persistance/User.entity'
+import { UserRole } from '../user/persistance/user.entity'
 import { GuardedRequestDto } from '../../module/AuthGuard/dto/guarded-request.dto'
 import { GetTransactionsChartDataRequestDto } from './dto/get-transactions-chart-data-request.dto'
 import { GetTransactionsInsightRequestQueryDto } from './dto/get-transactions-insight-request-query.dto'

@@ -9,8 +9,8 @@ import {
 	IsString,
 	ValidateNested
 } from 'class-validator'
-import { Point } from 'src/modules/restaurant/persistence/custom-type/PointType'
-import { UserRole } from 'src/modules/user/persistance/User.entity'
+import { Point } from 'src/modules/restaurant/persistence/custom-type/point-type'
+import { UserRole } from 'src/modules/user/persistance/user.entity'
 import { BankEnum } from '../../../enums/bank.enum'
 
 export class RestaurantCreateDto {

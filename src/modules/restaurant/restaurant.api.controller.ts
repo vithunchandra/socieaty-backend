@@ -12,7 +12,7 @@ import {
 	UseGuards,
 	UseInterceptors
 } from '@nestjs/common'
-import { UserRole } from 'src/modules/user/persistance/User.entity'
+import { UserRole } from 'src/modules/user/persistance/user.entity'
 import { Roles } from 'src/module/RoleGuard/roles.decorator'
 import { RolesGuard } from 'src/module/RoleGuard/roles.guard'
 import { RestaurantService } from './restaurant.api.service'

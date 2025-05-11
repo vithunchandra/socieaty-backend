@@ -4,9 +4,9 @@ import { EntityRepository, FilterQuery, OrderDefinition } from '@mikro-orm/postg
 import { InjectRepository } from '@mikro-orm/nestjs'
 import { CreateFoodOrderTransactionDto } from './dto/create-food-order-transaction.dto'
 import { UpdateFoodOrderTransactionDto } from './dto/update-food-order-transaction'
-import { RestaurantEntity } from '../../restaurant/persistence/entity/Restaurant.entity'
+import { RestaurantEntity } from '../../restaurant/persistence/entity/restaurant.entity'
 import { FoodOrderStatus } from '../../../enums/food-order.enum'
-import { CustomerEntity } from '../../customer/persistence/Customer.entity'
+import { CustomerEntity } from '../../customer/persistence/customer.entity'
 import { GetPaginatedOrdersDto } from './dto/get-paginated-orders.dto'
 import { GetOrdersDto } from './dto/get-orders.dto'
 

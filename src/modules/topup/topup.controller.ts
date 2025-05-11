@@ -4,7 +4,7 @@ import { CreateTopupRequestDto } from './dto/create-topup-request.dto'
 import { AuthGuard } from '../../module/AuthGuard/AuthGuard.service'
 import { RolesGuard } from '../../module/RoleGuard/roles.guard'
 import { Roles } from '../../module/RoleGuard/roles.decorator'
-import { UserRole } from '../user/persistance/User.entity'
+import { UserRole } from '../user/persistance/user.entity'
 import { GuardedRequestDto } from '../../module/AuthGuard/dto/guarded-request.dto'
 import { TopupNotificationRequestDto } from './dto/topup-notification-request.dto'
 

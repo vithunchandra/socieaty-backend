@@ -5,7 +5,7 @@ import {
 	InternalServerErrorException
 } from '@nestjs/common'
 import { TopupDaoService } from './persistence/topup.dao.service'
-import { CustomerEntity } from '../customer/persistence/Customer.entity'
+import { CustomerEntity } from '../customer/persistence/customer.entity'
 import { CreateTopupRequestDto } from './dto/create-topup-request.dto'
 import { MidtransService } from '../midtrans/midtrans.service'
 import { CreateSnapTransactionResponseDto } from '../midtrans/dto/create-snap-transaction-response.dto'
@@ -15,7 +15,7 @@ import { TopupNotificationRequestDto } from './dto/topup-notification-request.dt
 import { FraudStatus, PaymentStatus, TopupStatus } from '../../enums/topup.enum'
 import { UserMapper } from '../user/domain/user.mapper'
 import { TopupGateway } from './topup.gateway'
-import { UserEntity } from '../user/persistance/User.entity'
+import { UserEntity } from '../user/persistance/user.entity'
 
 @Injectable()
 export class TopupService {

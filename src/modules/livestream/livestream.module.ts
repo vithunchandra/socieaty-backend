@@ -1,7 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 import { LiveStreamController } from './livestream.controller'
 import { LiveStreamService } from './livestream.service'
-import { UserDaoModule } from '../user/persistance/User.dao.module'
+import { UserDaoModule } from '../user/persistance/user.dao.module'
 import { LivestreamRepository } from './livestream.repository'
 import { LivestreamDaoModule } from './persistence/livestream.dao.module'
 import { RawBodyMiddleware } from '../../module/RawBodyMiddleware/raw-body-middleware'
@@ -12,9 +12,8 @@ import { RawBodyMiddleware } from '../../module/RawBodyMiddleware/raw-body-middl
 	providers: [LiveStreamService, LivestreamRepository],
 	exports: [LiveStreamService]
 })
-export class LiveStreamModule implements NestModule{
+export class LiveStreamModule implements NestModule {
 	configure(consumer: MiddlewareConsumer) {
-		consumer.apply(RawBodyMiddleware)
-		.forRoutes('/livestream/webhook-endpoint')
+		consumer.apply(RawBodyMiddleware).forRoutes('/livestream/webhook-endpoint')
 	}
 }

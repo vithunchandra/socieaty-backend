@@ -1,4 +1,4 @@
-import { CustomerEntity } from '../persistence/Customer.entity'
+import { CustomerEntity } from '../persistence/customer.entity'
 import { Customer } from './customer'
 
 export class CustomerMapper {

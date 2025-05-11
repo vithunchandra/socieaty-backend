@@ -1,4 +1,4 @@
-import { UserRole } from "../User.entity";
+import { UserRole } from "../user.entity";
 
 export interface UserCreateDto{
     name: string

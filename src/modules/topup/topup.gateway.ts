@@ -10,7 +10,7 @@ import { Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { EntityManager } from '@mikro-orm/postgresql'
 import { GatewayAuthMiddleware, GuardedSocketDto } from '../../middleware/gateway.middleware'
-import { UserEntity } from '../user/persistance/User.entity'
+import { UserEntity } from '../user/persistance/user.entity'
 import { TopupNotificationResponseDto } from './dto/topup-notification-response.dart.dto'
 
 export type serverToClientTopupNotification = {

@@ -2,7 +2,7 @@
 import { Transform, Type } from 'class-transformer'
 import { IsBoolean, IsNumber, IsOptional, IsString} from 'class-validator'
 import { PaginationDirection } from '../../../enums/pagination-direction.enum'
-import { UserRole } from '../../user/persistance/User.entity'
+import { UserRole } from '../../user/persistance/user.entity'
 import { fieldToUserRole } from '../../../utils/request_field_transformer.util'
 import { PaginationQueryDto } from '../../../dto/pagination-query.dto'
 

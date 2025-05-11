@@ -1,8 +1,8 @@
 import { InjectRepository } from '@mikro-orm/nestjs'
 import { Injectable } from '@nestjs/common'
-import { UserEntity } from './User.entity'
+import { UserEntity } from './user.entity'
 import { EntityRepository, FilterQuery } from '@mikro-orm/postgresql'
-import { UserCreateDto } from './dto/UserDao.dto'
+import { UserCreateDto } from './dto/user-dao.dto'
 import { UpdateUserDataDto } from './dto/update-user-data.dto'
 import { PaginateUsersQueryDto } from './dto/paginate-users-query.dto'
 

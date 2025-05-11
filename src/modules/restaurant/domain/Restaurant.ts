@@ -1,4 +1,4 @@
-import { Point } from 'src/modules/restaurant/persistence/custom-type/PointType'
+import { Point } from 'src/modules/restaurant/persistence/custom-type/point-type'
 import { RestaurantTheme } from './restaurant-theme'
 import { BankEnum } from '../../../enums/bank.enum'
 import { RestaurantVerificationStatus } from '../../../enums/restaurant-verification-status.enum'

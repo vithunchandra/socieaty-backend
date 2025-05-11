@@ -11,7 +11,7 @@ import { InjectRepository } from '@mikro-orm/nestjs'
 import { SendCommentDto } from './dto/send-livestream-comment..dto'
 import { LivestreamRoomCommentMapper } from '../domain/livestream-room-comment.mapper'
 import { LikeLivestreamDto } from './dto/like-livestream.dto'
-import { UserEntity } from '../../user/persistance/User.entity'
+import { UserEntity } from '../../user/persistance/user.entity'
 import { LivestreamRoomLike } from '../domain/livestream-room-like'
 
 @Injectable()

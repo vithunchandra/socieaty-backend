@@ -10,12 +10,9 @@ import {
 	Property
 } from '@mikro-orm/core'
 import { BaseEntity } from '../../../database/model/base/Base.entity'
-import {
-	Point,
-	PointType
-} from '../../restaurant/persistence/custom-type/PointType'
+import { Point, PointType } from '../../restaurant/persistence/custom-type/point-type'
 import { PostCommentEntity } from '../../post-comment/persistence/post-comment.entity'
-import { UserEntity } from '../../user/persistance/User.entity'
+import { UserEntity } from '../../user/persistance/user.entity'
 import { PostMediaEntity } from '../../post-media/persistence/post-media.entity'
 import { PostHashtagEntity } from '../../post-hashtag/persistence/post-hashtag.entity'
 
@@ -58,7 +55,7 @@ export class PostEntity extends BaseEntity<'location'> {
 	@ManyToOne({
 		entity: () => UserEntity,
 		inversedBy: 'posts',
-		fieldName: 'user_id',
+		fieldName: 'user_id'
 	})
 	user: UserEntity
 
@@ -69,12 +66,7 @@ export class PostEntity extends BaseEntity<'location'> {
 	})
 	hashtags = new Collection<PostHashtagEntity>(this)
 
-	constructor(
-		user: UserEntity,
-		title: string,
-		caption: string,
-		location?: Point
-	) {
+	constructor(user: UserEntity, title: string, caption: string, location?: Point) {
 		super()
 		this.user = user
 		this.title = title

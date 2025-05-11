@@ -2,7 +2,7 @@ import { NotFoundException, UnauthorizedException } from '@nestjs/common'
 import { Socket } from 'socket.io'
 import { JwtService } from '@nestjs/jwt'
 import { EntityManager } from '@mikro-orm/postgresql'
-import { UserEntity } from '../modules/user/persistance/User.entity'
+import { UserEntity } from '../modules/user/persistance/user.entity'
 
 type GatewayIOMiddleware = (socket: Socket, next: (err?: Error) => void) => void
 

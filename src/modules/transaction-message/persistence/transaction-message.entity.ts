@@ -1,7 +1,7 @@
 import { Entity, ManyToOne, Property } from '@mikro-orm/core'
 import { BaseEntity } from '../../../database/model/base/Base.entity'
 import { TransactionEntity } from '../../transaction/persistence/transaction.entity'
-import { UserEntity } from '../../user/persistance/User.entity'
+import { UserEntity } from '../../user/persistance/user.entity'
 
 @Entity({ tableName: 'transaction_messages' })
 export class TransactionMessageEntity extends BaseEntity {

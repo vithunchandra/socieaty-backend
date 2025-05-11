@@ -10,7 +10,7 @@ import {
 import { GatewayAuthMiddleware, GuardedSocketDto } from '../../middleware/gateway.middleware'
 import { JwtService } from '@nestjs/jwt'
 import { EntityManager } from '@mikro-orm/postgresql'
-import { UserEntity } from '../user/persistance/User.entity'
+import { UserEntity } from '../user/persistance/user.entity'
 import { TransactionMessage } from './domain/transaction-message'
 
 export type serverToClientTransactionMessageEvents = {

@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
-import { RestaurantEntity } from '../restaurant/persistence/entity/Restaurant.entity'
+import { RestaurantEntity } from '../restaurant/persistence/entity/restaurant.entity'
 import { CreateFoodMenuRequestDto } from './dto/create-food-menu-request.dto'
 import { UpdateFoodMenuRequestDto } from './dto/update-food-menu-request.dto'
 import { FoodMenuDaoService } from './persistence/food-menu.dao.service'

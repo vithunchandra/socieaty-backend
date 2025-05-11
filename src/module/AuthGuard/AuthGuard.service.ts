@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { Request } from "express";
-import { UserDaoService } from "src/modules/user/persistance/User.dao.service";
+import { UserDaoService } from "src/modules/user/persistance/user.dao.service";
 
 @Injectable()
 export class AuthGuard implements CanActivate {

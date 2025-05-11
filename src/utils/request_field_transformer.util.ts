@@ -7,7 +7,7 @@ import {
 import { SortOrder, sortOrderMap } from '../enums/sort-order.enum'
 import { foodOrderSortByMap, foodOrderStatusMap } from '../enums/food-order.enum'
 import { fraudStatusMap, paymentStatusMap } from '../enums/topup.enum'
-import { userRoleMap } from '../modules/user/persistance/User.entity'
+import { userRoleMap } from '../modules/user/persistance/user.entity'
 import { supportTicketStatusMap } from '../enums/support-ticket.enum'
 import { restaurantVerificationStatusMap } from '../enums/restaurant-verification-status.enum'
 import { transactionServiceTypeMap, transactionSortByMap, transactionStatusMap } from '../enums/transaction.enum'

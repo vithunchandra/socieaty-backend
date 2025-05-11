@@ -9,8 +9,8 @@ import {
 	IsString,
 	ValidateNested
 } from 'class-validator'
-import { UserRole } from '../../user/persistance/User.entity'
-import { Point } from '../persistence/custom-type/PointType'
+import { UserRole } from '../../user/persistance/user.entity'
+import { Point } from '../persistence/custom-type/point-type'
 import { Transform, Type } from 'class-transformer'
 import { BankEnum } from '../../../enums/bank.enum'
 import { RestaurantVerificationStatus } from '../../../enums/restaurant-verification-status.enum'

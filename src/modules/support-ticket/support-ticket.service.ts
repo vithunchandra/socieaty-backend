@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
 import { SupportTicketDaoService } from './persistence/support-ticket.dao.service'
-import { UserEntity, UserRole } from '../user/persistance/User.entity'
+import { UserEntity, UserRole } from '../user/persistance/user.entity'
 import { CreateSupportTicketRequestDto } from './dto/create-support-ticket-request.dto'
 import { EntityManager } from '@mikro-orm/core'
 import { SupportTicketMapper } from './domain/support-ticket.mapper'

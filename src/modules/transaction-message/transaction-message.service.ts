@@ -1,7 +1,7 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
 import { TransactionMessageDaoService } from './persistence/transaction-message.dao.service'
 import { TransactionMessageGateway } from './transaction-message.gateway'
-import { UserEntity, UserRole } from '../user/persistance/User.entity'
+import { UserEntity, UserRole } from '../user/persistance/user.entity'
 import { EntityManager } from '@mikro-orm/postgresql'
 import { TransactionMessageMapper } from './domain/transaction-message.mapper'
 import { TransactionDaoService } from '../transaction/persistence/transaction.dao.service'

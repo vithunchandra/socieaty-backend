@@ -11,7 +11,7 @@ import {
 } from '@nestjs/websockets'
 import { GatewayAuthMiddleware, GuardedSocketDto } from '../../middleware/gateway.middleware'
 import { SupportTicket } from './domain/support-ticket'
-import { UserEntity } from '../user/persistance/User.entity'
+import { UserEntity } from '../user/persistance/user.entity'
 
 export type ServerToClientSupportTicketEvents = {
 	'track-support-ticket': (order: SupportTicket) => void

@@ -4,10 +4,10 @@ import {
 	Injectable,
 	NotFoundException
 } from '@nestjs/common'
-import { UserDaoService } from './persistance/User.dao.service'
+import { UserDaoService } from './persistance/user.dao.service'
 import { EntityManager } from '@mikro-orm/postgresql'
 import { PaginateUsersRequestQueryDto } from './dto/paginate-users-request-query.dto'
-import { UserEntity, UserRole } from './persistance/User.entity'
+import { UserEntity, UserRole } from './persistance/user.entity'
 import { UserMapper } from './domain/user.mapper'
 import { PaginationDto } from '../../dto/pagination.dto'
 

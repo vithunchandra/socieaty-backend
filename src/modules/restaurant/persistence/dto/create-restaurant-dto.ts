@@ -1,4 +1,4 @@
-import { Point } from 'src/modules/restaurant/persistence/custom-type/PointType'
+import { Point } from 'src/modules/restaurant/persistence/custom-type/point-type'
 import { BankEnum } from '../../../../enums/bank.enum'
 
 export interface CreateRestaurantDto {
