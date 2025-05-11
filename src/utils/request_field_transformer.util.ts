@@ -18,6 +18,11 @@ function fieldToDate(data: TransformFnParams) {
 	return new Date(data.value)
 }
 
+function fieldToBoolean(data: TransformFnParams) {
+	if (data.value === null || (data.value as String) === '') return undefined
+	return data.value
+}
+
 function fieldToString(data: TransformFnParams) {
 	if (data.value === null || (data.value as String) === '') return undefined
 	return data.value
@@ -103,6 +108,7 @@ export {
 	fieldToDate,
 	fieldToString,
 	fieldToNumber,
+	fieldToBoolean,
 	fieldToReservationStatus,
 	fieldToReservationSortBy,
 	fieldToSortOrder,

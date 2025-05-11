@@ -166,6 +166,24 @@ export class RestaurantService {
 		}
 	}
 
+	async toggleReservationAvailability(restaurant: UserEntity, toggleValue: boolean) {
+		const reservationConfigExist = await this.restaurantDao.getReservationConfig(
+			restaurant.restaurantData!.id
+		)
+		if (!reservationConfigExist) {
+			throw new BadRequestException('Reservation config tidak ditemukan')
+		}
+
+		restaurant.restaurantData!.isReservationAvailable = toggleValue
+		await this.entityManager.flush()
+		const newRestaurant = await this.restaurantDao.findRestaurantById(
+			restaurant.restaurantData!.id
+		)
+		return {
+			restaurant: UserMapper.fromRestaurantToDomain(newRestaurant!)
+		}
+	}
+
 	async getProfile(user_id: string) {
 		const user = await this.restaurantDao.getProfile(user_id)
 		if (!user) {

@@ -29,6 +29,7 @@ import { diskStorage } from 'multer'
 import { PROFILE_PICTURE_UPLOADS_DIR, RESTAURANT_BANNER_UPLOADS_DIR } from '../../constants'
 import { fileNameEditor, imageFileFilter } from '../../utils/image.utils'
 import { UpdateRestaurantDataRequestDto } from './dto/update-restaurant-data-request.dto'
+import { ToggleReservationAvailabilityRequestDto } from './dto/toggle-reservation-availability-request.dto'
 
 @Controller('restaurant')
 export class RestaurantController {
@@ -68,6 +69,16 @@ export class RestaurantController {
 		@Body() data: UpdateReservationConfigRequestDto
 	) {
 		return await this.restaurantService.updateReservationConfig(req.user.restaurantData!, data)
+	}
+
+	@Put('reservation-availability')
+	@Roles(UserRole.RESTAURANT)
+	@UseGuards(AuthGuard, RolesGuard)
+	async toggleReservationAvailability(
+		@Request() req: GuardedRequestDto,
+		@Body() data: ToggleReservationAvailabilityRequestDto
+	) {
+		return await this.restaurantService.toggleReservationAvailability(req.user, data.value)
 	}
 
 	@Get('reservation-config/:restaurantId')
