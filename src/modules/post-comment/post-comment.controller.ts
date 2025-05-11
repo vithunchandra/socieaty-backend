@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post, Put, Req, Request, UseGuards } from "@nestjs/common";
 import { CreatePostCommentRequestDto } from "./dto/create-post-comment-request.dto";
 import { PostCommentService } from "./post-comment.service";
-import { AuthGuard } from "../../module/AuthGuard/AuthGuard.service";
+import { AuthGuard } from "../../module/AuthGuard/auth-guard.service";
 import { LikePostCommentRequestDto } from "./dto/like-post-comment-request.dto";
 
 @Controller('post/:postId/comment')

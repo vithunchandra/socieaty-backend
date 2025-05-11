@@ -1,7 +1,7 @@
 import { Controller, Delete, Get, Param, Post, Put, Query, Req, UseGuards } from '@nestjs/common'
 import { UserService } from './user.service'
 import { PaginateUsersRequestQueryDto } from './dto/paginate-users-request-query.dto'
-import { AuthGuard } from '../../module/AuthGuard/AuthGuard.service'
+import { AuthGuard } from '../../module/AuthGuard/auth-guard.service'
 import { GuardedRequestDto } from '../../module/AuthGuard/dto/guarded-request.dto'
 import { RolesGuard } from '../../module/RoleGuard/roles.guard'
 import { UserRole } from './persistance/user.entity'

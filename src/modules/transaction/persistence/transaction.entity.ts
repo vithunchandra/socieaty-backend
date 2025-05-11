@@ -12,7 +12,7 @@ import { TransactionServiceType, TransactionStatus } from '../../../enums/transa
 import { CreateTransactionDto } from './dto/create-transaction.dto'
 import { RestaurantEntity } from '../../restaurant/persistence/entity/restaurant.entity'
 import { CustomerEntity } from '../../customer/persistence/customer.entity'
-import { BaseEntity } from '../../../database/model/base/Base.entity'
+import { BaseEntity } from '../../../database/model/base/base.entity'
 import { TransactionMessageEntity } from '../../transaction-message/persistence/transaction-message.entity'
 import { TransactionReviewEntity } from '../../transaction-review/persistence/transaction-review.entity'
 import { FoodOrderEntity } from '../../food-order-transaction/persistence/entity/food-order-transaction.entity'

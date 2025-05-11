@@ -1,4 +1,4 @@
-import { User } from "../../user/domain/User";
+import { User } from "../../user/domain/user";
 
 export class TransactionMessage {
     id: string;

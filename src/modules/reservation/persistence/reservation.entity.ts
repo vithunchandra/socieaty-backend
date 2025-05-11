@@ -1,5 +1,5 @@
 import { Entity, Property, ManyToOne, Enum, OneToMany, Collection, OneToOne } from '@mikro-orm/core'
-import { BaseEntity } from '../../../database/model/base/Base.entity'
+import { BaseEntity } from '../../../database/model/base/base.entity'
 import { ReservationStatus } from '../../../enums/reservation.enum'
 import { RestaurantEntity } from '../../restaurant/persistence/entity/restaurant.entity'
 import { CustomerEntity } from '../../customer/persistence/customer.entity'

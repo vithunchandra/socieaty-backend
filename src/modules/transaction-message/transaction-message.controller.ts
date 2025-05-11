@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post, Request, UseGuards } from '@nestjs/common'
 import { TransactionMessageService } from './transaction-message.service'
-import { AuthGuard } from '../../module/AuthGuard/AuthGuard.service'
+import { AuthGuard } from '../../module/AuthGuard/auth-guard.service'
 import { GuardedRequestDto } from '../../module/AuthGuard/dto/guarded-request.dto'
 import { CreateTransactionMessageRequestDto } from './dto/create-transaction-message-request.dto'
 

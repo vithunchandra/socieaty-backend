@@ -9,7 +9,7 @@ import {
 	OptionalProps,
 	Property
 } from '@mikro-orm/core'
-import { BaseEntity } from '../../../database/model/base/Base.entity'
+import { BaseEntity } from '../../../database/model/base/base.entity'
 import { Point, PointType } from '../../restaurant/persistence/custom-type/point-type'
 import { PostCommentEntity } from '../../post-comment/persistence/post-comment.entity'
 import { UserEntity } from '../../user/persistance/user.entity'

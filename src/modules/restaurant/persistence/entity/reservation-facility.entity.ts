@@ -1,5 +1,5 @@
 import { Collection, Entity, ManyToMany, Property } from "@mikro-orm/core";
-import { BaseEntity } from "../../../../database/model/base/Base.entity";
+import { BaseEntity } from "../../../../database/model/base/base.entity";
 import { ReservationConfigEntity } from "./reservation-config.entity";
 
 @Entity({ tableName: "reservation_facility" })

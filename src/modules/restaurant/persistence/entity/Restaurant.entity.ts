@@ -8,7 +8,7 @@ import {
 	OneToOne,
 	Property
 } from '@mikro-orm/core'
-import { BaseEntity } from '../../../../database/model/base/Base.entity'
+import { BaseEntity } from '../../../../database/model/base/base.entity'
 import { UserEntity } from '../../../user/persistance/user.entity'
 import { Point, PointType } from '../custom-type/point-type'
 import { RestaurantThemeEntity } from './restaurant-theme.entity'

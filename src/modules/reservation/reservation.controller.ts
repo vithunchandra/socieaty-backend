@@ -13,7 +13,7 @@ import {
 	UseGuards
 } from '@nestjs/common'
 import { ReservationService } from './reservation.service'
-import { AuthGuard } from '../../module/AuthGuard/AuthGuard.service'
+import { AuthGuard } from '../../module/AuthGuard/auth-guard.service'
 import { CreateReservationRequestDto } from './dto/create-reservation-request.dto'
 import { Roles } from '../../module/RoleGuard/roles.decorator'
 import { RolesGuard } from '../../module/RoleGuard/roles.guard'

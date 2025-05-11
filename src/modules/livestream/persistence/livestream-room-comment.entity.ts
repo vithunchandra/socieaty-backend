@@ -1,6 +1,6 @@
 import { Entity, ManyToOne, Property } from '@mikro-orm/core'
 import { UserEntity } from '../../user/persistance/user.entity'
-import { BaseEntity } from '../../../database/model/base/Base.entity'
+import { BaseEntity } from '../../../database/model/base/base.entity'
 
 @Entity({ tableName: 'livestream-room-comment' })
 export class LivestreamRoomCommentEntity extends BaseEntity {

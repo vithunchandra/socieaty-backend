@@ -1,5 +1,5 @@
 import { Collection, Entity, Enum, OneToMany, OneToOne, Property } from '@mikro-orm/core'
-import { BaseEntity } from '../../../../database/model/base/Base.entity'
+import { BaseEntity } from '../../../../database/model/base/base.entity'
 import { MenuItemEntity } from '../../../menu-items/persistence/menu-item.entity'
 import { TransactionEntity } from '../../../transaction/persistence/transaction.entity'
 import { CreateFoodOrderTransactionDto } from '../dto/create-food-order-transaction.dto'

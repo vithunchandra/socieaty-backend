@@ -1,6 +1,6 @@
 import { Entity, ManyToOne, Property } from '@mikro-orm/core'
 import { FoodMenuEntity } from '../../food-menu/persistence/food-menu.entity'
-import { BaseEntity } from '../../../database/model/base/Base.entity'
+import { BaseEntity } from '../../../database/model/base/base.entity'
 import { FoodOrderEntity } from '../../food-order-transaction/persistence/entity/food-order-transaction.entity'
 import { ReservationEntity } from '../../reservation/persistence/reservation.entity'
 

@@ -1,5 +1,5 @@
 import { Collection, Entity, ManyToMany, Property, Unique } from "@mikro-orm/core";
-import { BaseEntity } from "../../../database/model/base/Base.entity";
+import { BaseEntity } from "../../../database/model/base/base.entity";
 import { PostEntity } from "../../post/persistence/post.entity";
 
 @Entity({tableName: 'post_hashtag'})

@@ -1,5 +1,5 @@
 import { Collection, Entity, ManyToMany, PrimaryKey, Property } from '@mikro-orm/core'
-import { BaseEntity } from '../../../database/model/base/Base.entity'
+import { BaseEntity } from '../../../database/model/base/base.entity'
 import { FoodMenuEntity } from './food-menu.entity'
 
 @Entity({ tableName: 'menu_category' })

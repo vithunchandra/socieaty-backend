@@ -1,10 +1,8 @@
-import { PostCommentMapper } from '../../post-comment/domain/post-comment.mapper'
 import { PostHashtagMapper } from '../../post-hashtag/domain/post-hashtag.mapper'
 import { PostMediaMapper } from '../../post-media/domain/post-media.mapper'
 import { PostEntity } from '../persistence/post.entity'
 import { Post } from './post'
 import { UserMapper } from '../../user/domain/user.mapper'
-import { User } from '../../user/domain/User'
 import { PostLike } from './post-likes'
 
 export class PostMapper {

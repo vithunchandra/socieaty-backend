@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post, Request, UseGuards } from '@nestjs/common'
 import { TopupService } from './topup.service'
 import { CreateTopupRequestDto } from './dto/create-topup-request.dto'
-import { AuthGuard } from '../../module/AuthGuard/AuthGuard.service'
+import { AuthGuard } from '../../module/AuthGuard/auth-guard.service'
 import { RolesGuard } from '../../module/RoleGuard/roles.guard'
 import { Roles } from '../../module/RoleGuard/roles.decorator'
 import { UserRole } from '../user/persistance/user.entity'

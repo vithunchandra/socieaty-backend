@@ -1,6 +1,6 @@
 import { wrap } from '@mikro-orm/core'
 import { UserEntity } from '../persistance/user.entity'
-import { User } from './User'
+import { User } from './user'
 import { CustomerMapper } from 'src/modules/customer/domain/customer.mapper'
 import { RestaurantMapper } from 'src/modules/restaurant/domain/restaurant.mapper'
 import { CustomerEntity } from 'src/modules/customer/persistence/customer.entity'

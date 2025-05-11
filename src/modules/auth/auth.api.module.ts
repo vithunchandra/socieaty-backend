@@ -5,7 +5,7 @@ import { RestaurantModule } from '../restaurant/restaurant.api.module'
 import { UserDaoModule } from '../user/persistance/user.dao.module'
 import { AuthService } from './auth.api.service'
 import { CustomerModule } from '../customer/customer.api.module'
-import { AuthGuardModule } from 'src/module/AuthGuard/AuthGuard.module'
+import { AuthGuardModule } from 'src/module/AuthGuard/auth-guard.module'
 
 @Module({
 	imports: [CustomerModule, RestaurantModule, UserDaoModule, ConfigModule.forRoot()],

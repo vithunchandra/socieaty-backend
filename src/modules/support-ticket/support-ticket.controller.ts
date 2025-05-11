@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post, Put, Query, Request, UseGuards } from '@nestjs/common'
 import { CreateSupportTicketRequestDto } from './dto/create-support-ticket-request.dto'
-import { AuthGuard } from '../../module/AuthGuard/AuthGuard.service'
+import { AuthGuard } from '../../module/AuthGuard/auth-guard.service'
 import { GuardedRequestDto } from '../../module/AuthGuard/dto/guarded-request.dto'
 import { SupportTicketService } from './support-ticket.service'
 import { UpdateSupportTicketRequestDto } from './dto/update-support-ticket-request.dto'

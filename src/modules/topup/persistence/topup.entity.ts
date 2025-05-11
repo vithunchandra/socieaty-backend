@@ -1,7 +1,7 @@
 import { Entity, Enum, ManyToOne, Property } from '@mikro-orm/core'
 import { CustomerEntity } from '../../customer/persistence/customer.entity'
 import { TopupStatus } from '../../../enums/topup.enum'
-import { BaseEntity } from '../../../database/model/base/Base.entity'
+import { BaseEntity } from '../../../database/model/base/base.entity'
 
 @Entity({ tableName: 'topups' })
 export class TopupEntity extends BaseEntity {

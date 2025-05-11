@@ -1,7 +1,7 @@
 import { TransactionServiceType, TransactionStatus } from '../../../enums/transaction.enum'
 import { FoodOrder } from '../../food-order-transaction/domain/food-order'
 import { Reservation } from '../../reservation/domain/reservation'
-import { User } from '../../user/domain/User'
+import { User } from '../../user/domain/user'
 
 export abstract class BaseTransaction {
 	transactionId: string

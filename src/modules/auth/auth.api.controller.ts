@@ -23,7 +23,7 @@ import {
 } from 'src/constants'
 import { fileNameEditor, imageFileFilter } from 'src/utils/image.utils'
 import { AuthService } from './auth.api.service'
-import { AuthGuard } from 'src/module/AuthGuard/AuthGuard.service'
+import { AuthGuard } from 'src/module/AuthGuard/auth-guard.service'
 
 @Controller('auth')
 export class AuthController {

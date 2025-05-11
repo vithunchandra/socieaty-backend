@@ -78,6 +78,7 @@ export default defineConfig({
 	],
 	dbName: config().dbName ?? 'socieaty_database',
 	driver: PostgreSqlDriver,
+	host: config().host ?? 'localhost',
 	port: config().port ?? 5432,
 	name: config().name ?? 'postgres',
 	password: config().password ?? 'root',

@@ -1,5 +1,5 @@
 import { Post } from "../../post/domain/post";
-import { User } from "./User";
+import { User } from "./user";
 
 class UserProfile{
     user: User

@@ -12,7 +12,7 @@ import {
 	UseGuards
 } from '@nestjs/common'
 import { LiveStreamService } from './livestream.service'
-import { AuthGuard } from '../../module/AuthGuard/AuthGuard.service'
+import { AuthGuard } from '../../module/AuthGuard/auth-guard.service'
 import { GuardedRequestDto } from '../../module/AuthGuard/dto/guarded-request.dto'
 import { StartLivestreamRequestDto } from './dto/start-livestream-request.dto'
 import { CommentLivestreamRequestDto } from './dto/comment-livestream-request.dto'

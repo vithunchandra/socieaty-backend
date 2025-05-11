@@ -11,7 +11,7 @@ import {
 	UseGuards
 } from '@nestjs/common'
 import { FoodOrderTransactionService } from './food-order-transaction.service'
-import { AuthGuard } from '../../module/AuthGuard/AuthGuard.service'
+import { AuthGuard } from '../../module/AuthGuard/auth-guard.service'
 import { RolesGuard } from '../../module/RoleGuard/roles.guard'
 import { UserRole } from '../user/persistance/user.entity'
 import { Roles } from '../../module/RoleGuard/roles.decorator'
