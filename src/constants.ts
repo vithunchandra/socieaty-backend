@@ -1,13 +1,14 @@
 import { join } from 'path'
 
 export default () => {
-	const FileUploadsDir = join(process.env.STORAGE_PATH ?? '', 'src', 'files')
+	const FileUploadsDir = join(process.env.STORAGE_PATH ?? '', 'files')
 
 	return {
 		// export const BASE_URL = 'http://192.168.200.194:3000/',
 		// export const BASE_URL = 'http://192.168.247.142:3000/',
-		BASE_URL: 'https://massive-dominant-grubworm.ngrok-free.app/',
+		// BASE_URL: 'https://massive-dominant-grubworm.ngrok-free.app/',
 		// export const BASE_URL = 'https://socieaty.share.zrok.io/',
+		BASE_URL: process.env.BASE_URL ?? 'https://35.219.33.128',
 
 		FILE_UPLOADS_DIR: FileUploadsDir,
 
