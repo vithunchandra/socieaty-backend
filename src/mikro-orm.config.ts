@@ -1,6 +1,5 @@
 import { Logger } from '@nestjs/common'
 import { defineConfig, PostgreSqlDriver } from '@mikro-orm/postgresql'
-import config from './database/config/config'
 import { CustomerEntity } from './modules/customer/persistence/customer.entity'
 import { TsMorphMetadataProvider } from '@mikro-orm/reflection'
 import { UserEntity } from './modules/user/persistance/user.entity'
@@ -76,19 +75,21 @@ export default defineConfig({
 		SupportTicketEntity,
 		SupportTicketMessageEntity
 	],
-	dbName: config().dbName ?? 'socieaty_database',
+	dbName: process.env.MIKRO_ORM_DB_NAME ?? 'socieaty_database',
 	driver: PostgreSqlDriver,
-	host: config().host ?? 'localhost',
-	port: config().port ?? 5432,
-	name: config().name ?? 'postgres',
-	password: config().password ?? 'root',
+	host: process.env.MIKRO_ORM_HOST ?? 'localhost',
+	port: parseInt(process.env.MIKRO_ORM_PORT ?? '5432'),
+	name: process.env.MIKRO_ORM_USER ?? 'postgres',
+	password: process.env.MIKRO_ORM_PASSWORD ?? 'root',
 	debug: true,
 	logger: logger.log.bind(logger),
 	forceUtcTimezone: true,
 	seeder: {
-		path: '/dist/database/seeder', // path to the folder with seeders
-		pathTs: 'D:/Kuliah/Tugas_Akhir/Project/Backend/socieaty-backend/src/database/seeder', // path to the folder with TS seeders (if used, you should put path to compiled files in `path`)
-		defaultSeeder: 'DatabaseSeeder', // default seeder class name
+		path: process.env.MIKRO_ORM_SEEDER_PATH ?? '/dist/database/seeder', // path to the folder with seeders
+		pathTs:
+			process.env.MIKRO_ORM_SEEDER_PATH_TS ??
+			'D:/Kuliah/Tugas_Akhir/Project/Backend/socieaty-backend/src/database/seeder', // path to the folder with TS seeders (if used, you should put path to compiled files in `path`)
+		defaultSeeder: process.env.MIKRO_ORM_SEEDER_DEFAULT ?? 'DatabaseSeeder', // default seeder class name
 		glob: '!(*.d).{js,ts}', // how to match seeder files (all .js and .ts files, but not .d.ts)
 		emit: 'ts', // seeder generation mode
 		fileName: (className: string) => className // seeder file naming convention
