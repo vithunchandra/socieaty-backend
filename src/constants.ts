@@ -1,37 +1,31 @@
 import { join } from 'path'
 
-// export const BASE_URL = 'http://192.168.200.194:3000/'
-// export const BASE_URL = 'http://192.168.247.142:3000/'
-// export const BASE_URL = 'https://massive-dominant-grubworm.ngrok-free.app/'
-export const BASE_URL = 'https://socieaty.share.zrok.io/'
+export default () => {
+	const FileUploadsDir = join(process.env.STORAGE_PATH ?? '', 'src', 'files')
 
-export const FILE_UPLOADS_DIR = join(process.cwd(), 'src', 'files')
+	return {
+		// export const BASE_URL = 'http://192.168.200.194:3000/',
+		// export const BASE_URL = 'http://192.168.247.142:3000/',
+		BASE_URL: 'https://massive-dominant-grubworm.ngrok-free.app/',
+		// export const BASE_URL = 'https://socieaty.share.zrok.io/',
 
-export const POST_MEDIA_UPLOADS_DIR = join(process.cwd(), 'src', 'files', 'post')
-export const POST_MEDIA_RELATIVE_DIR = 'files/post'
+		FILE_UPLOADS_DIR: FileUploadsDir,
 
-export const RESTAURANT_BANNER_UPLOADS_DIR = join(
-	process.cwd(),
-	'src',
-	'files',
-	'user',
-	'restaurant_banner'
-)
-export const RESTAURANT_BANNER_RELATIVE_DIR = 'files/user/restaurant_banner'
+		POST_MEDIA_UPLOADS_DIR: join(FileUploadsDir, 'post'),
+		POST_MEDIA_RELATIVE_URL: 'files/post',
 
-export const PROFILE_PICTURE_UPLOADS_DIR = join(
-	process.cwd(),
-	'src',
-	'files',
-	'user',
-	'profile_picture'
-)
-export const PROFILE_PICTURE_RELATIVE_DIR = 'files/user/profile_picture'
+		RESTAURANT_BANNER_UPLOADS_DIR: join(FileUploadsDir, 'user', 'restaurant_banner'),
+		RESTAURANT_BANNER_RELATIVE_URL: 'files/user/restaurant_banner',
 
-export const RESTAURANT_MENU_UPLOADS_DIR = join(process.cwd(), 'src', 'files', 'menu')
-export const RESTAURANT_MENU_RELATIVE_DIR = 'files/menu'
+		PROFILE_PICTURE_UPLOADS_DIR: join(FileUploadsDir, 'user', 'profile_picture'),
+		PROFILE_PICTURE_RELATIVE_URL: 'files/user/profile_picture',
 
-export const SERVICE_FEE = 5000
+		RESTAURANT_MENU_UPLOADS_DIR: join(FileUploadsDir, 'menu'),
+		RESTAURANT_MENU_RELATIVE_URL: 'files/menu',
 
-export const ADMIN_EMAIL = 'admin@socieaty.com'
-export const ADMIN_PASSWORD = 'admin'
+		SERVICE_FEE: 5000,
+
+		ADMIN_EMAIL: 'admin@socieaty.com',
+		ADMIN_PASSWORD: 'admin'
+	}
+}

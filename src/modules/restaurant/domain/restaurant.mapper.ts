@@ -1,4 +1,4 @@
-import { BASE_URL } from '../../../constants'
+import constants from '../../../constants'
 import { RestaurantEntity } from '../persistence/entity/restaurant.entity'
 import { Restaurant } from './restaurant'
 import { RestaurantThemeMapper } from './restaurant-theme.mapper'
@@ -12,7 +12,7 @@ export class RestaurantMapper {
 		const restaurant = new Restaurant()
 		restaurant.id = raw.id
 		restaurant.wallet = raw.wallet
-		restaurant.restaurantBannerUrl = `${BASE_URL}${raw.restaurantBannerUrl}`
+		restaurant.restaurantBannerUrl = `${constants().BASE_URL}${raw.restaurantBannerUrl}`
 		restaurant.location = raw.location
 		restaurant.themes = raw.themes
 			.map((theme) => RestaurantThemeMapper.toDomain(theme))

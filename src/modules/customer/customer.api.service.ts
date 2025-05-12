@@ -6,7 +6,7 @@ import { UserMapper } from '../user/domain/user.mapper'
 import { UpdateCustomerProfileRequestDto } from './dto/update-customer-profile-request.dto'
 import { unlink } from 'fs'
 import { EntityManager } from '@mikro-orm/postgresql'
-import { PROFILE_PICTURE_RELATIVE_DIR } from '../../constants'
+import constants from '../../constants'
 import { UserRole } from '../user/persistance/user.entity'
 
 @Injectable()
@@ -67,7 +67,7 @@ export class CustomerService {
 		this.userDao.update(user, {
 			...data,
 			profilePictureUrl: profilePicture
-				? `${PROFILE_PICTURE_RELATIVE_DIR}/${profilePicture.filename}`
+				? `${constants().PROFILE_PICTURE_RELATIVE_URL}/${profilePicture.filename}`
 				: (user.profilePictureUrl ?? undefined)
 		})
 

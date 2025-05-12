@@ -5,13 +5,13 @@ import { CustomerMapper } from 'src/modules/customer/domain/customer.mapper'
 import { RestaurantMapper } from 'src/modules/restaurant/domain/restaurant.mapper'
 import { CustomerEntity } from 'src/modules/customer/persistence/customer.entity'
 import { RestaurantEntity } from 'src/modules/restaurant/persistence/entity/restaurant.entity'
-import { BASE_URL } from '../../../constants'
+import constants from '../../../constants'
 
 export class UserMapper {
 	static toDomain(raw: UserEntity) {
 		let profilePictureUrl: string | null = null
 		if (raw.profilePictureUrl) {
-			profilePictureUrl = `${BASE_URL}${raw.profilePictureUrl}`
+			profilePictureUrl = `${constants().BASE_URL}${raw.profilePictureUrl}`
 		}
 		let isDeleted = false
 		if (raw.deletedAt) {
@@ -35,7 +35,7 @@ export class UserMapper {
 		const user = new User()
 		let profilePictureUrl: string | null = null
 		if (raw.userData.profilePictureUrl) {
-			profilePictureUrl = `${BASE_URL}${raw.userData.profilePictureUrl}`
+			profilePictureUrl = `${constants().BASE_URL}${raw.userData.profilePictureUrl}`
 		}
 
 		const userData = raw.userData
@@ -61,7 +61,7 @@ export class UserMapper {
 	static fromRestaurantToDomain(raw: RestaurantEntity) {
 		let profilePictureUrl: string | null = null
 		if (raw.userData.profilePictureUrl) {
-			profilePictureUrl = `${BASE_URL}${raw.userData.profilePictureUrl}`
+			profilePictureUrl = `${constants().BASE_URL}${raw.userData.profilePictureUrl}`
 		}
 
 		const user = new User()

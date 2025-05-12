@@ -8,7 +8,6 @@ import {
 	Put,
 	Query,
 	Request,
-	UploadedFile,
 	UploadedFiles,
 	UseGuards,
 	UseInterceptors
@@ -17,7 +16,6 @@ import { CreatePostRequestDto } from './dto/create-post-request.dto'
 import { PostService } from './post.service'
 import { FilesInterceptor } from '@nestjs/platform-express'
 import { diskStorage } from 'multer'
-import { FILE_UPLOADS_DIR, POST_MEDIA_UPLOADS_DIR } from 'src/constants'
 import { fileDestination, fileNameEditor, mediaFileFilter } from 'src/utils/image.utils'
 import { AuthGuard } from 'src/module/AuthGuard/auth-guard.service'
 import { LikePostRequestDto } from './dto/like-post-request.dto'

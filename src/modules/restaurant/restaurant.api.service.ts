@@ -15,7 +15,7 @@ import { Point } from './persistence/custom-type/point-type'
 import { GetNearestRestaurantRequestDto } from './dto/get-nearest-restaurant-request.dto'
 import { GetAllUnverifiedRestaurantRequestQueryDto } from './dto/get-all-unverified-restaurant-request-query.dto'
 import { UpdateRestaurantVerificationStatusRequestDto } from './dto/update-restaurant-verification-status-request.dto'
-import { PROFILE_PICTURE_RELATIVE_DIR, RESTAURANT_BANNER_RELATIVE_DIR } from '../../constants'
+import constants from '../../constants'
 import { UpdateRestaurantDataRequestDto } from './dto/update-restaurant-data-request.dto'
 import { UserEntity } from '../user/persistance/user.entity'
 import { unlink } from 'fs'
@@ -39,13 +39,13 @@ export class RestaurantService {
 			email: data.email,
 			password: data.password,
 			phoneNumber: data.phoneNumber,
-			profilePictureUrl: `${PROFILE_PICTURE_RELATIVE_DIR}/${profilePicture.filename}`,
+			profilePictureUrl: `${constants().PROFILE_PICTURE_RELATIVE_URL}/${profilePicture.filename}`,
 			role: data.role
 		})
 		const restaurant = this.restaurantDao.create(user, {
 			userId: user.id,
 			restaurantAddress: data.address,
-			restaurantBannerUrl: `${RESTAURANT_BANNER_RELATIVE_DIR}/${restaurantBanner.filename}`,
+			restaurantBannerUrl: `${constants().RESTAURANT_BANNER_RELATIVE_URL}/${restaurantBanner.filename}`,
 			restaurantThemes: data.themes,
 			payoutBank: data.payoutBank,
 			accountNumber: data.accountNumber,
@@ -92,14 +92,14 @@ export class RestaurantService {
 		this.userDao.update(user, {
 			...data,
 			profilePictureUrl: profilePicture
-				? `${PROFILE_PICTURE_RELATIVE_DIR}/${profilePicture.filename}`
+				? `${constants().PROFILE_PICTURE_RELATIVE_URL}/${profilePicture.filename}`
 				: (user.profilePictureUrl ?? undefined)
 		})
 
 		await this.restaurantDao.updateRestaurantData(user.restaurantData!, {
 			restaurantAddress: data.address,
 			restaurantBannerUrl: restaurantBanner
-				? `${RESTAURANT_BANNER_RELATIVE_DIR}/${restaurantBanner.filename}`
+				? `${constants().RESTAURANT_BANNER_RELATIVE_URL}/${restaurantBanner.filename}`
 				: (user.restaurantData?.restaurantBannerUrl ?? ''),
 			payoutBank: data.payoutBank,
 			accountNumber: data.accountNumber,

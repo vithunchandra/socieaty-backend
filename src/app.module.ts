@@ -25,13 +25,15 @@ import { PaymentModule } from './modules/payment/payment.module'
 import { TopupModule } from './modules/topup/topup.module'
 import { UserModule } from './modules/user/user.module'
 import { SupportTicketModule } from './modules/support-ticket/support-ticket.module'
+import constants from './constants'
 
 @Module({
 	imports: [
 		OrmModule,
 		MikroOrmModule.forFeature([UserEntity]),
 		ConfigModule.forRoot({
-			isGlobal: true
+			isGlobal: true,
+			load: [config, constants]
 		}),
 		ScheduleModule.forRoot(),
 		JwtModule.register({

@@ -1,7 +1,7 @@
 import { BadRequestException } from '@nestjs/common'
 import { Request } from 'express'
-import { POST_MEDIA_UPLOADS_DIR } from '../constants'
 import * as Ffmpeg from 'fluent-ffmpeg'
+import constants from '../constants'
 
 const fileNameEditor = (
 	req: Request,
@@ -51,26 +51,29 @@ const fileDestination = (
 	file: Express.Multer.File,
 	callback: (error: Error | null, destination: string) => void
 ) => {
+	console.log(`destination: ${constants().POST_MEDIA_UPLOADS_DIR}`)
 	const extension = file.originalname.substring(file.originalname.lastIndexOf('.'))
 	if (extension.match(/\.(mp4|webm|ogg|mp3|wav|flac|aac)$/i)) {
-		callback(null, `${POST_MEDIA_UPLOADS_DIR}/videos`)
+		callback(null, `${constants().POST_MEDIA_UPLOADS_DIR}/videos`)
 	} else {
-		callback(null, `${POST_MEDIA_UPLOADS_DIR}/images`)
+		callback(null, `${constants().POST_MEDIA_UPLOADS_DIR}/images`)
 	}
 }
 
 async function generateVideoThumbnail(videoPath: string, filename: string) {
 	return new Promise<string>((resolve, reject) => {
+		console.log(constants().POST_MEDIA_UPLOADS_DIR)
 		const videoThumbnailFilename = `thumbnail_${filename.split('.')[0]}_${Date.now()}.jpg`
 		Ffmpeg(videoPath)
 			.screenshots({
 				count: 1,
 				timestamps: [0], // Capture a thumbnail at 1 second into the video
 				filename: videoThumbnailFilename, // Generate a unique filename
-				folder: `${POST_MEDIA_UPLOADS_DIR}/thumbnails`
+				folder: `${constants().POST_MEDIA_UPLOADS_DIR}/thumbnails`
 			})
 			.on('end', () => {
-				resolve(`files/post/thumbnails/${videoThumbnailFilename}`)
+				console.log(`${constants().POST_MEDIA_RELATIVE_URL}/thumbnails/${videoThumbnailFilename}`)
+				resolve(`${constants().POST_MEDIA_RELATIVE_URL}/thumbnails/${videoThumbnailFilename}`)
 			})
 			.on('error', (err) => {
 				reject(new BadRequestException('Error generating thumbnail'))

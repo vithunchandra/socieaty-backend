@@ -7,19 +7,9 @@ import { Point } from '../../modules/restaurant/persistence/custom-type/point-ty
 import { CustomerEntity } from '../../modules/customer/persistence/customer.entity'
 import { BankEnum } from '../../enums/bank.enum'
 import { RestaurantThemeEntity } from '../../modules/restaurant/persistence/entity/restaurant-theme.entity'
-import {
-	ADMIN_EMAIL,
-	ADMIN_PASSWORD,
-	PROFILE_PICTURE_UPLOADS_DIR,
-	RESTAURANT_BANNER_UPLOADS_DIR,
-	RESTAURANT_MENU_UPLOADS_DIR,
-	SERVICE_FEE
-} from '../../constants'
 import { MenuCategoryEntity } from '../../modules/food-menu/persistence/menu-category.entity'
 import { PostEntity } from '../../modules/post/persistence/post.entity'
-import { POST_MEDIA_UPLOADS_DIR } from '../../constants'
 import { PostMediaEntity } from '../../modules/post-media/persistence/post-media.entity'
-import { PostHashtagEntity } from '../../modules/post-hashtag/persistence/post-hashtag.entity'
 import { PostCommentEntity } from '../../modules/post-comment/persistence/post-comment.entity'
 import { FoodMenuEntity } from '../../modules/food-menu/persistence/food-menu.entity'
 import { ReservationFacilityEntity } from '../../modules/restaurant/persistence/entity/reservation-facility.entity'
@@ -33,6 +23,8 @@ import { MenuItemEntity } from '../../modules/menu-items/persistence/menu-item.e
 import { FoodMenuCartDto } from '../../modules/food-order-transaction/persistence/dto/food-menu-cart.dto'
 import { FoodOrderEntity } from '../../modules/food-order-transaction/persistence/entity/food-order-transaction.entity'
 import { FoodOrderStatus } from '../../enums/food-order.enum'
+import constants from '../../constants'
+import { PostHashtagEntity } from '../../modules/post-hashtag/persistence/post-hashtag.entity'
 
 const bank: BankEnum[] = [BankEnum.BNI, BankEnum.BCA, BankEnum.BRI, BankEnum.MANDIRI]
 class Medias {
@@ -332,10 +324,10 @@ export class DatabaseSeeder extends Seeder {
 
 		const adminUser = em.create(UserEntity, {
 			name: 'admin',
-			email: ADMIN_EMAIL,
-			password: ADMIN_PASSWORD,
+			email: constants().ADMIN_EMAIL,
+			password: constants().ADMIN_PASSWORD,
 			phoneNumber: '081234567890',
-			profilePictureUrl: `files/user/profile_picture/dummy/${faker.helpers.arrayElement(dummyProfilePicture)}`,
+			profilePictureUrl: `${constants().PROFILE_PICTURE_RELATIVE_URL}/dummy/${faker.helpers.arrayElement(dummyProfilePicture)}`,
 			role: UserRole.ADMIN
 		})
 
@@ -345,7 +337,7 @@ export class DatabaseSeeder extends Seeder {
 			email: 'customer1@gmail.com',
 			phoneNumber: '081234567890',
 			password: 'customer1',
-			profilePictureUrl: `files/user/profile_picture/dummy/${faker.helpers.arrayElement(dummyProfilePicture)}`,
+			profilePictureUrl: `${constants().PROFILE_PICTURE_RELATIVE_URL}/dummy/${faker.helpers.arrayElement(dummyProfilePicture)}`,
 			role: UserRole.CUSTOMER
 		})
 		const customerUserData = em.create(CustomerEntity, {
@@ -359,7 +351,7 @@ export class DatabaseSeeder extends Seeder {
 			email: 'restaurant1@gmail.com',
 			phoneNumber: '081234567890',
 			password: 'restaurant1',
-			profilePictureUrl: `files/user/profile_picture/dummy/${faker.helpers.arrayElement(dummyProfilePicture)}`,
+			profilePictureUrl: `${constants().PROFILE_PICTURE_RELATIVE_URL}/dummy/${faker.helpers.arrayElement(dummyProfilePicture)}`,
 			role: UserRole.RESTAURANT
 		})
 		const restaurantRandomThemes = faker.helpers
@@ -375,7 +367,7 @@ export class DatabaseSeeder extends Seeder {
 				faker.helpers.arrayElement(surabayaCoordinates).latitude,
 				faker.helpers.arrayElement(surabayaCoordinates).longitude
 			),
-			restaurantBannerUrl: `files/user/restaurant_banner/dummy/${faker.helpers.arrayElement(dummyRestaurantBanner)}`,
+			restaurantBannerUrl: `${constants().RESTAURANT_BANNER_RELATIVE_URL}/dummy/${faker.helpers.arrayElement(dummyRestaurantBanner)}`,
 			payoutBank: faker.helpers.arrayElement(bank) as BankEnum,
 			accountNumber: faker.number.int({ min: 10000000, max: 99999999 }).toString(),
 			openTime: openTime,
@@ -400,7 +392,7 @@ export class DatabaseSeeder extends Seeder {
 				email: faker.internet.email(),
 				phoneNumber: faker.phone.number(),
 				password: faker.internet.password(),
-				profilePictureUrl: `files/user/profile_picture/dummy/${faker.helpers.arrayElement(dummyProfilePicture)}`,
+				profilePictureUrl: `${constants().PROFILE_PICTURE_RELATIVE_URL}/dummy/${faker.helpers.arrayElement(dummyProfilePicture)}`,
 				role: role
 			})
 			if (role === UserRole.RESTAURANT) {
@@ -420,7 +412,7 @@ export class DatabaseSeeder extends Seeder {
 						faker.helpers.arrayElement(surabayaCoordinates).latitude,
 						faker.helpers.arrayElement(surabayaCoordinates).longitude
 					),
-					restaurantBannerUrl: `files/user/restaurant_banner/dummy/${faker.helpers.arrayElement(dummyRestaurantBanner)}`,
+					restaurantBannerUrl: `${constants().RESTAURANT_BANNER_RELATIVE_URL}/dummy/${faker.helpers.arrayElement(dummyRestaurantBanner)}`,
 					payoutBank: faker.helpers.arrayElement(bank) as BankEnum,
 					accountNumber: faker.number.int({ min: 10000000, max: 99999999 }).toString(),
 					openTime: openTime,
@@ -501,11 +493,11 @@ export class DatabaseSeeder extends Seeder {
 					}
 					let videoThumbnailUrl: string | undefined = undefined
 					if (type === 'video') {
-						videoThumbnailUrl = `files/post/thumbnails/dummy/${randomMedia.thumbnail}`
+						videoThumbnailUrl = `${constants().POST_MEDIA_RELATIVE_URL}/thumbnails/dummy/${randomMedia.thumbnail}`
 					}
 					const postMedia = em.create(PostMediaEntity, {
 						post: post.id,
-						url: `files/post/${type}s/dummy/${randomMedia.media}`,
+						url: `${constants().POST_MEDIA_RELATIVE_URL}/${type}s/dummy/${randomMedia.media}`,
 						type: type,
 						extension: extension,
 						videoThumbnailUrl: videoThumbnailUrl
@@ -545,7 +537,7 @@ export class DatabaseSeeder extends Seeder {
 						name: faker.food.dish(),
 						price: faker.number.int({ min: 10000, max: 100000 }),
 						description: faker.food.description(),
-						pictureUrl: `files/menu/dummy/${faker.helpers.arrayElement(dummyFoodMenuPicture)}`,
+						pictureUrl: `${constants().RESTAURANT_MENU_RELATIVE_URL}/dummy/${faker.helpers.arrayElement(dummyFoodMenuPicture)}`,
 						estimatedTime: faker.number.int({ min: 10, max: 60 }),
 						isStockAvailable: true
 					})
@@ -587,9 +579,9 @@ export class DatabaseSeeder extends Seeder {
 				const transaction = em.create(TransactionEntity, {
 					customer: customer.id,
 					restaurant: restaurant.id,
-					grossAmount: amount + SERVICE_FEE,
+					grossAmount: amount + constants().SERVICE_FEE,
 					netAmount: amount,
-					serviceFee: SERVICE_FEE,
+					serviceFee: constants().SERVICE_FEE,
 					refundAmount: 0,
 					note: faker.lorem.sentence(),
 					serviceType: serviceType,

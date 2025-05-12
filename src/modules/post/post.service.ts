@@ -16,6 +16,7 @@ import Ffmpeg from 'fluent-ffmpeg'
 import { generateVideoThumbnail } from '../../utils/image.utils'
 import { UpdatePostRequestDto } from './dto/update-post-request.dto'
 import { unlink } from 'fs'
+import constants from '../../constants'
 
 @Injectable()
 export class PostService {
@@ -57,7 +58,7 @@ export class PostService {
 						)
 					}
 					return {
-						url: `files/post/${type}s/${media.filename}`,
+						url: `${constants().POST_MEDIA_RELATIVE_URL}/${type}s/${media.filename}`,
 						type: type,
 						post: post.id,
 						extension: extension,
@@ -121,7 +122,7 @@ export class PostService {
 						)
 					}
 					return {
-						url: `files/post/${type}s/${media.filename}`,
+						url: `${constants().POST_MEDIA_RELATIVE_URL}/${type}s/${media.filename}`,
 						type: type,
 						post: post.id,
 						extension: extension,
@@ -181,14 +182,12 @@ export class PostService {
 	}
 
 	async getPaginatedPosts(query: GetPaginatedPostQueryRequestDto) {
-		console.log(query)
 		const { items, count } = await this.postDaoService.paginatePosts(query)
 		const pagination = PaginationDto.createPaginationDto(
 			count,
 			query.paginationQuery.pageSize,
 			query.paginationQuery.page
 		)
-		console.log(items)
 		return {
 			posts: items.map((post) => PostMapper.toDomain(post)).filter((post) => post !== null),
 			pagination: pagination

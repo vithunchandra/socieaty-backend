@@ -10,6 +10,7 @@ import { unlink } from 'fs'
 import { GetAllFoodMenuQueryDto } from './dto/get-all-food-menu-query.dto'
 import { PaginateMenuDto } from './persistence/dto/paginate-menu.dto'
 import { PaginationDto } from '../../dto/pagination.dto'
+import constants from '../../constants'
 
 @Injectable()
 export class FoodMenuService {
@@ -28,7 +29,7 @@ export class FoodMenuService {
 		}
 		const menu = await this.foodMenuDaoService.createMenu({
 			...data,
-			menuPictureUrl: `files/menu/${menuPicture.filename}`,
+			menuPictureUrl: `${constants().RESTAURANT_MENU_RELATIVE_URL}/${menuPicture.filename}`,
 			restaurant: restaurant
 		})
 
@@ -67,7 +68,9 @@ export class FoodMenuService {
 
 		await this.foodMenuDaoService.updateMenu(menu, {
 			...data,
-			menuPictureUrl: menuPicture ? `files/menu/${menuPicture.filename}` : menu.pictureUrl
+			menuPictureUrl: menuPicture
+				? `${constants().RESTAURANT_MENU_RELATIVE_URL}/${menuPicture.filename}`
+				: menu.pictureUrl
 		})
 
 		await this.em.flush()

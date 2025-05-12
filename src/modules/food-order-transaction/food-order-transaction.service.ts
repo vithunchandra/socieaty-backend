@@ -7,16 +7,14 @@ import {
 	StreamableFile
 } from '@nestjs/common'
 import { FoodOrderTransactionDaoService } from './persistence/food-order-transaction.dao.service'
-import { CreateFoodOrderTransactionDto } from './persistence/dto/create-food-order-transaction.dto'
 import { CreateFoodOrderTransactionRequestDto } from './dto/create-order-transaction-request.dto'
 import { CustomerEntity } from '../customer/persistence/customer.entity'
 import { RestaurantDaoService } from '../restaurant/persistence/restaurant.dao.service'
 import { FoodMenuDaoService } from '../food-menu/persistence/food-menu.dao.service'
 import { FoodOrderTransactionGateway } from './food-order-transaction.gateway'
 import { EntityManager } from '@mikro-orm/postgresql'
-import { SERVICE_FEE } from '../../constants'
+import constants from '../../constants'
 import { MenuItemEntity } from '../menu-items/persistence/menu-item.entity'
-import { TransactionDaoService } from '../transaction/persistence/transaction.dao.service'
 import { TransactionServiceType, TransactionStatus } from '../../enums/transaction.enum'
 import { FoodOrderTransactionMapper } from './domain/food-order-transaction.mapper'
 import { RestaurantEntity } from '../restaurant/persistence/entity/restaurant.entity'
@@ -88,16 +86,16 @@ export class FoodOrderTransactionService {
 			totalPrice += menuItem.menu.price * menuItem.quantity
 		}
 
-		if (customer.wallet < totalPrice + SERVICE_FEE) {
+		if (customer.wallet < totalPrice + constants().SERVICE_FEE) {
 			throw new BadRequestException('Insufficient balance')
 		}
 
 		const transaction = this.transactionService.createTransaction({
 			restaurant: restaurant,
-			grossAmount: totalPrice + SERVICE_FEE,
+			grossAmount: totalPrice + constants().SERVICE_FEE,
 			netAmount: totalPrice,
 			refundAmount: 0,
-			serviceFee: SERVICE_FEE,
+			serviceFee: constants().SERVICE_FEE,
 			customer: customer,
 			serviceType: TransactionServiceType.FOOD_ORDER,
 			note: dto.note,
@@ -228,8 +226,6 @@ export class FoodOrderTransactionService {
 	}
 
 	async paginateFoodOrders(user: UserEntity, dto: PaginateOrdersRequestQueryDto) {
-		console.log(dto)
-		console.log(user)
 		if (user.role !== UserRole.ADMIN) {
 			if (user.role === UserRole.CUSTOMER && dto.customerId !== user.customerData?.id) {
 				throw new BadRequestException('Customer does not have access to this order')

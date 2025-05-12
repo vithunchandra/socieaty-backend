@@ -26,7 +26,7 @@ import { GetAllUnverifiedRestaurantRequestQueryDto } from './dto/get-all-unverif
 import { UpdateRestaurantVerificationStatusRequestDto } from './dto/update-restaurant-verification-status-request.dto'
 import { FileFieldsInterceptor } from '@nestjs/platform-express'
 import { diskStorage } from 'multer'
-import { PROFILE_PICTURE_UPLOADS_DIR, RESTAURANT_BANNER_UPLOADS_DIR } from '../../constants'
+import constants from '../../constants'
 import { fileNameEditor, imageFileFilter } from '../../utils/image.utils'
 import { UpdateRestaurantDataRequestDto } from './dto/update-restaurant-data-request.dto'
 import { ToggleReservationAvailabilityRequestDto } from './dto/toggle-reservation-availability-request.dto'
@@ -126,9 +126,9 @@ export class RestaurantController {
 				storage: diskStorage({
 					destination: (req, file, cb) => {
 						if (file.fieldname === 'profilePicture') {
-							cb(null, PROFILE_PICTURE_UPLOADS_DIR)
+							cb(null, constants().PROFILE_PICTURE_UPLOADS_DIR)
 						} else {
-							cb(null, RESTAURANT_BANNER_UPLOADS_DIR)
+							cb(null, constants().RESTAURANT_BANNER_UPLOADS_DIR)
 						}
 					},
 					filename: fileNameEditor

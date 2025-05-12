@@ -6,7 +6,7 @@ import { RestaurantDaoService } from '../restaurant/persistence/restaurant.dao.s
 import { TransactionDaoService } from '../transaction/persistence/transaction.dao.service'
 import { FoodMenuDaoService } from '../food-menu/persistence/food-menu.dao.service'
 import { FoodMenuCartDto } from '../food-order-transaction/persistence/dto/food-menu-cart.dto'
-import { SERVICE_FEE } from '../../constants'
+import constants from '../../constants'
 import { TransactionServiceType, TransactionStatus } from '../../enums/transaction.enum'
 import { MenuItemEntity } from '../menu-items/persistence/menu-item.entity'
 import { MenuItemDaoService } from '../menu-items/persistence/menu-item.dao.service'
@@ -85,16 +85,16 @@ export class ReservationService {
 			totalPrice += menuItem.menu.price * menuItem.quantity
 		}
 
-		if (customer.wallet < totalPrice + SERVICE_FEE) {
+		if (customer.wallet < totalPrice + constants().SERVICE_FEE) {
 			throw new BadRequestException('Insufficient balance')
 		}
 
 		const transaction = this.transactionService.createTransaction({
 			restaurant: restaurant,
-			grossAmount: totalPrice + SERVICE_FEE,
+			grossAmount: totalPrice + constants().SERVICE_FEE,
 			netAmount: totalPrice,
 			refundAmount: 0,
-			serviceFee: SERVICE_FEE,
+			serviceFee: constants().SERVICE_FEE,
 			customer: customer,
 			serviceType: TransactionServiceType.RESERVATION,
 			note: dto.note,

@@ -20,7 +20,7 @@ import { GuardedRequestDto } from '../../module/AuthGuard/dto/guarded-request.dt
 import { UpdateFoodMenuRequestDto } from './dto/update-food-menu-request.dto'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { diskStorage } from 'multer'
-import { RESTAURANT_MENU_UPLOADS_DIR } from '../../constants'
+import constants from '../../constants'
 import { fileNameEditor, imageFileFilter } from '../../utils/image.utils'
 import { AuthGuard } from '../../module/AuthGuard/auth-guard.service'
 import { UpdateMenuStockRequestDto } from './dto/update-menu-stock-request.dto'
@@ -35,7 +35,7 @@ export class FoodMenuController {
 	@UseInterceptors(
 		FileInterceptor('menuPicture', {
 			storage: diskStorage({
-				destination: RESTAURANT_MENU_UPLOADS_DIR,
+				destination: constants().RESTAURANT_MENU_UPLOADS_DIR,
 				filename: fileNameEditor
 			}),
 			fileFilter: imageFileFilter,
@@ -113,7 +113,7 @@ export class FoodMenuController {
 	@UseInterceptors(
 		FileInterceptor('menuPicture', {
 			storage: diskStorage({
-				destination: RESTAURANT_MENU_UPLOADS_DIR,
+				destination: constants().RESTAURANT_MENU_UPLOADS_DIR,
 				filename: fileNameEditor
 			}),
 			fileFilter: imageFileFilter,

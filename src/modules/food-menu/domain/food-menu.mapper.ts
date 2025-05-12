@@ -1,8 +1,8 @@
 import { MenuCategory } from './menu-category'
 import { MenuCategoryMapper } from './menu-category.mapper'
-import { BASE_URL } from '../../../constants'
+import constants from '../../../constants'
 import { FoodMenuEntity } from '../persistence/food-menu.entity'
-import { FoodMenu } from './food-menu'
+	import { FoodMenu } from './food-menu'
 
 export class FoodMenuMapper {
 	static toDomain(raw: FoodMenuEntity | null): FoodMenu | null {
@@ -14,7 +14,7 @@ export class FoodMenuMapper {
 		menu.name = raw.name
 		menu.price = raw.price
 		menu.description = raw.description
-		menu.pictureUrl = `${BASE_URL}${raw.pictureUrl.replaceAll('\\', '/')}`
+		menu.pictureUrl = `${constants().BASE_URL}${raw.pictureUrl.replaceAll('\\', '/')}`
 		menu.estimatedTime = raw.estimatedTime
 		menu.isStockAvailable = raw.isStockAvailable
 		menu.categories = raw.categories

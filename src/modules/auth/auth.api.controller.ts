@@ -16,11 +16,7 @@ import { RestaurantCreateDto } from './dto/restaurant-create-request.dto'
 import { CustomerCreateDto } from './dto/customer-create-request.dto'
 import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express'
 import { diskStorage } from 'multer'
-import {
-	FILE_UPLOADS_DIR,
-	PROFILE_PICTURE_UPLOADS_DIR,
-	RESTAURANT_BANNER_UPLOADS_DIR
-} from 'src/constants'
+import constants from 'src/constants'
 import { fileNameEditor, imageFileFilter } from 'src/utils/image.utils'
 import { AuthService } from './auth.api.service'
 import { AuthGuard } from 'src/module/AuthGuard/auth-guard.service'
@@ -67,9 +63,9 @@ export class AuthController {
 				storage: diskStorage({
 					destination: (req, file, cb) => {
 						if (file.fieldname === 'profilePicture') {
-							cb(null, PROFILE_PICTURE_UPLOADS_DIR)
+							cb(null, constants().PROFILE_PICTURE_UPLOADS_DIR)
 						} else {
-							cb(null, RESTAURANT_BANNER_UPLOADS_DIR)
+							cb(null, constants().RESTAURANT_BANNER_UPLOADS_DIR)
 						}
 					},
 					filename: fileNameEditor

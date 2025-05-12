@@ -66,7 +66,6 @@ export class PostDaoService {
 	async paginatePosts(query: GetPaginatedPostQueryDto): Promise<PostPaginatedResultDto> {
 		const { paginationQuery, authorId, role, searchQuery } = query
 		const { page, pageSize } = paginationQuery
-		console.log(query)
 		let where: FilterQuery<PostEntity> = {}
 		// if (postId && postId.trim().length > 0) {
 		// 	where.id = { $eq: postId }

@@ -17,7 +17,7 @@ import { AuthGuard } from 'src/module/AuthGuard/auth-guard.service'
 import { UpdateCustomerProfileRequestDto } from './dto/update-customer-profile-request.dto'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { diskStorage } from 'multer'
-import { PROFILE_PICTURE_UPLOADS_DIR } from '../../constants'
+import constants from '../../constants'
 import { fileNameEditor, imageFileFilter } from '../../utils/image.utils'
 
 @Controller('customer')
@@ -35,7 +35,7 @@ export class CustomerController {
 	@UseInterceptors(
 		FileInterceptor('profilePicture', {
 			storage: diskStorage({
-				destination: PROFILE_PICTURE_UPLOADS_DIR,
+				destination: constants().PROFILE_PICTURE_UPLOADS_DIR,
 				filename: fileNameEditor
 			}),
 			fileFilter: imageFileFilter,
