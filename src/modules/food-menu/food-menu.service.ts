@@ -66,7 +66,7 @@ export class FoodMenuService {
 				unlink(
 					`${join(this.configService.get('STORAGE_PATH') ?? '', menu.pictureUrl)}`,
 					(err) => {
-						if (err) throw new BadRequestException('Error deleting menu picture')
+						if (err) console.log('Error deleting menu picture', err)
 					}
 				)
 			}

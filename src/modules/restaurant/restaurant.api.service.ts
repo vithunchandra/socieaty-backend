@@ -81,8 +81,7 @@ export class RestaurantService {
 				unlink(
 					`${join(this.configService.get('STORAGE_PATH') ?? '', user.profilePictureUrl!)}`,
 					(err) => {
-						if (err)
-							throw new BadRequestException('Error saat mengupdate profile picture')
+						if (err) console.log('Error saat mengupdate profile picture', err)
 					}
 				)
 			}
@@ -92,8 +91,7 @@ export class RestaurantService {
 				unlink(
 					`${join(this.configService.get('STORAGE_PATH') ?? '', user.restaurantData?.restaurantBannerUrl!)}`,
 					(err) => {
-						if (err)
-							throw new BadRequestException('Error saat mengupdate restaurant banner')
+						if (err) console.log('Error saat mengupdate restaurant banner', err)
 					}
 				)
 			}
