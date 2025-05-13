@@ -9,7 +9,7 @@ export default () => {
 		// export const BASE_URL = 'http://192.168.247.142:3000/',
 		// BASE_URL: 'https://massive-dominant-grubworm.ngrok-free.app/',
 		// export const BASE_URL = 'https://socieaty.share.zrok.io/',
-		BASE_URL: process.env.BASE_URL ?? 'http://35.219.33.128/',
+		BASE_URL: process.env.BASE_URL ?? 'https://www.vithun.site/',
 
 		FILE_UPLOADS_DIR: FileUploadsDir,
 
