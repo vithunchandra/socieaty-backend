@@ -27,7 +27,7 @@ export default () => {
 
 		SERVICE_FEE: 5000,
 
-		ADMIN_EMAIL: 'admin@socieaty.com',
-		ADMIN_PASSWORD: 'admin'
+		ADMIN_EMAIL: process.env.ADMIN_EMAIL ?? 'admin@socieaty.com',
+		ADMIN_PASSWORD: process.env.ADMIN_PASSWORD ?? 'admin'
 	}
 }
