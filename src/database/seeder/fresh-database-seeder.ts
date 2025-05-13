@@ -7,6 +7,9 @@ import { UserEntity, UserRole } from '../../modules/user/persistance/user.entity
 import constants from '../../constants'
 import { faker } from '@faker-js/faker'
 import { Seeder } from '@mikro-orm/seeder'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 const themeName: string[] = [
 	'Casual',
