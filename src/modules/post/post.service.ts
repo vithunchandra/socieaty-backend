@@ -17,6 +17,8 @@ import { generateVideoThumbnail } from '../../utils/image.utils'
 import { UpdatePostRequestDto } from './dto/update-post-request.dto'
 import { unlink } from 'fs'
 import constants from '../../constants'
+import { ConfigService } from '@nestjs/config'
+import { join } from 'path'
 
 @Injectable()
 export class PostService {
@@ -24,7 +26,8 @@ export class PostService {
 		private readonly postDaoService: PostDaoService,
 		private readonly mediaDaoService: MediaDaoService,
 		private readonly postHashtagDaoService: PostHashtagDaoService,
-		private readonly em: EntityManager
+		private readonly em: EntityManager,
+		private readonly configService: ConfigService
 	) {}
 
 	async createPost(user: UserEntity, data: CreatePostRequestDto, medias: Express.Multer.File[]) {
@@ -89,14 +92,20 @@ export class PostService {
 			if (filteredDeleteMedias.includes(media.id)) {
 				if (media) {
 					if (!media.url.includes('dummy')) {
-						unlink(`src/${media.url}`, (err) => {
-							console.log(err)
-						})
+						unlink(
+							`${join(this.configService.get('STORAGE_PATH') ?? '', media.url)}`,
+							(err) => {
+								console.log(err)
+							}
+						)
 					}
 					if (media.type === 'video' && !media.videoThumbnailUrl?.includes('dummy')) {
-						unlink(`src/${media.videoThumbnailUrl}`, (err) => {
-							console.log(err)
-						})
+						unlink(
+							`${join(this.configService.get('STORAGE_PATH') ?? '', media.videoThumbnailUrl!)}`,
+							(err) => {
+								console.log(err)
+							}
+						)
 					}
 				}
 			}

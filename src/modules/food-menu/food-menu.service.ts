@@ -11,12 +11,15 @@ import { GetAllFoodMenuQueryDto } from './dto/get-all-food-menu-query.dto'
 import { PaginateMenuDto } from './persistence/dto/paginate-menu.dto'
 import { PaginationDto } from '../../dto/pagination.dto'
 import constants from '../../constants'
+import { ConfigService } from '@nestjs/config'
+import { join } from 'path'
 
 @Injectable()
 export class FoodMenuService {
 	constructor(
 		private readonly foodMenuDaoService: FoodMenuDaoService,
-		private readonly em: EntityManager
+		private readonly em: EntityManager,
+		private readonly configService: ConfigService
 	) {}
 
 	async createMenu(
@@ -60,9 +63,12 @@ export class FoodMenuService {
 
 		if (menuPicture) {
 			if (!menu.pictureUrl.includes('dummy')) {
-				unlink(`src/${menu.pictureUrl}`, (err) => {
-					if (err) throw new BadRequestException('Error deleting menu picture')
-				})
+				unlink(
+					`${join(this.configService.get('STORAGE_PATH') ?? '', menu.pictureUrl)}`,
+					(err) => {
+						if (err) throw new BadRequestException('Error deleting menu picture')
+					}
+				)
 			}
 		}
 

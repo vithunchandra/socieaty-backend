@@ -35,7 +35,9 @@ export class CustomerController {
 	@UseInterceptors(
 		FileInterceptor('profilePicture', {
 			storage: diskStorage({
-				destination: constants().PROFILE_PICTURE_UPLOADS_DIR,
+				destination: (req, file, cb) => {
+					cb(null, constants().PROFILE_PICTURE_UPLOADS_DIR)
+				},
 				filename: fileNameEditor
 			}),
 			fileFilter: imageFileFilter,
@@ -56,6 +58,7 @@ export class CustomerController {
 		)
 		profilePicture?: Express.Multer.File
 	) {
+		console.log(constants().PROFILE_PICTURE_UPLOADS_DIR)
 		return await this.customerService.updateProfile(
 			req.user.id,
 			updateCustomerDto,

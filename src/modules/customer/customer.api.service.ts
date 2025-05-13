@@ -8,13 +8,16 @@ import { unlink } from 'fs'
 import { EntityManager } from '@mikro-orm/postgresql'
 import constants from '../../constants'
 import { UserRole } from '../user/persistance/user.entity'
+import { join } from 'path'
+import { ConfigService } from '@nestjs/config'
 
 @Injectable()
 export class CustomerService {
 	constructor(
 		private readonly customerDao: CustomerDaoService,
 		private readonly userDao: UserDaoService,
-		private readonly em: EntityManager
+		private readonly em: EntityManager,
+		private readonly configService: ConfigService
 	) {}
 
 	async createCustomer(data: CustomerCreateDto) {
@@ -58,9 +61,13 @@ export class CustomerService {
 
 		if (profilePicture) {
 			if (user.profilePictureUrl && !user.profilePictureUrl.includes('dummy')) {
-				unlink(`src/${user.profilePictureUrl}`, (err) => {
-					if (err) throw new BadRequestException('Error saat mengupdate profile picture')
-				})
+				unlink(
+					`${join(this.configService.get('STORAGE_PATH') ?? '', user.profilePictureUrl)}`,
+					(err) => {
+						console.log(err)
+						// if (err) throw new BadRequestException('Error saat mengupdate profile picture')
+					}
+				)
 			}
 		}
 

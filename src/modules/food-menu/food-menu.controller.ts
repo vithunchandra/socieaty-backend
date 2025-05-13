@@ -35,7 +35,9 @@ export class FoodMenuController {
 	@UseInterceptors(
 		FileInterceptor('menuPicture', {
 			storage: diskStorage({
-				destination: constants().RESTAURANT_MENU_UPLOADS_DIR,
+				destination: (req, file, cb) => {
+					cb(null, constants().RESTAURANT_MENU_UPLOADS_DIR)
+				},
 				filename: fileNameEditor
 			}),
 			fileFilter: imageFileFilter,
@@ -50,11 +52,7 @@ export class FoodMenuController {
 		@Body() data: CreateFoodMenuRequestDto,
 		@UploadedFile() menuPicture: Express.Multer.File
 	) {
-		return await this.foodMenuService.createMenu(
-			req.user.restaurantData,
-			menuPicture,
-			data
-		)
+		return await this.foodMenuService.createMenu(req.user.restaurantData, menuPicture, data)
 	}
 
 	@Get('categories')
@@ -68,9 +66,7 @@ export class FoodMenuController {
 	}
 
 	@Get('')
-	async paginateMenu(
-		@Query() query: PaginateMenuRequestDto
-	) {
+	async paginateMenu(@Query() query: PaginateMenuRequestDto) {
 		return await this.foodMenuService.paginateMenu(query)
 	}
 
@@ -81,8 +77,6 @@ export class FoodMenuController {
 	) {
 		return await this.foodMenuService.findAllMenusByRestaurantId(restaurantId, query)
 	}
-
-	
 
 	@Put(':menuId/stock')
 	@UseGuards(AuthGuard)
@@ -113,7 +107,9 @@ export class FoodMenuController {
 	@UseInterceptors(
 		FileInterceptor('menuPicture', {
 			storage: diskStorage({
-				destination: constants().RESTAURANT_MENU_UPLOADS_DIR,
+				destination: (req, file, cb) => {
+					cb(null, constants().RESTAURANT_MENU_UPLOADS_DIR)
+				},
 				filename: fileNameEditor
 			}),
 			fileFilter: imageFileFilter,

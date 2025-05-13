@@ -20,13 +20,16 @@ import { UpdateRestaurantDataRequestDto } from './dto/update-restaurant-data-req
 import { UserEntity } from '../user/persistance/user.entity'
 import { unlink } from 'fs'
 import { RestaurantVerificationStatus } from '../../enums/restaurant-verification-status.enum'
+import { ConfigService } from '@nestjs/config'
+import { join } from 'path'
 
 @Injectable()
 export class RestaurantService {
 	constructor(
 		private readonly restaurantDao: RestaurantDaoService,
 		private readonly userDao: UserDaoService,
-		private readonly entityManager: EntityManager
+		private readonly entityManager: EntityManager,
+		private readonly configService: ConfigService
 	) {}
 
 	async createRestaurant(
@@ -75,17 +78,24 @@ export class RestaurantService {
 
 		if (profilePicture) {
 			if (!user.profilePictureUrl?.includes('dummy')) {
-				unlink(`src/${user.profilePictureUrl}`, (err) => {
-					if (err) throw new BadRequestException('Error saat mengupdate profile picture')
-				})
+				unlink(
+					`${join(this.configService.get('STORAGE_PATH') ?? '', user.profilePictureUrl!)}`,
+					(err) => {
+						if (err)
+							throw new BadRequestException('Error saat mengupdate profile picture')
+					}
+				)
 			}
 		}
 		if (restaurantBanner) {
 			if (!user.restaurantData?.restaurantBannerUrl?.includes('dummy')) {
-				unlink(`src/${user.restaurantData?.restaurantBannerUrl}`, (err) => {
-					if (err)
-						throw new BadRequestException('Error saat mengupdate restaurant banner')
-				})
+				unlink(
+					`${join(this.configService.get('STORAGE_PATH') ?? '', user.restaurantData?.restaurantBannerUrl!)}`,
+					(err) => {
+						if (err)
+							throw new BadRequestException('Error saat mengupdate restaurant banner')
+					}
+				)
 			}
 		}
 
