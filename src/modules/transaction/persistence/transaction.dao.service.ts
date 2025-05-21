@@ -40,11 +40,15 @@ export class TransactionDaoService {
 		if (serviceType) {
 			queryObject.serviceType = { $eq: serviceType }
 		}
-		if (rangeStartDate) {
+		if (rangeStartDate && rangeEndDate) {
+			queryObject.$and = [
+				{ createdAt: { $gte: rangeStartDate } },
+				{ createdAt: { $lte: rangeEndDate } }
+			]
+		} else if (rangeStartDate) {
 			queryObject.createdAt = { $gte: rangeStartDate }
-		}
-		if (rangeEndDate) {
-			queryObject.finishedAt = { $lte: rangeEndDate }
+		} else if (rangeEndDate) {
+			queryObject.createdAt = { $lte: rangeEndDate }
 		}
 		if (searchQuery) {
 			queryObject.$or = [

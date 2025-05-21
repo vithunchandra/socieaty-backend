@@ -635,6 +635,8 @@ export class DatabaseSeeder extends Seeder {
 						foodOrderStatus = FoodOrderStatus.REJECTED
 					} else if (transactionStatus === TransactionStatus.ONGOING) {
 						foodOrderStatus = FoodOrderStatus.PREPARING
+					} else if (transactionStatus === TransactionStatus.REFUNDED) {
+						foodOrderStatus = FoodOrderStatus.COMPLETED
 					}
 
 					const foodOrder = em.create(FoodOrderEntity, {

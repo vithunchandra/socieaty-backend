@@ -2,7 +2,6 @@ import { join } from 'path'
 
 export default () => {
 	const FileUploadsDir = join(process.env.STORAGE_PATH ?? '', 'files')
-	console.log(join(FileUploadsDir, 'user', 'profile_picture'))
 
 	return {
 		// export const BASE_URL = 'http://192.168.200.194:3000/',
