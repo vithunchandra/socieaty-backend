@@ -1,8 +1,11 @@
-import { Body, Controller, Get, Param, Post, Put, Req, Request, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Req, Request, UseGuards } from "@nestjs/common";
 import { CreatePostCommentRequestDto } from "./dto/create-post-comment-request.dto";
 import { PostCommentService } from "./post-comment.service";
 import { AuthGuard } from "../../module/AuthGuard/auth-guard.service";
 import { LikePostCommentRequestDto } from "./dto/like-post-comment-request.dto";
+import { Roles } from "../../module/RoleGuard/roles.decorator";
+import { UserRole } from "../user/persistance/user.entity";
+import { RolesGuard } from "../../module/RoleGuard/roles.guard";
 
 @Controller('post/:postId/comment')
 export class PostCommentController{
@@ -32,5 +35,12 @@ export class PostCommentController{
     @UseGuards(AuthGuard)
     async getPostCommentByPostId(@Param('postId') postId: string){
         return await this.postCommentService.getPostCommentByPostId(postId)
+    }
+
+    @Delete(':commentId')
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles(UserRole.ADMIN)
+    async deletePostComment(@Param('commentId') commentId: string){
+        return await this.postCommentService.deletePostComment(commentId)
     }
 }

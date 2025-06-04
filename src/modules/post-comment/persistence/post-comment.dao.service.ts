@@ -49,4 +49,8 @@ export class PostCommentDaoService{
     async findOneById(commentId: string){
         return await this.postCommentRepository.findOne({id: commentId}, {populate: ['commentLikes', 'user']})
     }
+
+    async deletePostComment(commentId: string){
+        await this.postCommentRepository.nativeDelete({id: commentId})
+    }
 }
